@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-COWORK_DIR="$HOME/Desktop/cowork"
+COWORK_DIR="$HOME/Documents/Claude/Projects/Arun Rafi Blog"
 PUBLISHED_DIR="$COWORK_DIR/published"
 REPO_DIR="$HOME/Desktop/arunrafi.com"
 TODAY=$(date +%Y-%m-%d)

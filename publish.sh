@@ -20,7 +20,7 @@ DAY_DISPLAY=$(date +"%d %b %Y" | sed 's/^0//')
 mkdir -p "$PUBLISHED_DIR"
 
 # Pick the oldest .txt file (one post per day)
-filepath=$(ls -t "$QUEUE_DIR"/*.txt 2>/dev/null | tail -1)
+filepath=$(ls -t "$QUEUE_DIR"/*.md 2>/dev/null | tail -1)
 
 if [ -z "$filepath" ]; then
   echo "No posts found in $QUEUE_DIR"
@@ -30,11 +30,11 @@ fi
 cd "$REPO_DIR"
 git pull --rebase origin main 2>/dev/null || true
 
-remaining=$(ls "$QUEUE_DIR"/*.txt 2>/dev/null | wc -l | tr -d ' ')
+remaining=$(ls "$QUEUE_DIR"/*.md 2>/dev/null | wc -l | tr -d ' ')
 echo "$remaining post(s) queued — publishing oldest one"
 
 {
-  filename=$(basename "$filepath" .txt)
+  filename=$(basename "$filepath" .md)
   slug=$(echo "$filename" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
   html_file="${TODAY}-${slug}.html"
 

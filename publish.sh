@@ -19,12 +19,10 @@ DAY_DISPLAY=$(date +"%d %b %Y" | sed 's/^0//')
 
 mkdir -p "$PUBLISHED_DIR"
 
-# Find .txt files ready to publish
-shopt -s nullglob
-files=("$COWORK_DIR"/*.txt)
-shopt -u nullglob
+# Pick the oldest .txt file (one post per day)
+filepath=$(ls -t "$COWORK_DIR"/*.txt 2>/dev/null | tail -1)
 
-if [ ${#files[@]} -eq 0 ]; then
+if [ -z "$filepath" ]; then
   echo "No posts found in $COWORK_DIR"
   exit 0
 fi
@@ -32,7 +30,10 @@ fi
 cd "$REPO_DIR"
 git pull --rebase origin main 2>/dev/null || true
 
-for filepath in "${files[@]}"; do
+remaining=$(ls "$COWORK_DIR"/*.txt 2>/dev/null | wc -l | tr -d ' ')
+echo "$remaining post(s) queued — publishing oldest one"
+
+{
   filename=$(basename "$filepath" .txt)
   slug=$(echo "$filename" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
   html_file="${TODAY}-${slug}.html"
@@ -96,11 +97,11 @@ ${NEW_LINK}
   mv "$filepath" "$PUBLISHED_DIR/"
 
   echo "Published: $html_file"
-done
+}
 
 # Commit and push
 git add -A
-git commit -m "Publish post(s) for $TODAY" || { echo "Nothing to commit"; exit 0; }
+git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 git push origin main
 
 echo "Done — site will update in ~1 minute."

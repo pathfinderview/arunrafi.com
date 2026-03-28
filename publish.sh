@@ -11,26 +11,26 @@
 
 set -euo pipefail
 
-COWORK_DIR="$HOME/Documents/Claude/Projects/Arun Rafi Blog"
-PUBLISHED_DIR="$COWORK_DIR/published"
-REPO_DIR="$HOME/Desktop/arunrafi.com"
+REPO_DIR="$HOME/Desktop/Projects/arunrafi.com"
+QUEUE_DIR="$REPO_DIR/queue"
+PUBLISHED_DIR="$REPO_DIR/published"
 TODAY=$(date +%Y-%m-%d)
 DAY_DISPLAY=$(date +"%d %b %Y" | sed 's/^0//')
 
 mkdir -p "$PUBLISHED_DIR"
 
 # Pick the oldest .txt file (one post per day)
-filepath=$(ls -t "$COWORK_DIR"/*.txt 2>/dev/null | tail -1)
+filepath=$(ls -t "$QUEUE_DIR"/*.txt 2>/dev/null | tail -1)
 
 if [ -z "$filepath" ]; then
-  echo "No posts found in $COWORK_DIR"
+  echo "No posts found in $QUEUE_DIR"
   exit 0
 fi
 
 cd "$REPO_DIR"
 git pull --rebase origin main 2>/dev/null || true
 
-remaining=$(ls "$COWORK_DIR"/*.txt 2>/dev/null | wc -l | tr -d ' ')
+remaining=$(ls "$QUEUE_DIR"/*.txt 2>/dev/null | wc -l | tr -d ' ')
 echo "$remaining post(s) queued — publishing oldest one"
 
 {

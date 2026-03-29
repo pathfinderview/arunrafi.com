@@ -85,13 +85,11 @@ $(echo -e "$paragraphs")
 </html>
 HTMLEOF
 
-  # Add link to index.html (after "<!-- newest on top -->" on the SECOND occurrence)
-  # Insert as the first <li> after the inner <ul>
+  # Add link to index.html right after <!-- newest on top -->
   NEW_LINK="      <li><a href=\"/${html_file}\">${title}<\/a><\/li>"
-  sed -i '' "0,/<!-- newest on top -->/! {
-    /<!-- newest on top -->/ a\\
+  sed -i '' "/<!-- newest on top -->/ a\\
 ${NEW_LINK}
-  }" "$REPO_DIR/index.html"
+" "$REPO_DIR/index.html"
 
   # Move source file to published
   mv "$filepath" "$PUBLISHED_DIR/"

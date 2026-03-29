@@ -38,8 +38,8 @@ echo "$remaining post(s) queued — publishing oldest one"
   slug=$(echo "$filename" | tr '[:upper:]' '[:lower:]' | tr ' ' '-' | sed 's/[^a-z0-9-]//g')
   html_file="${TODAY}-${slug}.html"
 
-  # Read title (line 1) and body (line 3+)
-  title=$(head -1 "$filepath")
+  # Read title (line 1, strip markdown # prefix) and body (line 3+)
+  title=$(head -1 "$filepath" | sed 's/^#\+ *//')
   body=$(tail -n +3 "$filepath")
 
   # Convert body paragraphs to <p> tags

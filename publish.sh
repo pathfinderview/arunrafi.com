@@ -99,8 +99,8 @@ ${NEW_LINK}
   echo "Published: $html_file"
 }
 
-# Commit and push
-git add -A
+# Commit and push — only add the new post and updated index
+git add "$html_file" index.html
 git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 git push origin main
 

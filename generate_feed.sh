@@ -19,6 +19,7 @@ feed_file="$REPO_DIR/feed.xml"
 
 {
   echo '<?xml version="1.0" encoding="UTF-8"?>'
+  echo '<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>'
   echo '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">'
   echo '<channel>'
   echo "  <title>${SITE_TITLE}</title>"
@@ -40,7 +41,7 @@ feed_file="$REPO_DIR/feed.xml"
     fi
 
     if [ -n "$md" ]; then
-      title=$(head -1 "$md" | sed 's/^#\+ *//')
+      title=$(head -1 "$md" | sed 's/^#* *//')
       body=$(tail -n +3 "$md")
     else
       # Fallback: parse title from HTML <h1>

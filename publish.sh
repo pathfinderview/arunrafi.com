@@ -39,7 +39,7 @@ echo "$remaining post(s) queued — publishing oldest one"
   html_file="${TODAY}-${slug}.html"
 
   # Read title (line 1, strip markdown # prefix) and body (line 3+)
-  title=$(head -1 "$filepath" | sed 's/^#\+ *//')
+  title=$(head -1 "$filepath" | sed 's/^#* *//')
   body=$(tail -n +3 "$filepath")
 
   # Compute read time (words / 220, ceiling divide)

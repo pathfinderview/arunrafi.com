@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/feed.xsl"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
   <title>Arun Rafi</title>
@@ -6,7 +7,7 @@
   <description>Notes on knowledge work, AI, and what humans do next.</description>
   <language>en</language>
   <atom:link href="https://arunrafi.com/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Thu, 16 Apr 2026 21:11:29 GMT</lastBuildDate>
+  <lastBuildDate>Thu, 16 Apr 2026 21:20:21 GMT</lastBuildDate>
   <item>
     <title>The New Caste System Is a Subscription</title>
     <link>https://arunrafi.com/2026-04-16-the-new-caste-system-is-a-subscription.html</link>
@@ -43,7 +44,7 @@
     <description><![CDATA[<p>IQ has a formula most people never look at. Mental age divided by chronological age, times a hundred. Mental age means: what cognitive tasks can you perform compared to other humans your age? If a ten year old solves problems that the average fifteen year old solves, their mental age is fifteen. IQ of 150.</p><p>The whole thing rests on one assumption. That the numerator, mental age, is bounded by the human brain.</p><p>Nobody questioned this because it was obviously true. Mental age couldn't exceed what the best human minds could do. The ceiling was biological. The formula worked because both sides of the fraction were made of the same stuff.</p><p>AI broke the numerator.</p><p>A twenty five year old with AI can now perform cognitive work that no human at any age, in any era, has ever performed. The numerator lost its ceiling while the denominator still ticks forward one year at a time. So the formula just stops working, not because IQ is wrong, but because it was only designed to compare humans to other humans.</p><p>Saying IQ doesn't matter anymore is lazy. IQ still measures something real about the brain on its own. The problem is that nobody operates on their own anymore. Measuring raw IQ in 2026 is like testing a pilot's running speed. Interesting, maybe, but completely disconnected from how fast anyone actually gets anywhere.</p><p>We spent a century measuring how quickly brains could process information and we called that score intelligence. It took building an artificial brain to notice that processing speed and intelligence were never the same thing.</p>]]></description>
   </item>
   <item>
-    <title># Why School Loses to a Patient Tutor</title>
+    <title>Why School Loses to a Patient Tutor</title>
     <link>https://arunrafi.com/2026-03-29-why-school-loses-to-a-patient-tutor.html</link>
     <guid isPermaLink="true">https://arunrafi.com/2026-03-29-why-school-loses-to-a-patient-tutor.html</guid>
     <pubDate>Sun, 29 Mar 2026 09:00:00 +0530</pubDate>

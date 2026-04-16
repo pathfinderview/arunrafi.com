@@ -8,7 +8,13 @@
 
   function label(t){ return t === "dark" ? "☀ Light" : "☾ Dark"; }
 
+  function isHomepage(){
+    var p = location.pathname;
+    return p === "/" || p === "" || p === "/index.html";
+  }
+
   function mount(){
+    if (!isHomepage()) return;
     if (document.querySelector(".theme-toggle")) return;
     var btn = document.createElement("button");
     btn.className = "theme-toggle";

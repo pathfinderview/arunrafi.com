@@ -4,14 +4,16 @@ body{
   margin:3rem auto;
   line-height:1.6;
   padding:0 1rem;
+  background:#000;
+  color:#e5e5e5;
 }
-h1,h2{font-weight:600;margin:0 0 .5rem}
+h1,h2{font-weight:600;margin:0 0 .5rem;color:#f5f5f5}
 h1{font-size:1.75rem}
 h2{font-size:1.25rem}
-a{color:#0366d6;text-decoration:none}
+a{color:#58a6ff;text-decoration:none}
 a:hover{text-decoration:underline}
 nav{margin:.5rem 0 1.5rem}
-hr{border:none;border-top:1px solid #e5e5e5;margin:2rem 0}
+hr{border:none;border-top:1px solid #2a2a2a;margin:2rem 0}
 ul{list-style:none;padding:0}
 ul li{margin:.25rem 0}
-article time{color:#666;font-size:.9rem}
+article time{color:#888;font-size:.9rem}

@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-REPO_DIR="$HOME/Desktop/Projects/arunrafi.com"
+REPO_DIR="$HOME/Desktop/Arun/Blog/arunrafi.com"
 QUEUE_DIR="$REPO_DIR/queue"
 PUBLISHED_DIR="$REPO_DIR/published"
 TODAY=$(date +%Y-%m-%d)
@@ -72,6 +72,7 @@ echo "$remaining post(s) queued — publishing oldest one"
   <meta charset="utf-8">
   <title>${title} — Arun Rafi</title>
   <link rel="stylesheet" href="/style.css">
+  <script src="/script.js" defer></script>
 </head>
 <body>
 <a href="/">← Home</a>

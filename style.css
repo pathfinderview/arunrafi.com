@@ -7,12 +7,12 @@
   --muted:#888;
 }
 html[data-theme="light"]{
-  --bg:#fff;
-  --fg:#222;
-  --fg-bright:#000;
-  --link:#0366d6;
-  --hr:#e5e5e5;
-  --muted:#666;
+  --bg:#faf7f0;
+  --fg:#2a2622;
+  --fg-bright:#1a1714;
+  --link:#0f5fb2;
+  --hr:#e8e2d4;
+  --muted:#857d6f;
 }
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;

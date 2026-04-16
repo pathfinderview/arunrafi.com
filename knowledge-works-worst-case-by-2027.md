@@ -1,0 +1,19 @@
+Knowledge Work's Worst Case by 2027
+
+Not probable. Not impossible.
+
+A new model drops every few months. Each one replaces a specialist. Companies don't fire people. They stop backfilling. Headcount shrinks. Then shrinks again. Fresher hiring has already collapsed. This isn't prediction. It's newspaper.
+
+Those who lost jobs still owe EMIs. So they sell gold at its all-time high. But mass selling creates its own crash. Not because gold lost value. Because everyone needed cash at once. The safety net tears the moment you reach for it.
+
+Then defaults start. Credit card delinquencies already sit at 15%. Unsecured loans sour. Banks tighten lending. Businesses that needed credit to grow can't get it. They cut headcount. More layoffs. More defaults. The loop has no exit.
+
+Those still employed stop spending. Startups die. The economy already runs on credit, not savings. RBI flagged this in January. Household savings sit at a multi-decade low. No cushion left.
+
+Knowledge workers pay the most individual income tax. When they lose income, government revenue drops. But demand for safety nets rises. The state collects less exactly when it needs to spend more.
+
+Meanwhile, the tools improve. One person with capital produces what fifteen used to. But "with capital" matters. The tools are free. The leverage isn't. The gap between those deploying AI and those displaced by it doesn't grow. It multiplies.
+
+By late 2027, this resembles manufacturing's collapse in the 80s. Compressed into 24 months. Hitting people who went to college specifically to avoid it.
+
+The scariest part isn't any single step. Each one makes the next inevitable.

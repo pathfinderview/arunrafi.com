@@ -42,6 +42,11 @@ echo "$remaining post(s) queued — publishing oldest one"
   title=$(head -1 "$filepath" | sed 's/^#\+ *//')
   body=$(tail -n +3 "$filepath")
 
+  # Compute read time (words / 220, ceiling divide)
+  word_count=$(echo "$body" | wc -w | tr -d ' ')
+  read_min=$(( (word_count + 219) / 220 ))
+  [ "$read_min" -lt 1 ] && read_min=1
+
   # Convert body paragraphs to <p> tags
   paragraphs=""
   current=""
@@ -72,16 +77,20 @@ echo "$remaining post(s) queued — publishing oldest one"
   <meta charset="utf-8">
   <title>${title} — Arun Rafi</title>
   <link rel="stylesheet" href="/style.css">
+  <link rel="alternate" type="application/rss+xml" title="Arun Rafi" href="/feed.xml">
   <script src="/script.js" defer></script>
 </head>
 <body>
 <a href="/">← Home</a>
 <article>
   <h1>${title}</h1>
-  <p><time datetime="${TODAY}">${DAY_DISPLAY}</time></p>
+  <p><time datetime="${TODAY}">${DAY_DISPLAY}</time> <span class="read-time">· ${read_min} min read</span></p>
 
 $(echo -e "$paragraphs")
 </article>
+<footer>
+  <p><a href="/">Home</a> · <a href="/feed.xml">RSS</a> · <a href="/about.html">About</a></p>
+</footer>
 </body>
 </html>
 HTMLEOF
@@ -98,8 +107,11 @@ ${NEW_LINK}
   echo "Published: $html_file"
 }
 
-# Commit and push — only add the new post and updated index
-git add "$html_file" index.html
+# Regenerate RSS feed
+bash "$REPO_DIR/generate_feed.sh" 2>/dev/null || true
+
+# Commit and push — only add the new post, updated index, and feed
+git add "$html_file" index.html feed.xml
 git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 git push origin main
 

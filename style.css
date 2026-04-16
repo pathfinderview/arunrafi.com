@@ -33,6 +33,12 @@ hr{border:none;border-top:1px solid var(--hr);margin:2rem 0}
 ul{list-style:none;padding:0}
 ul li{margin:.25rem 0}
 article time{color:var(--muted);font-size:.9rem}
+.tagline{color:var(--muted);font-size:.95rem;margin:-.25rem 0 1rem;font-style:italic}
+.read-time{color:var(--muted)}
+footer{margin-top:3rem;border-top:1px solid var(--hr);padding-top:1rem;color:var(--muted);font-size:.85rem}
+footer p{margin:0}
+footer a{color:var(--muted)}
+footer a:hover{color:var(--fg)}
 
 .theme-toggle{
   position:fixed;

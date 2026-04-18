@@ -7,7 +7,14 @@
   <description>Notes on knowledge work, AI, and what humans do next.</description>
   <language>en</language>
   <atom:link href="https://arunrafi.com/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Thu, 16 Apr 2026 21:20:21 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 18 Apr 2026 14:06:49 GMT</lastBuildDate>
+  <item>
+    <title>The Cost Of One Person</title>
+    <link>https://arunrafi.com/2026-04-18-the-cost-of-one-person.html</link>
+    <guid isPermaLink="true">https://arunrafi.com/2026-04-18-the-cost-of-one-person.html</guid>
+    <pubDate>Sat, 18 Apr 2026 09:00:00 +0530</pubDate>
+    <description><![CDATA[<p>The one-person ten-million-dollar business has arrived. Not as a theory. As a fact with a LinkedIn URL. One operator, a handful of agents, a Stripe dashboard that looks unreasonable.</p><p>The story most people will tell about this moment is a story about grit. It is the wrong story.</p><p>The real story is about capital. Specifically, the capital to not think twice when compute crosses a thousand dollars a month.</p><p>A year ago the entire AI stack for a solo operator ran under a hundred dollars a month. That window is closing. Frontier models are moving to usage tiers that bill in four figures. Video agents, coding agents, research agents, voice agents. Each one a separate subscription. Each one priced for a team. Each one more useful than a junior employee and not much cheaper.</p><p>The operator who wins in the next six months is not the one with the best idea. Ideas are cheap and mostly the same. The winner is the one who can spend twelve hundred dollars on a new tool on a Tuesday, try it for a week, and throw it out if it does not work. No approval. No hesitation. No meeting about whether it is worth it.</p><p>This is a different kind of threshold. It does not look like struggle. It looks like a credit card that does not get declined and a mind that does not flinch when it is swiped.</p><p>Most people will not have it. They will watch the price tags and stop at what feels sensible. Sensible is the trap. Sensible is the speed of a hundred-person company. One-person scale demands spending that would look reckless inside any budget meeting.</p><p>The next six months will sort the operators who can deploy from the ones who are still counting. Both groups have the same models in front of them. Only one group will actually run them.</p><p>The compute exists. The question is who can afford to use it.</p>]]></description>
+  </item>
   <item>
     <title>The New Caste System Is a Subscription</title>
     <link>https://arunrafi.com/2026-04-16-the-new-caste-system-is-a-subscription.html</link>

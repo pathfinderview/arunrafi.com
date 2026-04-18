@@ -7,13 +7,20 @@
   <description>Notes on knowledge work, AI, and what humans do next.</description>
   <language>en</language>
   <atom:link href="https://arunrafi.com/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Sat, 18 Apr 2026 14:06:49 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 18 Apr 2026 14:07:00 GMT</lastBuildDate>
   <item>
     <title>The Cost Of One Person</title>
     <link>https://arunrafi.com/2026-04-18-the-cost-of-one-person.html</link>
     <guid isPermaLink="true">https://arunrafi.com/2026-04-18-the-cost-of-one-person.html</guid>
     <pubDate>Sat, 18 Apr 2026 09:00:00 +0530</pubDate>
     <description><![CDATA[<p>The one-person ten-million-dollar business has arrived. Not as a theory. As a fact with a LinkedIn URL. One operator, a handful of agents, a Stripe dashboard that looks unreasonable.</p><p>The story most people will tell about this moment is a story about grit. It is the wrong story.</p><p>The real story is about capital. Specifically, the capital to not think twice when compute crosses a thousand dollars a month.</p><p>A year ago the entire AI stack for a solo operator ran under a hundred dollars a month. That window is closing. Frontier models are moving to usage tiers that bill in four figures. Video agents, coding agents, research agents, voice agents. Each one a separate subscription. Each one priced for a team. Each one more useful than a junior employee and not much cheaper.</p><p>The operator who wins in the next six months is not the one with the best idea. Ideas are cheap and mostly the same. The winner is the one who can spend twelve hundred dollars on a new tool on a Tuesday, try it for a week, and throw it out if it does not work. No approval. No hesitation. No meeting about whether it is worth it.</p><p>This is a different kind of threshold. It does not look like struggle. It looks like a credit card that does not get declined and a mind that does not flinch when it is swiped.</p><p>Most people will not have it. They will watch the price tags and stop at what feels sensible. Sensible is the trap. Sensible is the speed of a hundred-person company. One-person scale demands spending that would look reckless inside any budget meeting.</p><p>The next six months will sort the operators who can deploy from the ones who are still counting. Both groups have the same models in front of them. Only one group will actually run them.</p><p>The compute exists. The question is who can afford to use it.</p>]]></description>
+  </item>
+  <item>
+    <title>The Compression Trap</title>
+    <link>https://arunrafi.com/2026-04-18-the-compression-trap.html</link>
+    <guid isPermaLink="true">https://arunrafi.com/2026-04-18-the-compression-trap.html</guid>
+    <pubDate>Sat, 18 Apr 2026 09:00:00 +0530</pubDate>
+    <description><![CDATA[<p>A company celebrated last quarter. Analyst reports shipping in half the time, AI doing the heavy lifting, six hires off the plan. The earnings deck called it a win.</p><p>They had used a capability that could have reshaped the company to run the same company slightly cheaper. The plan hadn't moved; they were simply executing it with fewer people.</p><p>When capability gets dramatically cheaper, two questions sit next to each other: how much of the current work can now be done with less, and what just became possible that wasn't before.</p><p>The electric motor spent its first thirty years pretending to be cheaper steam. Invented in the 1880s, widely available by 1900, and factory productivity barely moved until the 1920s. Managers kept the old layout and just swapped the power source.</p><p>It took a generation for someone to notice that each machine could now have its own motor, which meant the factory could be rebuilt around the work instead of the driveshaft. That's when the assembly line became possible, and the companies that spent those decades optimising the old layout never caught up.</p><p>AI is in the same window. Some leaders are treating it as cheaper steam, others as the new motor, and both readings hold up. What the second group builds now is what the rest of us will be living inside ten years from now.</p>]]></description>
   </item>
   <item>
     <title>The New Caste System Is a Subscription</title>

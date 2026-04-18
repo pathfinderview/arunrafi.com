@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Token Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      --bg: #0a0a0b;
+      --bg-elevated: rgba(255, 255, 255, 0.04);
+      --bg-soft: rgba(255, 255, 255, 0.02);
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.16);
+      --text: #f5f1e8;
+      --muted: rgba(245, 241, 232, 0.68);
+      --accent: #f0a35b;
+      --accent-soft: rgba(240, 163, 91, 0.16);
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --pill-1: rgba(240, 163, 91, 0.18);
+      --pill-2: rgba(225, 121, 87, 0.16);
+      --pill-3: rgba(214, 184, 106, 0.16);
+      --pill-4: rgba(130, 168, 137, 0.16);
+      --pill-5: rgba(109, 153, 199, 0.16);
+      --pill-6: rgba(165, 135, 208, 0.16);
+      --pill-border-1: rgba(240, 163, 91, 0.36);
+      --pill-border-2: rgba(225, 121, 87, 0.34);
+      --pill-border-3: rgba(214, 184, 106, 0.34);
+      --pill-border-4: rgba(130, 168, 137, 0.34);
+      --pill-border-5: rgba(109, 153, 199, 0.34);
+      --pill-border-6: rgba(165, 135, 208, 0.34);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top, rgba(240, 163, 91, 0.12), transparent 28%),
+        radial-gradient(circle at 85% 20%, rgba(109, 153, 199, 0.1), transparent 24%),
+        linear-gradient(180deg, #0a0a0b 0%, #09090a 100%);
+      color: var(--text);
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      padding: 40px 20px 56px;
+    }
+
+    .shell {
+      width: min(1240px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.65fr) minmax(300px, 0.8fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.03));
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
+    }
+
+    .main-panel {
+      padding: 32px;
+    }
+
+    .side-panel {
+      padding: 28px;
+      position: sticky;
+      top: 24px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      border: 1px solid rgba(240, 163, 91, 0.28);
+      color: #ffd7b2;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 18px 0 14px;
+      font-size: clamp(2rem, 5vw, 3.75rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .lede,
+    .side-panel p,
+    .disclaimer {
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 15px;
+    }
+
+    .input-wrap {
+      margin-top: 28px;
+      position: relative;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 184px;
+      padding: 24px 24px 56px;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text);
+      resize: vertical;
+      outline: none;
+      font: inherit;
+      font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+      transition: border-color 180ms ease, background-color 180ms ease, box-shadow 220ms ease;
+    }
+
+    textarea::placeholder {
+      color: rgba(245, 241, 232, 0.38);
+    }
+
+    textarea:focus {
+      border-color: rgba(240, 163, 91, 0.48);
+      background: rgba(255, 255, 255, 0.045);
+      box-shadow: 0 0 0 5px rgba(240, 163, 91, 0.08);
+    }
+
+    .examples {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .example-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(245, 241, 232, 0.9);
+      border-radius: 999px;
+      padding: 11px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition:
+        transform 180ms ease,
+        border-color 180ms ease,
+        background-color 180ms ease,
+        color 180ms ease;
+    }
+
+    .example-btn:hover,
+    .example-btn:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(240, 163, 91, 0.34);
+      background: rgba(240, 163, 91, 0.08);
+      color: var(--text);
+      outline: none;
+    }
+
+    .context-strip {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .context-strip-title {
+      margin: 0 0 10px;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .context-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .context-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(240, 163, 91, 0.08);
+      border: 1px solid rgba(240, 163, 91, 0.18);
+      color: rgba(245, 241, 232, 0.92);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
+    }
+
+    .context-pill:hover {
+      transform: translateY(-1px);
+      border-color: rgba(240, 163, 91, 0.28);
+      background: rgba(240, 163, 91, 0.12);
+    }
+
+    .context-pill span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .metrics {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric {
+      padding: 18px;
+      border-radius: var(--radius-lg);
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      min-height: 118px;
+      transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
+    }
+
+    .metric:hover {
+      transform: translateY(-2px);
+      border-color: var(--border-strong);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .metric-value {
+      margin-top: 14px;
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .metric-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .token-panel {
+      margin-top: 24px;
+      padding: 22px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      min-height: 220px;
+    }
+
+    .chat-panel {
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(240, 163, 91, 0.1), transparent 38%),
+        rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(240, 163, 91, 0.18);
+    }
+
+    .chat-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: rgba(240, 163, 91, 0.12);
+      border: 1px solid rgba(240, 163, 91, 0.2);
+      color: #ffd7b2;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .chat-headline {
+      margin: 16px 0 10px;
+      font-size: clamp(1.4rem, 2.6vw, 2rem);
+      line-height: 1.05;
+      letter-spacing: -0.05em;
+    }
+
+    .chat-copy {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .chat-controls {
+      margin-top: 22px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .chat-slider-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .chat-slider-label {
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .chat-slider-value {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .chat-slider {
+      width: 100%;
+      appearance: none;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(240, 163, 91, 0.5), rgba(240, 163, 91, 0.1));
+      outline: none;
+    }
+
+    .chat-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      background: #f0a35b;
+      box-shadow: 0 8px 18px rgba(240, 163, 91, 0.28);
+      cursor: pointer;
+    }
+
+    .chat-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      background: #f0a35b;
+      box-shadow: 0 8px 18px rgba(240, 163, 91, 0.28);
+      cursor: pointer;
+    }
+
+    .chat-impact {
+      display: block;
+    }
+
+    .impact-card {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 148px;
+    }
+
+    .impact-label {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    .impact-big {
+      margin-top: 12px;
+      font-size: clamp(1.9rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.06em;
+      line-height: 0.95;
+    }
+
+    .impact-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .impact-share {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .impact-share-label {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .impact-share-value {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -0.05em;
+    }
+
+    .chat-explainer {
+      margin-top: 16px;
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    .chat-explainer strong {
+      color: var(--text);
+    }
+
+    .token-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .token-header h2,
+    .side-panel h2 {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .token-key {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .token-stream {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-start;
+      align-content: flex-start;
+      min-height: 148px;
+    }
+
+    .token-pill,
+    .ghost-pill {
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      border: 1px solid transparent;
+      white-space: pre-wrap;
+      word-break: break-word;
+      transition:
+        transform 220ms ease,
+        opacity 220ms ease,
+        border-color 220ms ease,
+        background-color 220ms ease;
+      animation: pill-enter 220ms ease;
+    }
+
+    .token-pill:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .ghost-pill {
+      width: 100%;
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-style: dashed;
+      color: rgba(245, 241, 232, 0.46);
+      background: rgba(255, 255, 255, 0.015);
+      border-color: rgba(255, 255, 255, 0.08);
+      font-weight: 500;
+    }
+
+    .token-pill .token-meta {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(245, 241, 232, 0.64);
+    }
+
+    .pill-1 { background: var(--pill-1); border-color: var(--pill-border-1); }
+    .pill-2 { background: var(--pill-2); border-color: var(--pill-border-2); }
+    .pill-3 { background: var(--pill-3); border-color: var(--pill-border-3); }
+    .pill-4 { background: var(--pill-4); border-color: var(--pill-border-4); }
+    .pill-5 { background: var(--pill-5); border-color: var(--pill-border-5); }
+    .pill-6 { background: var(--pill-6); border-color: var(--pill-border-6); }
+
+    .how-list {
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 14px;
+    }
+
+    .how-list li {
+      padding: 16px 0 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .how-list strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 18px;
+      padding: 0 4px;
+    }
+
+    .accent-line {
+      width: 68px;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), rgba(240, 163, 91, 0.15));
+      margin-top: 18px;
+    }
+
+    @keyframes pill-enter {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .side-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        padding: 20px 14px 42px;
+      }
+
+      .main-panel,
+      .side-panel {
+        padding: 22px;
+      }
+
+      .metrics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      textarea {
+        min-height: 164px;
+        padding: 18px 18px 46px;
+      }
+
+      .chat-impact {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .token-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="hero">
+      <section class="panel main-panel">
+        <div class="eyebrow">Token Simulator</div>
+        <h1>See how AI turns text into chunks.</h1>
+        <p class="lede">
+          Type or paste anything, and this simplified calculator will break it into token-like pieces.
+          It is designed to teach the intuition: common English tends to be cheaper, while rare strings,
+          code, URLs, numbers, and non-English text often fragment into more tokens.
+        </p>
+
+        <div class="input-wrap">
+          <textarea id="textInput" placeholder="Type or paste anything to see how Claude reads it."></textarea>
+        </div>
+
+        <div class="examples" id="exampleButtons"></div>
+
+        <div class="context-strip" aria-label="Heavy context examples">
+          <p class="context-strip-title">Usually heavy even without typing much</p>
+          <div class="context-pills">
+            <div class="context-pill">Image <span>visual context</span></div>
+            <div class="context-pill">Screenshot <span>UI + text</span></div>
+            <div class="context-pill">PDF <span>document context</span></div>
+            <div class="context-pill">Code block <span>symbols + structure</span></div>
+            <div class="context-pill">Long URL <span>fragmented parts</span></div>
+          </div>
+        </div>
+
+        <section class="metrics" aria-label="Live counters">
+          <article class="metric">
+            <div class="metric-label">Token count</div>
+            <div class="metric-value" id="tokenCount">0</div>
+            <div class="metric-note">Approximate chunks the model would process.</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Character count</div>
+            <div class="metric-value" id="charCount">0</div>
+            <div class="metric-note">Visible characters, including spaces and punctuation.</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Token / character</div>
+            <div class="metric-value" id="ratioValue">0.00</div>
+            <div class="metric-note">Higher means the text is relatively expensive.</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Cost rating</div>
+            <div class="metric-value" id="costRating">Cheap</div>
+            <div class="metric-note" id="costNote">Simple, common language usually compresses well.</div>
+          </article>
+        </section>
+
+        <section class="token-panel">
+          <div class="token-header">
+            <h2>Visual token breakdown</h2>
+            <div class="token-key">Each pill is one simulated token.</div>
+          </div>
+          <div class="token-stream" id="tokenStream"></div>
+        </section>
+
+        <section class="chat-panel" aria-label="Chat cost over time">
+          <div class="chat-eyebrow">Why this matters in chat</div>
+          <h2 class="chat-headline">You send it once. The model may reread it for the rest of the conversation.</h2>
+          <p class="chat-copy">
+            In a long chat, old messages stay in context. That means a short prompt is not just cheaper once,
+            it can be cheaper over and over again as the model keeps carrying it forward.
+          </p>
+
+          <div class="chat-controls">
+            <div class="chat-slider-row">
+              <div class="chat-slider-label">Later replies that still carry this message</div>
+              <div class="chat-slider-value"><span id="turnCount">20</span> turns</div>
+            </div>
+            <input
+              id="turnSlider"
+              class="chat-slider"
+              type="range"
+              min="1"
+              max="150"
+              value="20"
+              step="1"
+            />
+          </div>
+
+          <div class="chat-impact">
+            <article class="impact-card">
+              <div class="impact-label">Cumulative token reads</div>
+              <div class="impact-big" id="carryCost">0</div>
+              <div class="impact-note" id="carrySummary">
+                Write something above to see how repeated rereading adds up across a longer conversation.
+              </div>
+              <div class="impact-share">
+                <div class="impact-share-label" id="contextSummary">
+                  At 20 later replies, this would use 0% of a 200,000-token context window.
+                </div>
+                <div class="impact-share-value" id="contextPercent">0.00%</div>
+              </div>
+            </article>
+          </div>
+
+          <div class="chat-explainer" id="chatExplainer">
+            <strong>Simple idea:</strong> each message has input tokens, and in chat those tokens can stay alive.
+            The longer the conversation runs, the more often the model may need to read them again.
+          </div>
+        </section>
+
+        <div class="footer">
+          <div class="accent-line" aria-hidden="true"></div>
+          <p class="disclaimer">
+            This is a simplified simulator for teaching. Real tokenizers use BPE on ~100,000 vocabulary entries.
+          </p>
+        </div>
+      </section>
+
+      <aside class="panel side-panel">
+        <div class="eyebrow">How this works</div>
+        <h2 style="margin-top:18px; font-size:1.65rem; letter-spacing:-0.04em;">Cheap text is familiar text.</h2>
+        <p>
+          Language models do not read one character at a time. They read tokens: reusable chunks such as common words,
+          punctuation, number groups, and sub-word fragments.
+        </p>
+        <p>
+          If a phrase is common, it often fits into fewer tokens. If it contains typos, rare names, URLs, code, or
+          other scripts, it usually breaks into more pieces and becomes more expensive.
+        </p>
+        <p>
+          This demo is intentionally approximate so the pattern is easy to see on screen. It is built for intuition,
+          not exact billing accuracy.
+        </p>
+        <ul class="how-list">
+          <li><strong>Common words</strong> are treated as single tokens in this first version.</li>
+          <li><strong>Punctuation</strong> becomes separate tokens, so messy formatting adds overhead.</li>
+          <li><strong>Long unknown strings</strong> get chopped into smaller pieces to mimic fragmentation.</li>
+        </ul>
+      </aside>
+    </section>
+  </main>
+
+  <script>
+    const COMMON_WORDS = [
+      "a", "an", "and", "are", "as", "at", "be", "but", "by", "for",
+      "from", "have", "he", "her", "his", "i", "in", "is", "it", "me",
+      "my", "not", "of", "on", "or", "that", "the", "their", "there", "they",
+      "this", "to", "was", "we", "were", "will", "with", "you", "your", "building",
+      "youtube", "channel", "quick", "brown", "fox", "jumps", "over", "lazy", "dog", "launched"
+    ];
+
+    const COMMON_WORD_SET = new Set(COMMON_WORDS);
+    const COMMON_WITH_SPACE_SET = new Set(COMMON_WORDS.map((word) => ` ${word}`));
+    const PREFIXES = ["un", "re", "pre", "dis", "mis", "non", "sub", "over", "under"];
+    const SUFFIXES = ["ing", "ed", "er", "ly", "tion", "able", "ment", "ness", "less", "ful", "s"];
+    const PILL_CLASSES = ["pill-1", "pill-2", "pill-3", "pill-4", "pill-5", "pill-6"];
+
+    const examples = [
+      { label: "Cheap English", text: "I'm building a YouTube channel" },
+      { label: "URL + numbers", text: "Arunrafi.com launched in 2024" },
+      { label: "All common", text: "The quick brown fox jumps over the lazy dog" },
+      { label: "Typos", text: "buliding a yotube chanel" },
+      { label: "Non-English", text: "नमस्ते दोस्तों" },
+      { label: "Code", text: "const total = price * 1.18;\nconsole.log(total);" },
+      {
+        label: "Brutally expensive",
+        text: "https://arunrafi.com/watch?v=Q9x71A2kLmN&utm_source=youtube&utm_medium=social&utm_campaign=launch\n\nError 504 at 2024-11-18T09:42:17Z\nrequest_id: a8f3c91d7b42e10f9d2c4b8e\npayload={\"user\":\"Arunrafi\",\"plan\":\"pro\",\"retry_count\":17,\"success\":false}\n\npls analyz this buliding chanel stratgy asap!!! 😅🔥📈"
+      }
+    ];
+
+    const textInput = document.getElementById("textInput");
+    const tokenStream = document.getElementById("tokenStream");
+    const tokenCount = document.getElementById("tokenCount");
+    const charCount = document.getElementById("charCount");
+    const ratioValue = document.getElementById("ratioValue");
+    const costRating = document.getElementById("costRating");
+    const costNote = document.getElementById("costNote");
+    const exampleButtons = document.getElementById("exampleButtons");
+    const turnSlider = document.getElementById("turnSlider");
+    const turnCount = document.getElementById("turnCount");
+    const carryCost = document.getElementById("carryCost");
+    const carrySummary = document.getElementById("carrySummary");
+    const contextSummary = document.getElementById("contextSummary");
+    const contextPercent = document.getElementById("contextPercent");
+    const chatExplainer = document.getElementById("chatExplainer");
+
+    function escapeHtml(value) {
+      return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function isEmoji(char) {
+      return /\p{Extended_Pictographic}/u.test(char);
+    }
+
+    function isNonAscii(char) {
+      return char.charCodeAt(0) > 127;
+    }
+
+    function isAsciiLetter(char) {
+      return /[A-Za-z]/.test(char);
+    }
+
+    function isDigit(char) {
+      return /[0-9]/.test(char);
+    }
+
+    function isWhitespace(char) {
+      return /\s/.test(char);
+    }
+
+    function isPunctuation(char) {
+      return /[.,!?;:()[\]{}"'`~@#$%^&*+=\\|<>_-]/.test(char);
+    }
+
+    function splitAsciiWord(word) {
+      const lower = word.toLowerCase();
+
+      if (COMMON_WORD_SET.has(lower) || COMMON_WITH_SPACE_SET.has(` ${lower}`)) {
+        return [word];
+      }
+
+      for (const prefix of PREFIXES) {
+        if (!lower.startsWith(prefix) || lower.length <= prefix.length + 2) {
+          continue;
+        }
+
+        const rest = lower.slice(prefix.length);
+        if (COMMON_WORD_SET.has(rest)) {
+          return [word.slice(0, prefix.length), word.slice(prefix.length)];
+        }
+
+        for (const suffix of SUFFIXES) {
+          if (!rest.endsWith(suffix) || rest.length <= suffix.length + 1) {
+            continue;
+          }
+
+          const stem = rest.slice(0, -suffix.length);
+          if (COMMON_WORD_SET.has(stem)) {
+            const prefixLen = prefix.length;
+            const suffixLen = suffix.length;
+            return [
+              word.slice(0, prefixLen),
+              word.slice(prefixLen, word.length - suffixLen),
+              word.slice(word.length - suffixLen)
+            ];
+          }
+        }
+      }
+
+      for (const suffix of SUFFIXES) {
+        if (!lower.endsWith(suffix) || lower.length <= suffix.length + 1) {
+          continue;
+        }
+
+        const stem = lower.slice(0, -suffix.length);
+        if (COMMON_WORD_SET.has(stem)) {
+          const suffixLen = suffix.length;
+          return [word.slice(0, word.length - suffixLen), word.slice(word.length - suffixLen)];
+        }
+      }
+
+      const chunkSize = word.length > 10 ? 4 : 3;
+      const pieces = [];
+      for (let index = 0; index < word.length; index += chunkSize) {
+        pieces.push(word.slice(index, index + chunkSize));
+      }
+      return pieces;
+    }
+
+    function tokenizeUrl(url) {
+      return url
+        .split(/([/.?=#:_-])/)
+        .filter(Boolean)
+        .map((part) => ({ text: part, type: /[/.?=#:_-]/.test(part) ? "url mark" : "url part" }));
+    }
+
+    function tokenizeNumber(num) {
+      const tokens = [];
+      for (let index = 0; index < num.length; index += 3) {
+        tokens.push({ text: num.slice(index, index + 3), type: "number" });
+      }
+      return tokens;
+    }
+
+    function tokenizeText(input) {
+      const tokens = [];
+      let index = 0;
+
+      while (index < input.length) {
+        const char = input[index];
+
+        if (isWhitespace(char)) {
+          index += 1;
+          continue;
+        }
+
+        const remainder = input.slice(index);
+        const urlMatch = remainder.match(/^(https?:\/\/[^\s]+|www\.[^\s]+|[A-Za-z0-9-]+\.[A-Za-z]{2,}(?:\/[^\s]*)?)/);
+        if (urlMatch) {
+          tokens.push(...tokenizeUrl(urlMatch[0]));
+          index += urlMatch[0].length;
+          continue;
+        }
+
+        if (isEmoji(char)) {
+          tokens.push({ text: char, type: "emoji" });
+          tokens.push({ text: char, type: "emoji" });
+          index += char.length;
+          continue;
+        }
+
+        if (isDigit(char)) {
+          const match = remainder.match(/^\d+/);
+          const numberText = match ? match[0] : char;
+          tokens.push(...tokenizeNumber(numberText));
+          index += numberText.length;
+          continue;
+        }
+
+        if (isAsciiLetter(char)) {
+          const match = remainder.match(/^[A-Za-z]+(?:'[A-Za-z]+)*/);
+          const word = match ? match[0] : char;
+          const wordTokens = splitAsciiWord(word).map((piece) => ({ text: piece, type: "word" }));
+          tokens.push(...wordTokens);
+          index += word.length;
+          continue;
+        }
+
+        if (isNonAscii(char)) {
+          tokens.push({ text: char, type: "non-ascii" });
+          index += char.length;
+          continue;
+        }
+
+        if (isPunctuation(char)) {
+          tokens.push({ text: char, type: "punctuation" });
+          index += 1;
+          continue;
+        }
+
+        tokens.push({ text: char, type: "symbol" });
+        index += 1;
+      }
+
+      return tokens;
+    }
+
+    function analyzeCost(tokens, sourceText) {
+      const counts = tokens.reduce((accumulator, token) => {
+        accumulator[token.type] = (accumulator[token.type] || 0) + 1;
+        return accumulator;
+      }, {});
+
+      const total = tokens.length || 1;
+      const ratio = sourceText.length ? tokens.length / sourceText.length : 0;
+      const nonAsciiShare = (counts["non-ascii"] || 0) / total;
+      const punctuationShare = ((counts.punctuation || 0) + (counts.symbol || 0)) / total;
+      const urlShare = ((counts["url part"] || 0) + (counts["url mark"] || 0)) / total;
+      const emojiShare = (counts.emoji || 0) / total;
+      const numberShare = (counts.number || 0) / total;
+
+      let score = ratio * 100;
+      score += (counts["url part"] || 0) * 1.45;
+      score += (counts["url mark"] || 0) * 1.2;
+      score += (counts.punctuation || 0) * 0.7;
+      score += (counts.symbol || 0) * 0.9;
+      score += (counts.emoji || 0) * 1.8;
+      score += (counts.number || 0) * 0.8;
+
+      const words = sourceText.match(/[A-Za-z]+(?:'[A-Za-z]+)*/g) || [];
+      const avgAsciiWordLength = words.length
+        ? words.reduce((sum, word) => sum + word.length, 0) / words.length
+        : 0;
+
+      if (avgAsciiWordLength > 6.5) {
+        score += 4;
+      }
+
+      if (urlShare > 0.18) {
+        score += 12;
+      }
+
+      if (punctuationShare + urlShare + emojiShare + numberShare > 0.45) {
+        score += 10;
+      }
+
+      if (nonAsciiShare > 0.85 && punctuationShare < 0.12 && urlShare === 0 && emojiShare === 0) {
+        score = Math.min(score, 28);
+      } else {
+        score += nonAsciiShare * 10;
+      }
+
+      if (score >= 52) {
+        return {
+          label: "Very Expensive",
+          note: "This is a messy mix of fragments, symbols, numbers, or hard-to-compress chunks."
+        };
+      }
+      if (score >= 34) {
+        return {
+          label: "Expensive",
+          note: "There is clear overhead here from fragmentation, formatting, or unusual chunks."
+        };
+      }
+      if (score >= 20) {
+        return {
+          label: "Normal",
+          note: nonAsciiShare > 0.6
+            ? "This is non-English text, but it is still relatively clean and consistent."
+            : "This looks like a mix of efficient language and some fragmentation."
+        };
+      }
+      return {
+        label: "Cheap",
+        note: "Simple, common language usually compresses well."
+      };
+    }
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat("en-US").format(value);
+    }
+
+    function pluralize(count, singular, plural = `${singular}s`) {
+      return count === 1 ? singular : plural;
+    }
+
+    function updateChatCarry(tokensLength) {
+      const turns = Number(turnSlider.value);
+      const contextWindow = 200000;
+      const cumulativeReads = tokensLength * turns;
+      const contextShare = (cumulativeReads / contextWindow) * 100;
+
+      turnCount.textContent = String(turns);
+      carryCost.textContent = formatNumber(cumulativeReads);
+      contextPercent.textContent = `${contextShare.toFixed(2)}%`;
+
+      if (!tokensLength) {
+        carrySummary.textContent = "Write something above to see how repeated rereading adds up across a longer conversation.";
+        contextSummary.textContent = `At ${formatNumber(turns)} later replies, this would use 0% of a 200,000-token context window.`;
+        contextPercent.textContent = "0.00%";
+        chatExplainer.innerHTML = "<strong>Simple idea:</strong> each message has input tokens, and in chat those tokens can stay alive. The longer the conversation runs, the more often the model may need to read them again.";
+        return;
+      }
+
+      carrySummary.textContent = `${formatNumber(tokensLength)} ${pluralize(tokensLength, "token")} sent once x ${formatNumber(turns)} later ${pluralize(turns, "reply")} = about ${formatNumber(cumulativeReads)} token reads.`;
+      contextSummary.textContent = `At ${formatNumber(turns)} later ${pluralize(turns, "reply")}, this would use about ${contextShare.toFixed(2)}% of a 200,000-token context window.`;
+
+      const compressionHint = cumulativeReads >= 5000
+        ? "In a long chat, even shaving a few tokens off this message could compound into noticeable savings."
+        : "This is the core intuition: shorter prompts are not only cheaper to send, they can be cheaper to carry.";
+
+      chatExplainer.innerHTML = `<strong>What this means:</strong> if this message stays in context, the model may keep rereading its ${formatNumber(tokensLength)} ${pluralize(tokensLength, "token")} as the conversation continues. ${compressionHint}`;
+    }
+
+    function renderTokens(tokens) {
+      if (!tokens.length) {
+        tokenStream.innerHTML = '<div class="ghost-pill">Type or paste anything to see how Claude reads it.</div>';
+        return;
+      }
+
+      tokenStream.innerHTML = tokens
+        .map((token, index) => {
+          const pillClass = PILL_CLASSES[index % PILL_CLASSES.length];
+          return `
+            <div class="token-pill ${pillClass}">
+              ${escapeHtml(token.text)}
+              <span class="token-meta">${escapeHtml(token.type)}</span>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function update() {
+      const value = textInput.value;
+      const tokens = tokenizeText(value);
+      const ratio = value.length ? tokens.length / value.length : 0;
+      const cost = analyzeCost(tokens, value);
+
+      tokenCount.textContent = String(tokens.length);
+      charCount.textContent = String(value.length);
+      ratioValue.textContent = ratio.toFixed(2);
+      costRating.textContent = cost.label;
+      costNote.textContent = cost.note;
+
+      renderTokens(tokens);
+      updateChatCarry(tokens.length);
+    }
+
+    examples.forEach((example) => {
+      const button = document.createElement("button");
+      button.className = "example-btn";
+      button.type = "button";
+      button.textContent = example.label;
+      button.addEventListener("click", () => {
+        textInput.value = example.text;
+        update();
+        textInput.focus();
+        textInput.setSelectionRange(textInput.value.length, textInput.value.length);
+      });
+      exampleButtons.appendChild(button);
+    });
+
+    textInput.addEventListener("input", update);
+    turnSlider.addEventListener("input", update);
+    update();
+  </script>
+</body>
+</html>

@@ -7,7 +7,7 @@
   <description>Notes on knowledge work, AI, and what humans do next.</description>
   <language>en</language>
   <atom:link href="https://arunrafi.com/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Sat, 18 Apr 2026 14:07:00 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 18 Apr 2026 14:07:10 GMT</lastBuildDate>
   <item>
     <title>The Cost Of One Person</title>
     <link>https://arunrafi.com/2026-04-18-the-cost-of-one-person.html</link>
@@ -21,6 +21,13 @@
     <guid isPermaLink="true">https://arunrafi.com/2026-04-18-the-compression-trap.html</guid>
     <pubDate>Sat, 18 Apr 2026 09:00:00 +0530</pubDate>
     <description><![CDATA[<p>A company celebrated last quarter. Analyst reports shipping in half the time, AI doing the heavy lifting, six hires off the plan. The earnings deck called it a win.</p><p>They had used a capability that could have reshaped the company to run the same company slightly cheaper. The plan hadn't moved; they were simply executing it with fewer people.</p><p>When capability gets dramatically cheaper, two questions sit next to each other: how much of the current work can now be done with less, and what just became possible that wasn't before.</p><p>The electric motor spent its first thirty years pretending to be cheaper steam. Invented in the 1880s, widely available by 1900, and factory productivity barely moved until the 1920s. Managers kept the old layout and just swapped the power source.</p><p>It took a generation for someone to notice that each machine could now have its own motor, which meant the factory could be rebuilt around the work instead of the driveshaft. That's when the assembly line became possible, and the companies that spent those decades optimising the old layout never caught up.</p><p>AI is in the same window. Some leaders are treating it as cheaper steam, others as the new motor, and both readings hold up. What the second group builds now is what the rest of us will be living inside ten years from now.</p>]]></description>
+  </item>
+  <item>
+    <title>Plain Text Is the Test</title>
+    <link>https://arunrafi.com/2026-04-18-plain-text-is-the-test.html</link>
+    <guid isPermaLink="true">https://arunrafi.com/2026-04-18-plain-text-is-the-test.html</guid>
+    <pubDate>Sat, 18 Apr 2026 09:00:00 +0530</pubDate>
+    <description><![CDATA[<p>Every AI agent in the world reads .md files. Instructions, memory, skills, prompts. The most powerful software ever built runs on the same format a teenager uses for class notes.</p><p>For thirty years software got heavier. Proprietary formats. Custom parsers. IDE-specific project files. PDFs wrapped in DRM. Docs that needed a license to open. Everyone assumed the future would demand more sophistication. It asked for plain text.</p><p>Something quiet happens when an idea sits in a .md file. No fonts. No colors. No animation. No deck. Just words, in a line, in front of you. The format gives the idea nowhere else to go. If it holds, it holds in plain text first.</p><p>The simplest format turned out to be the honest one. Decoration is not meaning. Polish is not thought. All the chrome stacked on documents over three decades was a tax on clarity, not a contribution to it.</p><p>When it came time to instruct the most complex systems ever built, the simplest format ever built turned out to be the right one. The machines picked the format that carries weight without asking the weight to wear a costume.</p><p>Ideas that survive unformatted are ideas. The rest were costumes.</p>]]></description>
   </item>
   <item>
     <title>The New Caste System Is a Subscription</title>

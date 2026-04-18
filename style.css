@@ -39,6 +39,7 @@ footer{margin-top:3rem;border-top:1px solid var(--hr);padding-top:1rem;color:var
 footer p{margin:0}
 footer a{color:var(--muted)}
 footer a:hover{color:var(--fg)}
+blockquote{margin:1.5rem 0;padding:.25rem 0 .25rem 1.25rem;border-left:2px solid var(--hr);color:var(--fg);font-style:italic}
 
 .theme-toggle{
   position:fixed;

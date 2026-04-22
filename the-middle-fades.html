@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A 10-second demo of how Claude's attention works" />
+    <meta property="og:title" content="The Middle Fades — arunrafi.com" />
+    <meta property="og:description" content="A 10-second demo of how Claude's attention works" />
+    <meta property="og:type" content="website" />
+    <title>The Middle Fades — arunrafi.com</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;650;760&family=Kalam:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --board: #fafaf7;
+        --ink: #1f1f1f;
+        --accent: #c44536;
+        --wall: #ecece8;
+        --muted: #686762;
+        --rail: #d8d8d0;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--wall);
+        color: var(--ink);
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .page {
+        width: min(1180px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 28px 0 72px;
+      }
+
+      .headline {
+        margin: 0 0 18px;
+        min-height: 48px;
+        color: var(--accent);
+        font-size: 42px;
+        line-height: 1.08;
+        letter-spacing: 0;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 900ms ease, transform 900ms ease;
+      }
+
+      .headline.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .whiteboard-wrap {
+        position: relative;
+      }
+
+      .whiteboard {
+        position: relative;
+        overflow: hidden;
+        min-height: 690px;
+        padding: 34px 42px 38px;
+        border: 11px solid #d2d2ca;
+        border-radius: 6px;
+        background:
+          linear-gradient(rgba(31, 31, 31, 0.027) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(31, 31, 31, 0.022) 1px, transparent 1px),
+          radial-gradient(circle at 18% 22%, rgba(196, 69, 54, 0.055), transparent 22%),
+          radial-gradient(circle at 76% 68%, rgba(31, 31, 31, 0.035), transparent 26%),
+          var(--board);
+        background-size: 34px 34px, 34px 34px, auto, auto, auto;
+        box-shadow:
+          0 28px 42px rgba(31, 31, 31, 0.16),
+          0 2px 0 rgba(255, 255, 255, 0.9) inset,
+          0 -3px 0 rgba(31, 31, 31, 0.045) inset;
+      }
+
+      .whiteboard::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          radial-gradient(circle at 12% 35%, rgba(31, 31, 31, 0.045) 0 1px, transparent 1.4px),
+          radial-gradient(circle at 55% 52%, rgba(31, 31, 31, 0.032) 0 1px, transparent 1.5px),
+          radial-gradient(circle at 82% 16%, rgba(196, 69, 54, 0.045) 0 1px, transparent 1.5px);
+        background-size: 46px 42px, 58px 54px, 66px 62px;
+        mix-blend-mode: multiply;
+        opacity: 0.65;
+      }
+
+      .whiteboard::after {
+        content: "";
+        position: absolute;
+        right: 34px;
+        bottom: 14px;
+        left: 34px;
+        height: 9px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, transparent, var(--rail) 14%, #c7c7be 86%, transparent);
+        box-shadow: 0 3px 4px rgba(31, 31, 31, 0.08);
+        opacity: 0.85;
+      }
+
+      .notes {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: 604px;
+        color: rgba(31, 31, 31, 0.9);
+        font-size: 15px;
+        line-height: 1.32;
+        letter-spacing: 0;
+        gap: 14px;
+      }
+
+      .chat-layer {
+        display: grid;
+        gap: 12px;
+        min-width: 0;
+      }
+
+      .note-top,
+      .note-bottom {
+        grid-template-columns: 1fr;
+      }
+
+      .note-middle {
+        position: relative;
+        align-self: stretch;
+        grid-template-columns: 1fr;
+        align-content: center;
+        padding: 2px 0;
+        transition: filter 1.5s ease, opacity 1.5s ease;
+        will-change: filter, opacity;
+      }
+
+      .note-middle::before,
+      .note-middle::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+        border: 2px solid var(--accent);
+        opacity: 0.62;
+      }
+
+      .note-middle::before {
+        top: 18px;
+        right: 9%;
+        width: 86px;
+        height: 34px;
+        border-left: 0;
+        border-bottom: 0;
+        transform: rotate(-5deg);
+      }
+
+      .note-middle::after {
+        right: 4%;
+        bottom: 42px;
+        width: 92px;
+        height: 46px;
+        border-top: 0;
+        border-right: 0;
+        transform: rotate(6deg);
+      }
+
+      .chat-card {
+        min-width: 0;
+        padding: 14px 16px 15px;
+        border: 1px solid rgba(31, 31, 31, 0.11);
+        border-radius: 7px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.46)),
+          rgba(250, 250, 247, 0.82);
+        box-shadow: 0 8px 18px rgba(31, 31, 31, 0.055);
+      }
+
+      .chat-card:nth-child(2n) {
+        transform: rotate(0.18deg);
+      }
+
+      .chat-card:nth-child(3n) {
+        transform: rotate(-0.16deg);
+      }
+
+      .thread-title {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin-bottom: 8px;
+        color: var(--accent);
+        font-family: Kalam, "Comic Sans MS", cursive;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1.1;
+      }
+
+      .thread-title::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        opacity: 0.72;
+      }
+
+      .chat-line {
+        margin: 6px 0;
+        color: rgba(31, 31, 31, 0.84);
+      }
+
+      .chat-line .speaker {
+        color: rgba(31, 31, 31, 0.58);
+        font-weight: 760;
+      }
+
+      .chat-line.important {
+        color: var(--ink);
+        font-weight: 760;
+      }
+
+      .chat-note {
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1px dashed rgba(31, 31, 31, 0.16);
+        color: rgba(31, 31, 31, 0.62);
+        font-family: Kalam, "Comic Sans MS", cursive;
+        font-size: 17px;
+        line-height: 1.12;
+      }
+
+      .chat-transcript {
+        columns: 1;
+      }
+
+      .chat-transcript .chat-line {
+        break-inside: avoid;
+      }
+
+      .board-arrow {
+        position: absolute;
+        z-index: 2;
+        width: 172px;
+        height: 72px;
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 4;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.82;
+      }
+
+      .arrow-one {
+        top: 24%;
+        right: 12%;
+        transform: rotate(-7deg);
+      }
+
+      .arrow-two {
+        right: 22%;
+        bottom: 17%;
+        transform: rotate(8deg) scaleX(-1);
+      }
+
+      .whiteboard.has-faded .note-middle {
+        filter: blur(6px);
+        opacity: 0.35;
+      }
+
+      .subline {
+        margin: 24px auto 18px;
+        max-width: 780px;
+        color: var(--ink);
+        font-size: 25px;
+        line-height: 1.35;
+        text-align: center;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 900ms ease, transform 900ms ease;
+      }
+
+      .subline.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 62px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: 0 20px;
+        border: 1px solid rgba(31, 31, 31, 0.18);
+        border-radius: 6px;
+        background: #fdfdf9;
+        color: var(--ink);
+        font: inherit;
+        font-size: 16px;
+        font-weight: 650;
+        letter-spacing: 0;
+        text-decoration: none;
+        box-shadow: 0 7px 18px rgba(31, 31, 31, 0.08);
+        cursor: pointer;
+      }
+
+      .button:hover {
+        border-color: rgba(196, 69, 54, 0.45);
+      }
+
+      .button:focus-visible {
+        outline: 3px solid rgba(196, 69, 54, 0.28);
+        outline-offset: 3px;
+      }
+
+      .science {
+        max-width: 870px;
+        margin: 0 auto;
+        padding: 0 4px;
+      }
+
+      .science h2 {
+        margin: 0 0 20px;
+        font-size: 34px;
+        line-height: 1.12;
+        letter-spacing: 0;
+      }
+
+      .science p {
+        margin: 0 0 16px;
+        color: #343431;
+        font-size: 19px;
+        line-height: 1.65;
+      }
+
+      .chart {
+        display: block;
+        width: 100%;
+        height: auto;
+        margin: 34px 0 12px;
+        overflow: visible;
+      }
+
+      .caption {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .caption a {
+        color: #474640;
+        text-decoration-color: rgba(196, 69, 54, 0.48);
+        text-underline-offset: 3px;
+      }
+
+      @media (max-width: 760px) {
+        .page {
+          width: min(100% - 20px, 680px);
+          padding-top: 18px;
+        }
+
+        .headline {
+          min-height: 72px;
+          margin-bottom: 12px;
+          font-size: 30px;
+        }
+
+        .whiteboard {
+          min-height: 82vh;
+          padding: 22px 18px 32px;
+          border-width: 7px;
+        }
+
+        .notes {
+          min-height: calc(82vh - 72px);
+          font-size: 12px;
+          line-height: 1.25;
+          gap: 9px;
+        }
+
+        .note-top,
+        .note-middle,
+        .note-bottom {
+          grid-template-columns: 1fr;
+        }
+
+        .chat-card {
+          padding: 8px 9px;
+        }
+
+        .thread-title {
+          margin-bottom: 5px;
+          font-size: 15px;
+        }
+
+        .chat-line {
+          margin: 3px 0;
+        }
+
+        .chat-note {
+          margin-top: 5px;
+          padding-top: 5px;
+          font-size: 14px;
+        }
+
+        .board-arrow {
+          width: 112px;
+          height: 54px;
+          stroke-width: 3;
+        }
+
+        .arrow-one {
+          top: 28%;
+          right: 4%;
+        }
+
+        .arrow-two {
+          right: 10%;
+          bottom: 18%;
+        }
+
+        .subline {
+          margin-top: 18px;
+          font-size: 20px;
+        }
+
+        .actions {
+          margin-bottom: 48px;
+        }
+
+        .button {
+          min-width: 132px;
+        }
+
+        .science h2 {
+          font-size: 28px;
+        }
+
+        .science p {
+          font-size: 17px;
+        }
+      }
+
+      @media (max-width: 430px) {
+        .page {
+          width: calc(100% - 14px);
+        }
+
+        .whiteboard {
+          min-height: 84vh;
+          padding: 18px 13px 30px;
+        }
+
+        .notes {
+          min-height: calc(84vh - 62px);
+          font-size: 11px;
+          line-height: 1.22;
+        }
+
+        .note-middle::before,
+        .note-middle::after {
+          display: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="headline" id="headline">This is how Claude reads your chat.</h1>
+
+      <section class="whiteboard-wrap" aria-label="Crowded meeting whiteboard attention demo">
+        <div class="whiteboard" id="whiteboard">
+          <div class="notes" aria-label="One crowded chat transcript on a whiteboard">
+            <div class="chat-layer note-top">
+              <article class="chat-card">
+                <div class="thread-title">One long chat: launch email, somehow</div>
+                <div class="chat-transcript">
+                  <p class="chat-line"><span class="speaker">Me:</span> Help me write the v2 launch email. Goal is June 15.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Got it. Audience, tone, and must-include details?</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Customers. Clear, calm, not too enterprise. Mention onboarding rewrite, pricing page, churn emails.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Drafting around a June 15 launch target.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Wait, also Android 14 bug is still open. Put that in the internal plan, not the customer email.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Understood. Customer email stays benefit-focused.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Actually first summarize the whole plan so I can see if you have it.</p>
+                </div>
+              </article>
+            </div>
+
+            <div class="chat-layer note-middle">
+              <article class="chat-card">
+                <div class="thread-title">Buried middle of the same chat</div>
+                <div class="chat-transcript">
+                  <p class="chat-line"><span class="speaker">Me:</span> Here's a pasted Slack correction from Priya:</p>
+                  <p class="chat-line important"><span class="speaker">Priya:</span> Small correction: launch is June 18 if legal slips. Please do not promise June 15 publicly.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Important: use June 15 only as internal target. Public copy should say "later this month."</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Noted. Public-facing copy should avoid June 15.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Also pasted from dev standup:</p>
+                  <p class="chat-line important"><span class="speaker">Dev:</span> Android 14 crash repros after onboarding step 3. If onboarding ships first, crash rate doubles.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> So the customer email should not imply onboarding is instantly available to everyone.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Understood: staged rollout, no firm public date, no universal availability claim.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Cool. Now ignore the tone of this Slack paste, obviously.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Actually can you make the subject line warmer? Also don't mention refunds. Also the pricing page says Team but it may become Business.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Which name should I use?</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Team for now. Priya hasn't approved Business.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Wait, summarize everything again but in 5 bullets.</p>
+                </div>
+                <p class="chat-note">the most important constraints are right here, in the middle</p>
+              </article>
+            </div>
+
+            <div class="chat-layer note-bottom">
+              <article class="chat-card">
+                <div class="thread-title">End of the same chat</div>
+                <div class="chat-transcript">
+                  <p class="chat-line"><span class="speaker">Claude:</span> Summary: v2 launches June 15, onboarding rewrite leads, pricing stays Team, tone is warm.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Close. Please write the actual customer email now.</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Subject: v2 arrives June 15. Body: We're excited to launch the new onboarding experience for everyone...</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> Why did you use June 15 and "for everyone"?</p>
+                  <p class="chat-line"><span class="speaker">Claude:</span> Those details appeared in the launch goal and feature list near the start.</p>
+                  <p class="chat-line"><span class="speaker">Me:</span> The corrections were in the middle.</p>
+                </div>
+                <p class="chat-note">same chat, too much clutter, key facts faded</p>
+              </article>
+            </div>
+          </div>
+
+          <svg class="board-arrow arrow-one" viewBox="0 0 172 72" aria-hidden="true">
+            <path d="M8 52 C48 12, 98 9, 143 31" />
+            <path d="M132 13 L150 34 L121 39" />
+          </svg>
+          <svg class="board-arrow arrow-two" viewBox="0 0 172 72" aria-hidden="true">
+            <path d="M10 22 C48 62, 103 66, 149 39" />
+            <path d="M126 31 L153 38 L139 62" />
+          </svg>
+        </div>
+      </section>
+
+      <p class="subline" id="subline">The details at the edges stay easy to recover. The middle gets harder.</p>
+
+      <div class="actions" aria-label="Demo actions">
+        <button class="button" type="button" id="resetButton">Reset</button>
+        <a class="button" href="#">Why this happens →</a>
+      </div>
+
+      <section class="science" aria-labelledby="science-title">
+        <h2 id="science-title">This isn't a metaphor.</h2>
+        <p>
+          Researchers at Stanford ran an experiment in 2023. They gave language models a long
+          document and hid the answer to a question inside it. They moved the answer around —
+          start, middle, end — and measured accuracy.
+        </p>
+        <p>
+          The result was a U-shape. Models answered correctly when the answer was near the start or
+          end. Accuracy dropped sharply when the answer was in the middle. They called it
+          <em>"Lost in the Middle."</em>
+        </p>
+        <p>Same shape you just felt on the whiteboard.</p>
+
+        <svg class="chart" viewBox="0 0 860 390" role="img" aria-labelledby="chart-title chart-desc">
+          <title id="chart-title">U-shaped accuracy curve</title>
+          <desc id="chart-desc">
+            Accuracy is higher at the start and end of context and lower in the middle.
+          </desc>
+          <line x1="86" y1="54" x2="86" y2="306" stroke="#1F1F1F" stroke-width="1.4" opacity="0.72" />
+          <line x1="86" y1="306" x2="794" y2="306" stroke="#1F1F1F" stroke-width="1.4" opacity="0.72" />
+          <path
+            d="M110 118 C230 92, 307 174, 440 180 C573 174, 647 92, 770 118"
+            fill="none"
+            stroke="#1F1F1F"
+            stroke-width="5"
+            stroke-linecap="round"
+          />
+          <circle cx="440" cy="180" r="8" fill="#C44536" />
+          <text x="42" y="62" fill="#1F1F1F" font-size="16" font-weight="650">100%</text>
+          <text x="54" y="181" fill="#686762" font-size="15">50%</text>
+          <text x="64" y="311" fill="#686762" font-size="15">0</text>
+          <text x="110" y="342" fill="#1F1F1F" font-size="17" font-weight="650" text-anchor="middle">Start</text>
+          <text x="440" y="342" fill="#1F1F1F" font-size="17" font-weight="650" text-anchor="middle">Middle</text>
+          <text x="770" y="342" fill="#1F1F1F" font-size="17" font-weight="650" text-anchor="middle">End</text>
+          <text
+            x="440"
+            y="382"
+            fill="#1F1F1F"
+            font-size="16"
+            font-weight="650"
+            text-anchor="middle"
+          >
+            Position of relevant info in context
+          </text>
+          <text
+            x="18"
+            y="181"
+            fill="#1F1F1F"
+            font-size="16"
+            font-weight="650"
+            text-anchor="middle"
+            transform="rotate(-90 18 181)"
+          >
+            Accuracy
+          </text>
+          <text x="460" y="168" fill="#C44536" font-size="15" font-weight="650">middle low point</text>
+        </svg>
+
+        <p class="caption">
+          <em>Adapted from Liu et al., "Lost in the Middle: How Language Models Use Long Contexts,"
+          2023.</em>
+          <a href="https://arxiv.org/abs/2307.03172">arxiv.org/abs/2307.03172</a>
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const whiteboard = document.querySelector("#whiteboard");
+      const headline = document.querySelector("#headline");
+      const subline = document.querySelector("#subline");
+      const resetButton = document.querySelector("#resetButton");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+      let timers = [];
+
+      function clearTimers() {
+        timers.forEach((timer) => window.clearTimeout(timer));
+        timers = [];
+      }
+
+      function showFinalState() {
+        whiteboard.classList.add("has-faded");
+        headline.classList.add("is-visible");
+        subline.classList.add("is-visible");
+      }
+
+      function replay() {
+        clearTimers();
+        whiteboard.classList.remove("has-faded");
+        headline.classList.remove("is-visible");
+        subline.classList.remove("is-visible");
+
+        window.requestAnimationFrame(() => {
+          if (reduceMotion.matches) {
+            showFinalState();
+            return;
+          }
+
+          timers.push(
+            window.setTimeout(() => {
+              whiteboard.classList.add("has-faded");
+              headline.classList.add("is-visible");
+            }, 2500)
+          );
+
+          timers.push(
+            window.setTimeout(() => {
+              subline.classList.add("is-visible");
+            }, 3150)
+          );
+        });
+      }
+
+      resetButton.addEventListener("click", replay);
+      reduceMotion.addEventListener("change", replay);
+      replay();
+    </script>
+  </body>
+</html>

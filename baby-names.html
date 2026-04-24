@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baby Names by Year — Arun Rafi</title>
+  <link rel="alternate" type="application/rss+xml" title="Arun Rafi" href="/feed.xml">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #06070a;
+      --panel: rgba(11, 14, 20, 0.86);
+      --panel-2: rgba(17, 22, 31, 0.95);
+      --line: rgba(255, 255, 255, 0.11);
+      --text: #f4f7fb;
+      --muted: #98a4b6;
+      --pink: #fb7185;
+      --blue: #60a5fa;
+      --gold: #f4c95d;
+      --green: #86efac;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 4%, rgba(96, 165, 250, 0.15), transparent 26rem),
+        radial-gradient(circle at 86% 10%, rgba(251, 113, 133, 0.12), transparent 24rem),
+        linear-gradient(140deg, #050608, #0e1520 55%, #050608);
+      color: var(--text);
+    }
+
+    body {
+      padding: 18px;
+    }
+
+    a {
+      color: #8ec5ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1260px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .back {
+      display: inline-block;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.2fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 24px 90px rgba(0, 0, 0, 0.42);
+      backdrop-filter: blur(18px);
+    }
+
+    .intro {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--green);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.4rem, 6vw, 5.2rem);
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    .lede,
+    .small,
+    .source-note {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .examples {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chip {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      padding: 0 13px;
+      cursor: pointer;
+    }
+
+    .chip:hover,
+    .mode.active,
+    .chip.active {
+      border-color: rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.11);
+    }
+
+    .explainer {
+      border: 1px solid rgba(244, 201, 93, 0.22);
+      border-radius: 8px;
+      background: rgba(244, 201, 93, 0.08);
+      padding: 13px 14px;
+      color: #f9edba;
+      line-height: 1.5;
+    }
+
+    .tool {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+    }
+
+    .input {
+      min-height: 48px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      padding: 0 14px;
+      background: rgba(255, 255, 255, 0.055);
+      color: var(--text);
+      outline: none;
+    }
+
+    .input:focus {
+      border-color: rgba(96, 165, 250, 0.55);
+      box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.13);
+    }
+
+    .button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 16px;
+      color: #06110d;
+      background: linear-gradient(135deg, var(--green), #67e8f9);
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .button.secondary {
+      color: var(--text);
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .button.secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .modes {
+      display: inline-grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .mode {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    .status {
+      min-height: 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .matches {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 38px;
+    }
+
+    .match {
+      min-height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--text);
+      padding: 0 11px;
+      cursor: pointer;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(280px, 0.9fr);
+      gap: 18px;
+    }
+
+    .chart-panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .chart-title {
+      display: grid;
+      gap: 6px;
+    }
+
+    .chart-title h2 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.6rem);
+      line-height: 0.95;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .swatch.blue {
+      background: var(--blue);
+    }
+
+    .swatch.pink {
+      background: var(--pink);
+    }
+
+    .canvas-wrap {
+      position: relative;
+      min-height: 420px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03), transparent 60%),
+        #06090d;
+      background-size: 100% 25%, 14% 100%, auto, auto;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 420px;
+    }
+
+    .tooltip {
+      position: absolute;
+      left: 0;
+      top: 0;
+      transform: translate(-50%, calc(-100% - 12px));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 8px;
+      background: rgba(4, 7, 10, 0.95);
+      padding: 10px 11px;
+      color: var(--text);
+      pointer-events: none;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 120ms ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .tooltip.visible {
+      opacity: 1;
+    }
+
+    .stats {
+      padding: 16px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .stat span {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .stat strong {
+      font-size: 1.08rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fact {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .source-note {
+      padding: 0 16px 16px;
+    }
+
+    @media (max-width: 980px) {
+      .hero,
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 12px;
+      }
+
+      .search-row,
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      canvas,
+      .canvas-wrap {
+        min-height: 340px;
+        height: 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="/tools.html">&lt;- Tools</a>
+
+    <section class="hero">
+      <section class="panel intro">
+        <p class="eyebrow">Name history</p>
+        <h1>Baby Names by Year</h1>
+        <p class="lede">Type a name and see how many babies received it across the long U.S. timeline, from 1880 through 2024.</p>
+
+        <div class="explainer">
+          The fun part is seeing a name behave like a little cultural weather system: a slow rise, a sudden peak, a weird comeback, a total collapse.
+        </div>
+
+        <div class="examples" id="examples">
+          <button class="chip" type="button">Olivia</button>
+          <button class="chip" type="button">Liam</button>
+          <button class="chip" type="button">Emma</button>
+          <button class="chip" type="button">Ava</button>
+          <button class="chip" type="button">Mason</button>
+          <button class="chip" type="button">Aaliyah</button>
+        </div>
+      </section>
+
+      <section class="panel tool">
+        <div class="search-row">
+          <input class="input" id="nameInput" type="text" placeholder="Try Olivia, James, Aaliyah, Ezra..." value="Olivia" aria-label="Search baby name">
+          <button class="button" id="searchButton" type="button">Search</button>
+          <button class="button secondary" id="randomButton" type="button">Random</button>
+        </div>
+
+        <div class="modes" id="modes" aria-label="Sex filter">
+          <button class="mode active" type="button" data-mode="all">All</button>
+          <button class="mode" type="button" data-mode="F">Girls</button>
+          <button class="mode" type="button" data-mode="M">Boys</button>
+        </div>
+
+        <div class="status" id="status">Loading name history…</div>
+        <div class="matches" id="matches"></div>
+      </section>
+    </section>
+
+    <section class="dashboard">
+      <section class="panel chart-panel">
+        <div class="chart-head">
+          <div class="chart-title">
+            <p class="eyebrow" id="kicker">Waiting for data</p>
+            <h2 id="title">Olivia</h2>
+            <div class="legend">
+              <span class="legend-item"><span class="swatch pink"></span>Girls</span>
+              <span class="legend-item"><span class="swatch blue"></span>Boys</span>
+              <span class="legend-item"><span class="swatch"></span>Total in selected view</span>
+            </div>
+          </div>
+          <p class="small" id="subhead">1880-2024</p>
+        </div>
+
+        <div class="canvas-wrap">
+          <canvas id="chart" width="920" height="420" aria-label="Baby name chart"></canvas>
+          <div class="tooltip" id="tooltip"></div>
+        </div>
+      </section>
+
+      <aside class="panel stats">
+        <div class="stat-grid">
+          <div class="stat"><span>Total births</span><strong id="totalStat">-</strong></div>
+          <div class="stat"><span>Peak year</span><strong id="peakStat">-</strong></div>
+          <div class="stat"><span>First seen</span><strong id="firstStat">-</strong></div>
+          <div class="stat"><span>Last seen</span><strong id="lastStat">-</strong></div>
+          <div class="stat"><span>Girls total</span><strong id="girlsStat">-</strong></div>
+          <div class="stat"><span>Boys total</span><strong id="boysStat">-</strong></div>
+        </div>
+
+        <div class="fact" id="fact">
+          Search any name that appears in the SSA national data. If a name is missing, one common reason is that it had fewer than 5 births in a given year and was suppressed for privacy.
+        </div>
+      </aside>
+    </section>
+
+    <p class="source-note">
+      Source: U.S. Social Security Administration baby-name data for national births. SSA says the national files cover births after 1879 and its current published data are based on Social Security card applications as of March 2025, with 2024 as the latest birth year. See <a href="https://www.ssa.gov/OACT/babynames/">popular baby names</a> and <a href="https://www.ssa.gov/OACT/babynames/background.html">background information</a>.
+    </p>
+  </main>
+
+  <script>
+    const DATA_URL = "/data/baby-names.tsv";
+    const YEARS = Array.from({ length: 2024 - 1880 + 1 }, (_, index) => 1880 + index);
+    const RANDOM_NAMES = ["Olivia", "Liam", "Emma", "Noah", "Sophia", "Aaliyah", "Ezra", "Hazel", "Luna", "James", "Mia", "Theodore", "Aurora", "Elijah", "Amelia", "Charlotte"];
+
+    const state = {
+      mode: "all",
+      nameMap: new Map(),
+      keys: [],
+      ready: false,
+      currentName: "olivia",
+      chartPoints: []
+    };
+
+    const elements = {
+      input: document.getElementById("nameInput"),
+      searchButton: document.getElementById("searchButton"),
+      randomButton: document.getElementById("randomButton"),
+      status: document.getElementById("status"),
+      matches: document.getElementById("matches"),
+      examples: document.getElementById("examples"),
+      modes: document.getElementById("modes"),
+      title: document.getElementById("title"),
+      kicker: document.getElementById("kicker"),
+      subhead: document.getElementById("subhead"),
+      totalStat: document.getElementById("totalStat"),
+      peakStat: document.getElementById("peakStat"),
+      firstStat: document.getElementById("firstStat"),
+      lastStat: document.getElementById("lastStat"),
+      girlsStat: document.getElementById("girlsStat"),
+      boysStat: document.getElementById("boysStat"),
+      fact: document.getElementById("fact"),
+      chart: document.getElementById("chart"),
+      tooltip: document.getElementById("tooltip")
+    };
+
+    const ctx = elements.chart.getContext("2d");
+
+    function formatNumber(value) {
+      return new Intl.NumberFormat("en-US").format(value);
+    }
+
+    function parseSeries(raw) {
+      if (!raw) return [];
+      return raw.split("|").filter(Boolean).map((pair) => {
+        const [year, count] = pair.split(":");
+        return [Number(year), Number(count)];
+      });
+    }
+
+    async function loadData() {
+      const response = await fetch(DATA_URL);
+      const text = await response.text();
+      const lines = text.trim().split("\n");
+
+      for (const line of lines) {
+        const [key, display, maleRaw, femaleRaw] = line.split("\t");
+        state.nameMap.set(key, {
+          key,
+          display,
+          M: parseSeries(maleRaw),
+          F: parseSeries(femaleRaw)
+        });
+      }
+
+      state.keys = Array.from(state.nameMap.keys());
+      state.ready = true;
+      elements.status.textContent = `Loaded ${formatNumber(state.keys.length)} names.`;
+      renderName(elements.input.value.trim() || "Olivia");
+    }
+
+    function findMatches(query) {
+      const normalized = query.trim().toLowerCase();
+      if (normalized.length < 2) return [];
+
+      const starts = [];
+      const contains = [];
+      for (const key of state.keys) {
+        if (key.startsWith(normalized)) starts.push(key);
+        else if (key.includes(normalized)) contains.push(key);
+        if (starts.length >= 6) break;
+      }
+
+      if (starts.length < 6) {
+        for (const key of contains) {
+          starts.push(key);
+          if (starts.length >= 6) break;
+        }
+      }
+
+      return starts.map((key) => state.nameMap.get(key).display);
+    }
+
+    function renderMatches(matches) {
+      elements.matches.innerHTML = "";
+      matches.forEach((match) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "match";
+        button.textContent = match;
+        button.addEventListener("click", () => {
+          elements.input.value = match;
+          renderName(match);
+        });
+        elements.matches.appendChild(button);
+      });
+    }
+
+    function seriesToMap(series) {
+      return new Map(series.map(([year, count]) => [year, count]));
+    }
+
+    function mergeSeries(item) {
+      const male = seriesToMap(item.M);
+      const female = seriesToMap(item.F);
+      return YEARS.map((year) => ({
+        year,
+        M: male.get(year) || 0,
+        F: female.get(year) || 0,
+        total: (male.get(year) || 0) + (female.get(year) || 0)
+      }));
+    }
+
+    function summarize(points) {
+      const active = points.filter((point) => point.value > 0);
+      const total = points.reduce((sum, point) => sum + point.value, 0);
+      const girlsTotal = points.reduce((sum, point) => sum + point.F, 0);
+      const boysTotal = points.reduce((sum, point) => sum + point.M, 0);
+      const peak = active.reduce((best, point) => point.value > best.value ? point : best, { year: "-", value: 0 });
+
+      return {
+        total,
+        girlsTotal,
+        boysTotal,
+        peak,
+        first: active[0]?.year || "-",
+        last: active[active.length - 1]?.year || "-"
+      };
+    }
+
+    function computePoints(item) {
+      const merged = mergeSeries(item);
+      return merged.map((point) => {
+        let value = point.total;
+        if (state.mode === "F") value = point.F;
+        if (state.mode === "M") value = point.M;
+        return { ...point, value };
+      });
+    }
+
+    function factText(item, summary) {
+      const bothSexes = summary.girlsTotal > 0 && summary.boysTotal > 0;
+      if (summary.total === 0) {
+        return "No visible national record for that name in the selected view. SSA suppresses names with fewer than 5 births in a year for privacy.";
+      }
+      if (state.mode === "all" && bothSexes) {
+        return `${item.display} appears for both girls and boys in the national data. The chart shows the combined line, with the sex-specific lines behind it.`;
+      }
+      if (summary.first !== "-" && summary.first < 1937) {
+        return "SSA notes that many people born before 1937 never received Social Security numbers, so the earliest decades are useful but not complete in the same way later decades are.";
+      }
+      return "Counts reflect births in the SSA national files, not every U.S. birth. Names with fewer than 5 births in a year are omitted from the public data.";
+    }
+
+    function renderName(rawName) {
+      if (!state.ready) return;
+
+      const normalized = rawName.trim().toLowerCase();
+      const item = state.nameMap.get(normalized);
+      renderMatches(findMatches(rawName));
+
+      if (!item) {
+        elements.title.textContent = rawName || "Unknown name";
+        elements.kicker.textContent = "No exact match";
+        elements.subhead.textContent = "Try one of the nearby matches";
+        elements.status.textContent = "Name not found in the current dataset.";
+        elements.totalStat.textContent = "-";
+        elements.peakStat.textContent = "-";
+        elements.firstStat.textContent = "-";
+        elements.lastStat.textContent = "-";
+        elements.girlsStat.textContent = "-";
+        elements.boysStat.textContent = "-";
+        elements.fact.textContent = "Try an exact spelling from the suggestions. The SSA public files also hide names that have fewer than 5 births in a year.";
+        state.chartPoints = [];
+        drawChart();
+        return;
+      }
+
+      state.currentName = item.key;
+      const points = computePoints(item);
+      const summary = summarize(points);
+      state.chartPoints = points;
+
+      elements.title.textContent = item.display;
+      elements.kicker.textContent = state.mode === "all" ? "Girls + boys" : state.mode === "F" ? "Girls only" : "Boys only";
+      elements.subhead.textContent = `${summary.first === "-" ? "No years found" : `${summary.first}-${summary.last}`} · peak ${summary.peak.year === "-" ? "-" : `${summary.peak.year}`}`;
+      elements.status.textContent = `${item.display} loaded.`;
+      elements.totalStat.textContent = summary.total ? formatNumber(summary.total) : "-";
+      elements.peakStat.textContent = summary.peak.year === "-" ? "-" : `${summary.peak.year} · ${formatNumber(summary.peak.value)}`;
+      elements.firstStat.textContent = summary.first;
+      elements.lastStat.textContent = summary.last;
+      elements.girlsStat.textContent = summary.girlsTotal ? formatNumber(summary.girlsTotal) : "-";
+      elements.boysStat.textContent = summary.boysTotal ? formatNumber(summary.boysTotal) : "-";
+      elements.fact.textContent = factText(item, summary);
+      drawChart();
+    }
+
+    function drawLine(points, color, maxValue, rect) {
+      const active = points.filter((point) => point.value > 0);
+      if (!active.length) return;
+
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.4;
+      ctx.beginPath();
+      active.forEach((point, index) => {
+        const x = rect.left + ((point.year - 1880) / (2024 - 1880)) * rect.width;
+        const y = rect.top + rect.height - (point.value / maxValue) * rect.height;
+        if (index === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    function drawAxes(rect, maxValue) {
+      ctx.strokeStyle = "rgba(255,255,255,0.12)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rect.left, rect.top);
+      ctx.lineTo(rect.left, rect.top + rect.height);
+      ctx.lineTo(rect.left + rect.width, rect.top + rect.height);
+      ctx.stroke();
+
+      ctx.fillStyle = "rgba(244,247,251,0.72)";
+      ctx.font = "12px Inter, system-ui, sans-serif";
+      ctx.textAlign = "right";
+      ctx.fillText("0", rect.left - 8, rect.top + rect.height + 4);
+      ctx.fillText(formatNumber(Math.round(maxValue)), rect.left - 8, rect.top + 4);
+
+      ctx.textAlign = "center";
+      [1880, 1920, 1960, 2000, 2024].forEach((year) => {
+        const x = rect.left + ((year - 1880) / (2024 - 1880)) * rect.width;
+        ctx.fillText(String(year), x, rect.top + rect.height + 24);
+      });
+    }
+
+    function drawChart() {
+      const ratio = window.devicePixelRatio || 1;
+      const width = elements.chart.clientWidth;
+      const height = elements.chart.clientHeight;
+      elements.chart.width = Math.floor(width * ratio);
+      elements.chart.height = Math.floor(height * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const rect = { left: 52, top: 20, width: width - 76, height: height - 58 };
+      const active = state.chartPoints;
+
+      if (!active.length) {
+        ctx.fillStyle = "rgba(244,247,251,0.62)";
+        ctx.font = "15px Inter, system-ui, sans-serif";
+        ctx.fillText("Search for a name to see the timeline.", 30, 42);
+        return;
+      }
+
+      const maxValue = Math.max(1, ...active.map((point) => point.value));
+      drawAxes(rect, maxValue);
+
+      const item = state.nameMap.get(state.currentName);
+      const merged = mergeSeries(item);
+
+      if (state.mode === "all") {
+        drawLine(merged.map((point) => ({ ...point, value: point.F })), getComputedStyle(document.documentElement).getPropertyValue("--pink"), Math.max(1, ...merged.map((point) => point.total)), rect);
+        drawLine(merged.map((point) => ({ ...point, value: point.M })), getComputedStyle(document.documentElement).getPropertyValue("--blue"), Math.max(1, ...merged.map((point) => point.total)), rect);
+      }
+
+      const totalColor = getComputedStyle(document.documentElement).getPropertyValue(state.mode === "F" ? "--pink" : state.mode === "M" ? "--blue" : "--gold");
+      drawLine(active, totalColor, maxValue, rect);
+
+      state.chartPoints = active.map((point) => ({
+        ...point,
+        x: rect.left + ((point.year - 1880) / (2024 - 1880)) * rect.width,
+        y: rect.top + rect.height - (point.value / maxValue) * rect.height
+      }));
+    }
+
+    function showTooltip(event) {
+      if (!state.chartPoints.length) return;
+      const rect = elements.chart.getBoundingClientRect();
+      const mouseX = event.clientX - rect.left;
+      let nearest = state.chartPoints[0];
+      let bestDistance = Infinity;
+
+      for (const point of state.chartPoints) {
+        const distance = Math.abs(point.x - mouseX);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          nearest = point;
+        }
+      }
+
+      if (!nearest || nearest.value <= 0) {
+        elements.tooltip.classList.remove("visible");
+        return;
+      }
+
+      elements.tooltip.classList.add("visible");
+      elements.tooltip.innerHTML = `
+        <strong>${nearest.year}</strong><br>
+        ${formatNumber(nearest.value)} in selected view<br>
+        Girls ${formatNumber(nearest.F)} · Boys ${formatNumber(nearest.M)}
+      `;
+      elements.tooltip.style.left = `${nearest.x}px`;
+      elements.tooltip.style.top = `${nearest.y}px`;
+    }
+
+    function hideTooltip() {
+      elements.tooltip.classList.remove("visible");
+    }
+
+    elements.searchButton.addEventListener("click", () => renderName(elements.input.value));
+    elements.input.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") renderName(elements.input.value);
+    });
+    elements.input.addEventListener("input", () => {
+      if (!state.ready) return;
+      renderMatches(findMatches(elements.input.value));
+    });
+
+    elements.randomButton.addEventListener("click", () => {
+      const name = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
+      elements.input.value = name;
+      renderName(name);
+    });
+
+    elements.examples.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+      elements.input.value = button.textContent;
+      renderName(button.textContent);
+    });
+
+    elements.modes.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-mode]");
+      if (!button) return;
+      state.mode = button.dataset.mode;
+      elements.modes.querySelectorAll(".mode").forEach((mode) => {
+        mode.classList.toggle("active", mode.dataset.mode === state.mode);
+      });
+      renderName(elements.input.value);
+    });
+
+    elements.chart.addEventListener("mousemove", showTooltip);
+    elements.chart.addEventListener("mouseleave", hideTooltip);
+    window.addEventListener("resize", drawChart);
+
+    loadData().catch((error) => {
+      console.error(error);
+      elements.status.textContent = "Could not load the baby-name dataset.";
+      elements.fact.textContent = "The page structure is ready, but the data file failed to load.";
+    });
+  </script>
+</body>
+</html>

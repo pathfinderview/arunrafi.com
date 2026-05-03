@@ -4,11 +4,13 @@
 
 set -euo pipefail
 
-REPO_DIR="$HOME/Desktop/Arun/Blog/arunrafi.com"
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 QUEUE_DIR="$REPO_DIR/queue"
 PUBLISHED_DIR="$REPO_DIR/published"
 LOCK_DIR="$REPO_DIR/.publish.lock"
 DRY_RUN=0
+SKIP_REMOTE_SYNC="${SKIP_REMOTE_SYNC:-0}"
+export TZ="${TZ:-Asia/Kolkata}"
 
 if [ "${1:-}" = "--dry-run" ]; then
   DRY_RUN=1
@@ -21,10 +23,20 @@ SUCCESS=0
 
 cleanup() {
   if [ "$SUCCESS" -ne 1 ] && [ -n "$PROCESSING_PATH" ] && [ -f "$PROCESSING_PATH" ]; then
-    mv "$PROCESSING_PATH" "$QUEUE_DIR/$(basename "$PROCESSING_PATH" | sed 's/^\.processing-//')"
+    original_name="$(basename "$PROCESSING_PATH")"
+    original_name="${original_name#.processing-}"
+    mv "$PROCESSING_PATH" "$QUEUE_DIR/$original_name"
   fi
 
   rmdir "$LOCK_DIR" 2>/dev/null || true
+}
+
+file_mtime() {
+  if stat -f '%m' "$1" >/dev/null 2>&1; then
+    stat -f '%m' "$1"
+  else
+    stat -c '%Y' "$1"
+  fi
 }
 
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
@@ -37,19 +49,21 @@ trap cleanup EXIT
 mkdir -p "$PUBLISHED_DIR"
 cd "$REPO_DIR"
 
-if ! git fetch origin main; then
-  echo "git fetch origin main failed; leaving queue untouched."
-  exit 1
-fi
+if [ "$SKIP_REMOTE_SYNC" != "1" ]; then
+  if ! git fetch origin main; then
+    echo "git fetch origin main failed; leaving queue untouched."
+    exit 1
+  fi
 
-if git merge-base --is-ancestor HEAD origin/main && [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
-  echo "origin/main is ahead of the local checkout; sync the repo before publishing."
-  exit 1
-fi
+  if git merge-base --is-ancestor HEAD origin/main && [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then
+    echo "origin/main is ahead of the local checkout; sync the repo before publishing."
+    exit 1
+  fi
 
-if ! git merge-base --is-ancestor origin/main HEAD; then
-  echo "Local branch has diverged from origin/main; resolve that before publishing."
-  exit 1
+  if ! git merge-base --is-ancestor origin/main HEAD; then
+    echo "Local branch has diverged from origin/main; resolve that before publishing."
+    exit 1
+  fi
 fi
 
 filepath=""
@@ -59,7 +73,7 @@ while IFS=$'\t' read -r _mtime candidate; do
 done < <(
   find "$QUEUE_DIR" -maxdepth 1 -type f -name '*.md' -print0 \
     | while IFS= read -r -d '' candidate; do
-        stat -f '%m\t%N' "$candidate"
+        printf '%s\t%s\n' "$(file_mtime "$candidate")" "$candidate"
       done \
     | sort -n
 )
@@ -150,16 +164,26 @@ $(echo -e "$paragraphs")
 </html>
 HTMLEOF
 
-NEW_LINK="      <li><a href=\"/${html_file}\">${title}<\/a><\/li>"
-sed -i '' "/<!-- newest on top -->/ a\\
-${NEW_LINK}
-" "$REPO_DIR/index.html"
+NEW_LINK="      <li><a href=\"/${html_file}\">${title}</a></li>"
+awk -v new_link="$NEW_LINK" '
+  { print }
+  index($0, "<!-- newest on top -->") { print new_link }
+' "$REPO_DIR/index.html" > "$REPO_DIR/index.html.tmp"
+mv "$REPO_DIR/index.html.tmp" "$REPO_DIR/index.html"
 
 echo "Published: $html_file"
 
 bash "$REPO_DIR/generate_feed.sh" 2>/dev/null || true
 
+published_name="$(basename "$filepath")"
+published_name="${published_name#.processing-}"
+original_queue_path="$QUEUE_DIR/$published_name"
+published_path="$PUBLISHED_DIR/$published_name"
+mv "$filepath" "$published_path"
+PROCESSING_PATH="$published_path"
+
 git add "$html_file" index.html feed.xml
+git add -A -f "$published_path" "$original_queue_path"
 git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 
 if ! git push origin main; then
@@ -167,7 +191,6 @@ if ! git push origin main; then
   exit 1
 fi
 
-mv "$filepath" "$PUBLISHED_DIR/"
 PROCESSING_PATH=""
 SUCCESS=1
 

@@ -7,6 +7,7 @@ set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$REPO_DIR"
+export TZ="${TZ:-Asia/Kolkata}"
 
 SITE_URL="https://arunrafi.com"
 SITE_TITLE="Arun Rafi"
@@ -49,8 +50,14 @@ feed_file="$REPO_DIR/feed.xml"
       body=""
     fi
 
-    # RFC 822 pub date — macOS date flavor
-    pub_date=$(date -j -f "%Y-%m-%d" "$date_part" "+%a, %d %b %Y 09:00:00 +0530" 2>/dev/null || echo "$date_part")
+    # RFC 822 pub date for both macOS and Linux runners.
+    if pub_date=$(date -j -f "%Y-%m-%d" "$date_part" "+%a, %d %b %Y 09:00:00 +0530" 2>/dev/null); then
+      :
+    elif pub_date=$(date -d "${date_part} 09:00:00 +0530" "+%a, %d %b %Y %H:%M:%S %z" 2>/dev/null); then
+      :
+    else
+      pub_date="$date_part"
+    fi
 
     # Build paragraph HTML from body for <content:encoded>-style description
     paragraphs=""

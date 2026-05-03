@@ -2,8 +2,8 @@ name: Auto Publish Queue
 
 on:
   schedule:
-    - cron: "30 0 * * *"
-    - cron: "30 12 * * *"
+    - cron: "30,35,40,45 0 * * *"
+    - cron: "30,35,40,45 12 * * *"
   workflow_dispatch:
 
 permissions:
@@ -28,6 +28,30 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Skip duplicate publish attempts in the same slot
+        run: |
+          hour="$(date +%H)"
+          if [ "$hour" = "06" ]; then
+            slot_start="$(date '+%Y-%m-%d 06:00:00')"
+            slot_label="morning"
+          elif [ "$hour" = "18" ]; then
+            slot_start="$(date '+%Y-%m-%d 18:00:00')"
+            slot_label="evening"
+          else
+            echo "Not in a publish slot; exiting."
+            exit 0
+          fi
+
+          if git log --since="$slot_start" --grep='^Publish:' --format='%H' | grep -q .; then
+            echo "A ${slot_label} publish already landed after ${slot_start}; skipping retry."
+            exit 0
+          fi
+
+          if ! find queue -maxdepth 1 -type f -name '*.md' | grep -q .; then
+            echo "Queue is empty; nothing to publish."
+            exit 0
+          fi
 
       - name: Publish oldest queued post
         run: bash ./publish.sh

@@ -7,13 +7,20 @@
   <description>Notes on knowledge work, AI, and what humans do next.</description>
   <language>en</language>
   <atom:link href="https://arunrafi.com/feed.xml" rel="self" type="application/rss+xml"/>
-  <lastBuildDate>Sun, 03 May 2026 04:31:10 GMT</lastBuildDate>
+  <lastBuildDate>Sat, 09 May 2026 13:04:56 GMT</lastBuildDate>
+  <item>
+    <title>The Daemon Returns</title>
+    <link>https://arunrafi.com/2026-05-09-the-daemon-returns.html</link>
+    <guid isPermaLink="true">https://arunrafi.com/2026-05-09-the-daemon-returns.html</guid>
+    <pubDate>Sat, 09 May 2026 09:00:00 +0530</pubDate>
+    <description><![CDATA[]]></description>
+  </item>
   <item>
     <title>Slowness Is the Moat</title>
     <link>https://arunrafi.com/2026-05-03-think-slow-build-fast.html</link>
     <guid isPermaLink="true">https://arunrafi.com/2026-05-03-think-slow-build-fast.html</guid>
     <pubDate>Sun, 03 May 2026 09:00:00 +0530</pubDate>
-    <description><![CDATA[]]></description>
+    <description><![CDATA[<p>Everyone around you just got faster. The intern ships in a day. The competitor launches in a week. The guy on Twitter built a startup over the weekend. Speed used to be a moat. Now it is the floor. Everyone has it.</p><p>When everyone is fast, the only edge left is being slow.</p><p>Not slow at building. Slow at thinking. The two used to be the same thing, so we treated them as one thing. AI has split them apart.</p><p>Kahneman split the mind into two systems. System 1 is fast and cheap. System 2 is slow and expensive. For most of work history, both were bottlenecks, and we rushed both. We thought a little, built a lot, hoped the building would reveal what the thinking missed.</p><p>AI took the building bottleneck away. The thought is the expensive part again, the way it used to be before we forgot.</p><p>The instinct is still to rush. A vague idea forms and the hands reach for the keyboard, and three prompts later there is a draft, a deck, a working app. It looks like progress. It is sand. Blocks stacked in the wrong order do not become anything. They sit there, polished and useless. The faster you can build, the more expensive a wrong block becomes, because you can pile ten more on top before you notice the foundation is crooked.</p><p>So the new rhythm is strange. Walk around the idea until it bores you. Until the shape of it is clear enough that a child could draw it. Only then reach for the keyboard. Then go fast. Stack the blocks. Connect them. Ship.</p><p>The moat is how long you can sit with a half-formed thought while the world screams at you to ship.</p>]]></description>
   </item>
   <item>
     <title>The Head Start Is Gone</title>

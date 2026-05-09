@@ -177,13 +177,14 @@ bash "$REPO_DIR/generate_feed.sh" 2>/dev/null || true
 
 published_name="$(basename "$filepath")"
 published_name="${published_name#.processing-}"
-original_queue_path="$QUEUE_DIR/$published_name"
+original_queue_rel="queue/$published_name"
+published_rel="published/$published_name"
 published_path="$PUBLISHED_DIR/$published_name"
 mv "$filepath" "$published_path"
 PROCESSING_PATH="$published_path"
 
 git add "$html_file" index.html feed.xml
-git add -A -f "$published_path" "$original_queue_path"
+git add -A -f "$published_rel" "$original_queue_rel"
 git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 
 if ! git push origin main; then

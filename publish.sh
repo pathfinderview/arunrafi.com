@@ -183,8 +183,7 @@ published_path="$PUBLISHED_DIR/$published_name"
 mv "$filepath" "$published_path"
 PROCESSING_PATH="$published_path"
 
-git add "$html_file" index.html feed.xml
-git add -A -f "$published_rel" "$original_queue_rel"
+git add -A .
 git commit -m "Publish: $title" || { echo "Nothing to commit"; exit 0; }
 
 if ! git push origin main; then

@@ -6,6 +6,7 @@ Run after rendering a post. No third-party packages required.
 from pathlib import Path
 import html
 import hashlib
+import json
 import re
 import xml.etree.ElementTree as ET
 
@@ -40,6 +41,7 @@ def excerpt(value, limit=155):
 
 def enrich():
     pages = sorted(ROOT.glob('*.html'))
+    summaries = json.loads((ROOT / 'data/essay-summaries.json').read_text())
     posts = {}
     for path in pages:
         match = re.match(r'\d{4}-\d{2}-\d{2}-(.+)\.html$', path.name)
@@ -49,6 +51,20 @@ def enrich():
                 posts[match[1]] = (path.name, plain(heading[1]))
     for path in pages:
         source = path.read_text()
+        if path.name == 'index.html':
+            def add_summary(match):
+                filename, title = match.group(1), match.group(2)
+                slug = re.sub(r'^\d{4}-\d{2}-\d{2}-|\.html$', '', filename)
+                summary = summaries.get(slug)
+                if summary is None:
+                    article = (ROOT / filename).read_text()
+                    paragraphs = re.findall(r'<p\b[^>]*>(.*?)</p>', article, re.S)
+                    body = [p for p in paragraphs if '<time' not in p and 'read-time' not in p]
+                    summary = excerpt(body[0]) if body else ''
+                return f'<li><a href="/{filename}">{title}</a><p class="essay-summary">{html.escape(summary)}</p></li>'
+            def update_latest(match):
+                return re.sub(r'<li><a href="/([^"/]+\.html)">(.*?)</a>(?:<p[^>]*>.*?</p>)?</li>', add_summary, match.group(0), flags=re.S)
+            source = re.sub(r'<section id="latest">.*?</section>', update_latest, source, flags=re.S)
         title = plain(re.search(r'<title>(.*?)</title>', source, re.S | re.I)[1])
         paragraphs = re.findall(r'<p\b[^>]*>(.*?)</p>', source, re.S | re.I)
         body = [p for p in paragraphs if '<time' not in p and 'read-time' not in p]

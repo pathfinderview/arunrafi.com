@@ -16,7 +16,7 @@ Python 3 and Git are required, alongside Bash. GitHub Actions provides them. Aut
 
 Run `python3 scripts/enrich_site.py` after changing page content. It updates mobile viewport metadata, descriptions, canonical URLs, sharing metadata, related essays, follow links, robots.txt, and sitemap.xml. It leaves essay bodies untouched. Add a new essay's slug to a relevant `GROUPS` list for hand-picked related reading; unlisted posts receive two starting recommendations.
 
-Homepage selections and descriptions live in index.html. Shared reading styles live in style.css. The theme switch works on pages using script.js. Standalone interactive tools retain their own designs.
+Homepage starting selections live in index.html. The short lines beneath the full essay list live in data/essay-summaries.json, keyed by URL slug. Add a concise line for each new essay before publishing; unlisted essays use a short opening excerpt as a fallback. Shared reading styles live in style.css. The theme switch works on pages using script.js. Standalone interactive tools retain their own designs.
 
 ## Following
 

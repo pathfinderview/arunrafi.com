@@ -18,7 +18,7 @@ Uses the existing outer `experiments/teardown` toolkit. Set `TEARDOWN_DIR` to ov
 
 `model.js` uses kilometres. Orbital positions are calculated by rotating a circular orbit plane. Observer parallax uses a point on a spherical Earth. Apparent radii are `asin(radius / observer distance)`; angular separation and circular-disc intersection determine coverage and eclipse type.
 
-The close 3D view compresses Moon–Earth separation while preserving their relative radii and transverse shadow displacement. The illustrative cone is stretched accordingly. The globe shader computes local occultation using physical positions for each surface point. True distance uses one physical scale for sizes and orbit. Earth-sized rings help convey the empty space. The Sun is offscreen.
+The close 3D view includes a deliberately reduced, procedurally shaded Sun and shortens the gaps. Earth and Moon preserve their relative radii and transverse shadow displacement. The illustrative cone is stretched accordingly. The globe shader computes local occultation using physical positions for each surface point. True distance uses one physical scale for sizes and orbit. Earth-sized rings help convey the empty space. The Sun is offscreen only in True distance; the close view shows all three bodies.
 
 The ground view uses the same model as the numerical readouts and Earth shader. The corona and sky brightness are illustrative. This is not an ephemeris, real location map, or eclipse predictor. The orbit is circular at the user-selected distance; atmosphere, terrain, solar limb darkening and Earth obliquity are omitted. Animation duration is illustrative, and nothing autoplays.
 

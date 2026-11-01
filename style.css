@@ -12,7 +12,7 @@ html[data-theme="light"]{
   --fg-bright:#1a1714;
   --link:#0f5fb2;
   --hr:#e8e2d4;
-  --muted:#857d6f;
+  --muted:#71695e;
 }
 body{
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
@@ -56,3 +56,14 @@ blockquote{margin:1.5rem 0;padding:.25rem 0 .25rem 1.25rem;border-left:2px solid
   line-height:1;
 }
 .theme-toggle:hover{color:var(--fg);border-color:var(--muted)}
+
+/* Keep reading and navigation comfortable on small screens. */
+body{overflow-wrap:break-word}
+a:focus-visible,button:focus-visible{outline:2px solid var(--link);outline-offset:4px}
+.start-here{margin:2rem 0 2.5rem}
+.start-here li{margin:1rem 0}
+.start-here li p,article ul li p{margin:.15rem 0 .8rem;color:var(--muted);font-size:.95rem}
+.related-reading{margin-top:2.5rem;border-top:1px solid var(--hr);padding-top:1.25rem}
+.related-reading li{margin:.5rem 0}
+.follow-note{margin-top:1.5rem;color:var(--muted);font-size:.95rem}
+@media(max-width:600px){body{margin:1.5rem auto;padding-top:2.5rem}.theme-toggle{top:.65rem;right:.75rem;min-height:36px}nav a,footer a{display:inline-block;padding:.25rem 0}}

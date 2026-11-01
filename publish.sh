@@ -173,7 +173,8 @@ mv "$REPO_DIR/index.html.tmp" "$REPO_DIR/index.html"
 
 echo "Published: $html_file"
 
-bash "$REPO_DIR/generate_feed.sh" 2>/dev/null || true
+python3 "$REPO_DIR/scripts/enrich_site.py"
+bash "$REPO_DIR/generate_feed.sh"
 
 published_name="$(basename "$filepath")"
 published_name="${published_name#.processing-}"

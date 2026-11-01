@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {C,coverage,moonPosition,sky} from './model.js';
+const total={phase:0,distance:360000,tilt:5.145,node:0,site:0};
+test('aligned near Moon gives totality; distant Moon leaves an annular ring',()=>{assert.equal(sky(total).type,'Total eclipse');assert.equal(sky(total).obscured,1);const ring=sky({...total,distance:406700});assert.equal(ring.type,'Annular eclipse');assert.ok(ring.obscured>.85&&ring.obscured<.95);});
+test('tilt makes new moon miss, flattening restores the eclipse',()=>{const miss={...total,node:90};assert.equal(sky(miss).type,'No eclipse');assert.equal(sky({...miss,tilt:0}).type,'Total eclipse');});
+test('observer parallax changes a total eclipse into partial or no eclipse',()=>{assert.equal(sky({...total,site:10}).type,'Partial eclipse');assert.equal(sky({...total,site:60}).type,'No eclipse');});
+test('all orbital positions preserve the chosen physical distance',()=>{for(const node of [0,15,50,90,180])for(const phase of [-180,-1,0,1,90,180]){const p=moonPosition({...total,node,phase});assert.ok(Math.abs(Math.hypot(...p)-360000)<1e-7);}});
+test('disc overlap handles separation, containment, equality and tangency',()=>{assert.equal(coverage(1,1,0),1);assert.equal(coverage(1,.5,0),.25);assert.equal(coverage(1,1,2),0);assert.equal(coverage(1,1,3),0);assert.ok(Math.abs(coverage(1,1,1)-(.6666666666666666-Math.sqrt(3)/(2*Math.PI)))<1e-12);for(let i=0;i<100;i++)assert.ok(coverage(1,.9,i*.03)>=0&&coverage(1,.9,i*.03)<=1);});
+test('angular diameters match small-angle checks at the observer',()=>{const s=sky(total);assert.ok(Math.abs(s.moonRadius*2-2*C.moon/(360000-C.earth))<1e-7);assert.ok(Math.abs(s.sunRadius*2-2*C.sun/(C.au-C.earth))<1e-7);});

@@ -20,12 +20,13 @@ GROUPS = [
     ['burn-the-straight-line', 'what-iq-actually-measures-now', 'why-school-loses-to-a-patient-tutor', 'the-next-365-days', 'pareto-says', 'millennial-bug', 'vertical-writing', 'blender-spill', 'sweat-bass-sunburn-eye-contact'],
 ]
 DESCRIPTIONS = {
+    'solar-eclipse.html': 'Move the Moon, follow its shadow across Earth, and see a solar eclipse from the ground. A linked 3D model with simple lessons.',
     'mechanical-watch.html': 'Learn how a watch works without a battery. Explore a moving 3D model together, with simple explanations, things to try and questions to discuss.',
     'subscribe.html': 'Receive new essays by Arun Rafi through email or your preferred RSS reader.',
     'index.html': 'Short essays by Arun Rafi on learning, work, technology, and how we live.',
     'about.html': 'About Arun Rafi and the questions behind these essays on learning, work, technology, and life.',
     'now.html': 'What Arun Rafi is writing and thinking about now.',
-    'tools.html': 'Interactive experiments by Arun Rafi: explore a mechanical watch, baby names, ELIZA, tokens, and long-context attention.',
+    'tools.html': 'Interactive experiments by Arun Rafi: explore a solar eclipse, a mechanical watch, baby names, ELIZA, tokens, and long-context attention.',
     'baby-names.html': 'Explore how the popularity of baby names changes over time.',
     'eliza.html': 'Try a recreation of ELIZA, an early chatbot, and explore the history behind it.',
     'token-calculator.html': 'Explore how text is split into tokens and how conversation length affects token use.',

@@ -11,3 +11,5 @@ Use the writing site's quiet layout: a short heading, generous space, restrained
 - Resizing either area must resize and reframe the model. Test long answers, open disclosures, desktop, phone and diagram-only mode.
 
 The mechanical watch in `watch/` is the first implementation of this format.
+
+The solar eclipse in `eclipse/` adds linked space and ground perspectives. Its Explore and Story tabs share a side panel, keeping controls beside the scene on desktop. Night colours suit the astronomical subject. Always state which views compress distances, and keep physical calculations separate from display scaling.

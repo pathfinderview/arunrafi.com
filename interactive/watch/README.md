@@ -29,3 +29,7 @@ One model-time coordinate drives poses and readouts. The chosen balance frequenc
 This is an educational kinematic model. Tooth profiles, pallet contact, spring deformation and release timing are simplified. It does not solve forces, friction, lubrication, accuracy or real power-reserve behaviour. Source mechanism reference: https://www.grand-seiko.com/us-en/collections/movement/mechanical. Toolkit: https://github.com/elvarofficial/teardown (MIT). Three.js and font licences are embedded in the distributed HTML.
 
 Run `node --test interactive/watch/model.test.mjs` to check frequency, train periods, pitch distances and reserve exhaustion. Browser verification covers all six lesson actions, answers, Back/Next, restart, and mobile navigation. Updated 2 November 2026.
+
+## Reading and diagram layout
+
+The shared format is described in ../README.md. The model has no text or controls over its canvas. All lesson text, part descriptions, numbers, sources and the part picker share a separate scrollable reading panel. Camera options and playback controls sit outside the diagram. Hide lesson expands the viewing area; Learn together restores the same step. On small screens, the reading follows the model, with no fixed toolbar covering it. A ResizeObserver resizes the renderer when the panel or More controls changes the available space.

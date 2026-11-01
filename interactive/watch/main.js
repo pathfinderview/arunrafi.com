@@ -70,6 +70,32 @@ const ui=document.createElement('main');ui.className='shell';ui.innerHTML=`
  <button class="tour active" id="tour">Learn together</button>
 </footer>`;
 document.getElementById('app').appendChild(ui);
+// Keep the model and the reading in separate spaces. Nothing is laid over the canvas.
+const layout=ui.querySelector('.layout'),intro=ui.querySelector('.intro'),reader=ui.querySelector('.instruments');
+reader.id='reading-panel';
+const heading=document.createElement('section');heading.className='page-heading';
+const title=intro.querySelector('h1');title.innerHTML='A second, taken apart.';
+heading.append(title,intro.querySelector('.lead'));ui.querySelector('.mast').after(heading);
+const machineArea=document.createElement('section');machineArea.className='machine';machineArea.setAttribute('aria-label','Watch diagram and controls');
+const stage=ui.querySelector('.stage');layout.insertBefore(machineArea,stage);
+const viewbar=stage.querySelector('.viewbar');
+const focusButton=document.createElement('button');focusButton.id='focus-toggle';focusButton.className='focus-toggle';focusButton.textContent='Hide lesson';focusButton.setAttribute('aria-expanded','true');focusButton.setAttribute('aria-controls','reading-panel');
+const viewRow=document.createElement('div');viewRow.className='view-row';viewRow.append(viewbar,focusButton);
+const annotation=stage.querySelector('.annotation');reader.querySelector('.lesson-panel').after(annotation);
+const hint=stage.querySelector('.stage-caption');
+const toolbar=ui.querySelector('.controls');
+const more=document.createElement('details');more.className='more-controls';
+const summary=document.createElement('summary');summary.textContent='More controls';
+const options=document.createElement('div');options.className='extra-controls';
+for(const id of ['bridges','explode','xray','dial-toggle','wind'])options.append(id==='bridges'?viewbar.querySelector('#bridges'):ui.querySelector('#'+id));
+more.append(summary,options);toolbar.querySelector('.divider').remove();toolbar.insertBefore(more,toolbar.querySelector('#tour'));
+machineArea.append(viewRow,stage,hint,toolbar);
+const parts=document.createElement('details');parts.className='explore-parts';
+const partsSummary=document.createElement('summary');partsSummary.textContent='Explore the parts';parts.append(partsSummary,intro.querySelector('.part-section'));
+reader.append(parts,intro.querySelector('.readout'));intro.remove();
+function showReading(show){ui.classList.toggle('reading-hidden',!show);reader.hidden=!show;focusButton.textContent=show?'Hide lesson':'Show lesson';focusButton.setAttribute('aria-expanded',String(show));}
+focusButton.onclick=()=>showReading(reader.hidden);
+
 const $=id=>document.getElementById(id);
 const partButtons=[...document.querySelectorAll('[data-part]')],viewButtons=[...document.querySelectorAll('[data-view]')];
 const controls={part:'all',view:'hero',explode:0,xray:false,dial:false,bridges:false};
@@ -125,7 +151,7 @@ $('lesson-try').onclick=()=>{
  $('lesson-observation').textContent=messages[action];
 };
 $('lesson-look').onclick=()=>{const stage=document.querySelector('.stage');stage.scrollIntoView({behavior:reduced?'instant':'smooth',block:'center'});stage.focus({preventScroll:true});$('tour').textContent='Back to lesson';};
-$('tour').onclick=()=>{$('tour').textContent='Learn together';$('lesson-title').scrollIntoView({behavior:reduced?'instant':'smooth',block:'nearest'});$('lesson-title').focus({preventScroll:true});};
+$('tour').onclick=()=>{showReading(true);$('tour').textContent='Learn together';$('lesson-title').scrollIntoView({behavior:reduced?'instant':'smooth',block:'nearest'});$('lesson-title').focus({preventScroll:true});};
 addEventListener('keydown',e=>{if(e.target.matches('input,button,a,summary'))return;if(e.code==='Space'){e.preventDefault();$('play').click();}if(e.key==='e')$('explode').click();if(e.key==='x')$('xray').click();});
 showLesson(0);showSpeed();
 
@@ -143,11 +169,12 @@ runSim({duration:86400,theme:'light',accent:'#b66a3c',hud:{enabled:false,title:'
  const orbit=new OrbitControls(camera,canvas);orbit.enableDamping=true;orbit.dampingFactor=.075;orbit.minDistance=15;orbit.maxDistance=85;orbit.minPolarAngle=.05;orbit.maxPolarAngle=Math.PI*.88;orbit.target.set(0,0,1.3);orbit.update();
  orbit.addEventListener('start',()=>{touch();cameraRequest=null;cameraTween=null;});
  let cameraTween=null,explosion=0,previous=0,frame=0,viewState='hero',lastExploded=false;
- const views={hero:{position:[17,-23,40],target:[0,0,1.3]},top:{position:[0,-.01,43],target:[0,0,1.2]},detail:{position:[1,-14,23],target:[-1.1,-3.8,4.3]}};
+ const views={hero:{position:[18,-25,45],target:[0,0,1.3]},top:{position:[0,-.01,43],target:[0,0,1.2]},detail:{position:[1,-14,23],target:[-1.1,-3.8,4.3]}};
  const ray=new T.Raycaster(),pointer=new T.Vector2();let down;
  canvas.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];});
  canvas.addEventListener('pointerup',e=>{if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>6)return;const r=canvas.getBoundingClientRect();pointer.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1);ray.setFromCamera(pointer,camera);const hit=ray.intersectObjects(machine.parts).find(h=>h.object.visible&&h.object.material.opacity>.4&&h.object.userData.part!=='case'&&h.object.userData.part!=='dial'&&h.object.userData.part!=='bridges');if(hit){touch();choosePart(hit.object.userData.part);}});
  function resize(){const r=stage.getBoundingClientRect();renderer.setSize(r.width,r.height,false);camera.aspect=r.width/r.height;camera.updateProjectionMatrix();cameraRequest=controls.view;}
+ const stageObserver=new ResizeObserver(resize);stageObserver.observe(stage);
  const chart=$('wave'),ctx=chart.getContext('2d');
  function chartDraw(s){const r=chart.getBoundingClientRect();if(r.width<1||r.height<1)return;const d=Math.min(devicePixelRatio,2);if(chart.width!==Math.round(r.width*d)||chart.height!==Math.round(r.height*d)){chart.width=Math.round(r.width*d);chart.height=Math.round(r.height*d);}ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.strokeStyle='#deddd4';ctx.lineWidth=.7;for(const f of[.15,.5,.85]){ctx.beginPath();ctx.moveTo(0,r.height*f);ctx.lineTo(r.width,r.height*f);ctx.stroke();}ctx.strokeStyle='#9b6847';ctx.lineWidth=1.4;ctx.beginPath();for(let x=0;x<=r.width;x++){const time=s.seconds-(1-x/r.width)*.75;const y=r.height/2-Math.sin(time*SPEC.hz*TAU)*r.height*.34;if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();const y=r.height/2-Math.sin(s.seconds*SPEC.hz*TAU)*r.height*.34;ctx.fillStyle='#b66a3c';ctx.beginPath();ctx.arc(r.width-2,y,3,0,TAU);ctx.fill();}
  function instruments(s){$('angle').textContent=Math.round(s.balanceAngle*180/Math.PI)+'°';$('beats').textContent=s.beats.toLocaleString('en');$('elapsed').textContent=s.seconds.toFixed(2);$('escape-angle').textContent=Math.round((s.escapeAngle*180/Math.PI)%360)+'°';$('reserve').textContent=s.reserve.toFixed(1)+' h';$('reserve-bar').style.width=(s.reserve/40*100)+'%';$('phase').textContent=!s.running?'The spring needs winding':s.impulse?'Let go · one small step':'Hold · the wheel swings';$('phase-dot').style.opacity=s.impulse?'1':'.3';

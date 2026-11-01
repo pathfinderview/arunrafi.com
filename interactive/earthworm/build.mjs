@@ -12,7 +12,7 @@ const file=path.join(dist,'earthworm.html');
 const built=path.join(dist,`${path.basename(dir)}.html`);
 let html=fs.readFileSync(built,'utf8').replace(/<title>[^<]*<\/title>/,'<title>A life beneath our feet — Arun Rafi</title>');
 html=html.replace('<div id="app"></div>','<div id="app"></div><noscript><p>This earthworm needs JavaScript to move. Please turn it on, or <a href="https://arunrafi.com/tools.html">explore the other tools</a>.</p></noscript>');
-html=html.replace('</head>',`<meta name="description" content="Explore how an earthworm moves, eats and breathes. A moving 3D model with simple lessons to share.">
+html=html.replace('</head>',`<meta name="description" content="Explore a 3D earthworm and four hands-on experiments: squeeze its muscles, test its grip, trace oxygen and follow food. Simple lessons to share.">
 <meta property="og:title" content="A life beneath our feet — Arun Rafi">
 <meta property="og:description" content="No legs. No lungs. No bones. Look inside an earthworm and learn together.">
 <meta property="og:type" content="website">

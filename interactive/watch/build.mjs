@@ -9,7 +9,8 @@ const result=spawnSync(process.execPath,[path.join(kit,'sims/build.mjs'),dir],{c
 if(result.status!==0)process.exit(result.status||1);
 const dist=path.join(root,'teardown-out/dist');
 const file=path.join(dist,'mechanical-watch.html');
-let html=fs.readFileSync(file,'utf8').replace('<title>mechanical-watch</title>','<title>A second, taken apart — Arun Rafi</title>');
+const built=path.join(dist,`${path.basename(dir)}.html`);
+let html=fs.readFileSync(built,'utf8').replace(/<title>[^<]*<\/title>/,'<title>A second, taken apart — Arun Rafi</title>');
 html=html.replace('<div id="app"></div>','<div id="app"></div><noscript><p>This watch needs JavaScript to move. Please turn it on, or <a href="https://arunrafi.com/tools.html">explore the other tools</a>.</p></noscript>');
 html=html.replace('</head>',`<meta name="description" content="Learn how a watch works without a battery. Explore a moving 3D model together, with plain English, things to try and questions to discuss.">
 <meta property="og:title" content="A second, taken apart — Arun Rafi">

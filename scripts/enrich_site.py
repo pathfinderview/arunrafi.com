@@ -112,7 +112,7 @@ def enrich():
 <!-- follow:end -->
 '''
             source = source.replace('<footer>', note + '<footer>', 1)
-        for asset in ['style.css', 'script.js']:
+        for asset in ['style.css', 'script.js', 'tools.css']:
             version = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:10]
             source = re.sub(r'(["\'])/' + re.escape(asset) + r'(?:\?[^"\']*)?\1',
                             '"/' + asset + '?v=' + version + '"', source)

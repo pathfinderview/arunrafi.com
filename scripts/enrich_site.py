@@ -5,6 +5,7 @@ Run after rendering a post. No third-party packages required.
 """
 from pathlib import Path
 import html
+import hashlib
 import re
 import xml.etree.ElementTree as ET
 
@@ -94,6 +95,10 @@ def enrich():
 <!-- follow:end -->
 '''
             source = source.replace('<footer>', note + '<footer>', 1)
+        for asset in ['style.css', 'script.js']:
+            version = hashlib.sha256((ROOT / asset).read_bytes()).hexdigest()[:10]
+            source = re.sub(r'(["\'])/' + re.escape(asset) + r'(?:\?[^"\']*)?\1',
+                            '"/' + asset + '?v=' + version + '"', source)
         path.write_text(source)
     ET.register_namespace('', 'http://www.sitemaps.org/schemas/sitemap/0.9')
     tree = ET.Element('{http://www.sitemaps.org/schemas/sitemap/0.9}urlset')

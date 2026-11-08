@@ -1,3 +1,5 @@
+> **Superseded (8 November 2026).** The live page `mechanical-watch.html` is now a hand-written, self-contained file with 2D diagrams and is edited directly. Do not run `build.mjs` and copy its output over it. This folder is kept only as the source of the earlier 3D version.
+
 # A second, taken apart
 
 A 3D watch lesson for children and grown-ups to explore together. Live at https://arunrafi.com/mechanical-watch.html and listed under Tools.

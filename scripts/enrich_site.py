@@ -21,7 +21,7 @@ GROUPS = [
 ]
 DESCRIPTIONS = {
     'solar-eclipse.html': 'Move the Moon, follow its shadow across Earth, and see a solar eclipse from the ground. A linked 3D model with simple lessons.',
-    'mechanical-watch.html': 'Learn how a watch works without a battery. Explore a moving 3D model together, with simple explanations, things to try and questions to discuss.',
+    'mechanical-watch.html': 'How does a watch keep time with no battery? Wind a spring, turn the wheels, rock the escapement and swing the balance yourself, one part at a time.',
     'subscribe.html': 'Receive new essays by Arun Rafi through email or your preferred RSS reader.',
     'index.html': 'Short essays by Arun Rafi on learning, work, technology, and how we live.',
     'about.html': 'About Arun Rafi and the questions behind these essays on learning, work, technology, and life.',

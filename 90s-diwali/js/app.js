@@ -34,6 +34,9 @@
       Hub.init($('#markers'), m => open(byId[m.id] || { id: m.id, title: m.title, line: m.line, pos: [0, 0, 0], mess: 'scorch' }));
       $('#title').classList.add('ready');
     };
+    // embers drifting up over the title, like the gali on Diwali night
+    const tt = $('#title'), nE = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 22;
+    for (let i = 0; i < nE; i++) { const e = document.createElement('i'); e.className = 'ember'; e.style.cssText = `--x:${(Math.random() * 100).toFixed(1)}%;--d:${(6 + Math.random() * 7).toFixed(1)}s;--dl:${(-Math.random() * 13).toFixed(1)}s;--dx:${(Math.random() * 140 - 70) | 0}px`; tt.appendChild(e); }
     if (window.Map3D) useMap();
     else if (window.Map3D === null) useFlat();
     else { addEventListener('map3d-ready', useMap, { once: true }); addEventListener('map3d-failed', useFlat, { once: true }); setTimeout(() => { if (!map && !flat) useFlat(); }, 14000); }
@@ -129,9 +132,21 @@
     Store.stamp(pt.id, 'did'); Menace.onStamp(m); lastStamped = pt;
     $('#stamp').classList.add('on'); $('#stamp').textContent = '✋ Haan, maine kiya tha!';
     const ink = document.createElement('div'); ink.className = 'thump'; ink.textContent = 'MAINE BHI KIYA!'; document.body.appendChild(ink);
-    Sfx.boom({ vol: .3, size: .25, muffle: .85 }); if (navigator.vibrate) try { navigator.vibrate(40); } catch {}
+    Sfx.thwack({ vol: .55 }); if (navigator.vibrate) try { navigator.vibrate(40); } catch {}
+    const r = $('#stamp').getBoundingClientRect(); petals(r.left + r.width / 2, r.top + r.height / 2);
     setTimeout(() => ink.remove(), 1300); updateCount();
     setTimeout(close, 1500);
+  }
+  // genda petals from the stamp, like the ones that fell off the toran all day
+  function petals(x, y) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const cols = ['#ff9f1c', '#ffc93c', '#ff7a1a', '#ffd23a', '#e8301c', '#ffb347'];
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('i'); p.className = 'petal';
+      const a = Math.random() * Math.PI * 2, d = 90 + Math.random() * 170;
+      p.style.cssText = `--x:${x}px;--y:${y}px;--dx:${(Math.cos(a) * d) | 0}px;--dy:${(Math.sin(a) * d - 130) | 0}px;--r:${(Math.random() * 720 - 360) | 0}deg;--c:${cols[i % cols.length]};--d:${(1.1 + Math.random() * .7).toFixed(2)}s`;
+      document.body.appendChild(p); setTimeout(() => p.remove(), 2000);
+    }
   }
   function again() { const pt = current; if (!pt) return; Stage.stop(); Bubbles.clear(); start(pt); }
   async function close() {

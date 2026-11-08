@@ -20,7 +20,7 @@
     lane:      { name: 'Gali',         plate: 'memory-lane',      vp: 0.45, stage: [0.5, 0.86], zoom: 2.0, focus: [0.5, 0.80], space: 'lane' },
     doorstep:  { name: 'Darwaza',      plate: 'memory-doorstep',  pitchDeg: 50, stage: [0.5, 0.66], zoom: 1.3, focus: [0.5, 0.62], space: 'doorstep' },
     courtyard: { name: 'Aangan',       plate: 'memory-courtyard', pitchDeg: 36, stage: [0.5, 0.70], zoom: 1.35, focus: [0.5, 0.62], space: 'courtyard' },
-    roof:      { name: 'Chhat',        plate: 'memory-roof',      vp: 0.50, stage: [0.5, 0.80], zoom: 1.0, focus: [0.55, 0.55], space: 'roof' },
+    roof:      { name: 'Chhat',        plate: 'memory-roof',      vp: 0.50, stage: [0.5, 0.80], zoom: 1.35, focus: [0.52, 0.63], space: 'roof' },   // close enough to see the bottle go over
     terrace:   { name: 'Chhat ka farsh', plate: 'terrace-floor',  pitchDeg: 55, stage: [0.5, 0.62], zoom: 1.0, focus: [0.5, 0.58], space: 'roof' },
     room:      { name: 'Ghar',         plate: 'walk-room',        vp: 0.44, stage: [0.5, 0.86], zoom: 1.3, focus: [0.5, 0.65], space: 'room' },
     stairs:    { name: 'Seedhiyan',    plate: 'walk-stairs',      vp: 0.42, stage: [0.5, 0.86], zoom: 1.2, focus: [0.5, 0.62], space: 'stairs' },

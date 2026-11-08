@@ -109,12 +109,19 @@
     g.addColorStop(0, `rgba(${rgb.join(',')},${a})`); g.addColorStop(1, `rgba(${rgb.join(',')},0)`);
     ctx.fillStyle = g; ctx.fillRect(q.x - r, q.y - r, r * 2, r * 2); ctx.restore();
   }
-  function drawBottle(api, base, ang, sand) {
+  function drawBottle(api, base, ang, sand, broken = false) {
     const ctx = api.ctx, b = api.project([base[0], 0, base[2]]), t = api.project([base[0], 1.3, base[2]]);
     const h = Math.max(8, (b.y - t.y) / 0.94), w = h * 1000 / 1500, px = Math.sign(ang || 1) * w * 0.2 * Math.min(1, Math.abs(ang) * 4);
     api.shadow([base[0], 0, base[2]], 0.3, 0);
     const im = api.img('green-bottle');
     ctx.save(); ctx.translate(b.x + px, b.y); ctx.rotate(ang);
+    if (broken && ready(im)) {
+      // only the bottom of the bottle is left, lying on its side, with a jagged mouth
+      ctx.globalAlpha = 0.9; ctx.drawImage(im, 0, 900, 1000, 600, -w / 2 - px, -h * 0.375, w, h * 0.4); ctx.globalAlpha = 1;
+      ctx.strokeStyle = 'rgba(225,255,232,.9)'; ctx.lineWidth = Math.max(1, w * 0.05); ctx.beginPath();
+      for (let i = 0; i <= 6; i++) { const x = -px - w * 0.2 + w * 0.4 * i / 6, y = -h * 0.375 + (i % 2 ? -h * 0.03 : h * 0.02); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.restore(); return;
+    }
     if (ready(im)) { ctx.globalAlpha = 0.9; ctx.drawImage(im, -w / 2 - px, -h * 0.975, w, h); ctx.globalAlpha = 1; }
     else {
       ctx.fillStyle = 'rgba(40,110,60,.85)';
@@ -495,9 +502,49 @@
     b.ang += b.w * dt;
     if (Math.abs(b.ang) >= Math.PI / 2) {
       b.ang = Math.sign(b.ang) * Math.PI / 2;
-      if (Math.abs(b.w) > 2) { b.w *= -0.25; api.Sfx.strike('coin', { vol: 0.35, detune: 0.42, pan: api.panOf(s.base) }); }
+      // an empty glass bottle on a concrete chhat: that is the end of it
+      if (s.cfg.pad === 'bottle' && !b.broken && Math.abs(b.w) > 1.6) { breakBottle(s, api); return; }
+      if (Math.abs(b.w) > 2) { b.w *= -0.25; api.Sfx.strike(s.cfg.pad === 'sand' ? 'clay' : 'coin', { vol: 0.35, detune: 0.42, pan: api.panOf(s.base) }); }
       else { b.w = 0; b.landed = true; }
     }
+  }
+  function breakBottle(s, api) {
+    const b = s.bottle; b.broken = true; b.landed = true; b.w = 0; b.fell = true;
+    const side = Math.sign(b.ang) || 1, pan = api.panOf(s.base);
+    const at = [s.base[0] + side * 0.75, 0.08, s.base[2] + rnd(-0.15, 0.15)];
+    api.Sfx.glass({ vol: 0.8, pan });
+    api.shake(2.5);
+    api.light(at, 0.3, [190, 255, 210]);
+    s.glass = [];
+    const n = api.reduced ? 6 : 14;
+    for (let i = 0; i < n; i++) {
+      const sz = rnd(0.08, 0.26);
+      const pts = [[-sz * rnd(.4, 1), 0, -sz * rnd(.3, .9)], [sz * rnd(.4, 1), 0, -sz * rnd(.2, .8)], [sz * rnd(-.5, .5), 0, sz * rnd(.5, 1)]];
+      const a = rnd(0, TAU), sp = rnd(1.5, 7);
+      const body = new Phys.Body({
+        pos: v3.add(at, [rnd(-0.3, 0.3), rnd(0.02, 0.35), rnd(-0.2, 0.2)]), vel: [Math.cos(a) * sp + side * 2, rnd(2, 7), Math.sin(a) * sp],
+        w: [rnd(-12, 12), rnd(-12, 12), rnd(-12, 12)], mass: 0.05, restitution: 0.25, friction: 0.55, contactAngDrag: 5, contactLinDrag: 4, hull: pts,
+        onImpact: (v, c) => { if (v > 2.5) api.Sfx.glass({ vol: Math.min(0.25, v / 40), pan: api.panOf(c), small: true }); },
+      });
+      body.pts = pts; body.tint = pick([[96, 176, 118], [122, 196, 140], [80, 150, 100], [150, 215, 170]]);
+      s.glass.push(body);
+    }
+    wburst(api, s, at, 26, 5, { life: 0.5, color: 'green', gravity: 300 });
+    later(s, 0.5, () => api.say(pick(['Bottle toot gayi! Mummy ko mat batana 🤫', 'Sharbat ki bottle gayi… 🍾', 'Chhat pe kaanch! Chappal pehen ke aana!'])));
+    const glass = s.glass;
+    api.remain((ctx, a) => { if (typeof Stage !== 'undefined' && Stage.run?.s?.glass === glass) return; drawGlass(ctx, a, glass); });
+  }
+  function drawGlass(ctx, a, glass) {
+    ctx.save();
+    for (const g of glass) {
+      const q = g.pts.map(p => a.project(g.toWorld(p)));
+      ctx.beginPath(); ctx.moveTo(q[0].x, q[0].y); ctx.lineTo(q[1].x, q[1].y); ctx.lineTo(q[2].x, q[2].y); ctx.closePath();
+      ctx.fillStyle = `rgba(${g.tint.join(',')},.72)`; ctx.fill();
+      ctx.strokeStyle = 'rgba(230,255,235,.85)'; ctx.lineWidth = 0.8; ctx.stroke();
+      // glass catches the diyas: a glint now and then
+      if (Math.random() < (g.awake ? 0.25 : 0.015)) { const k = q[Math.floor(Math.random() * 3)]; a.glow(k.x, k.y, 3, '#d8ffe4', 0.6); ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.fillRect(k.x - 1, k.y - 1, 2, 2); }
+    }
+    ctx.restore();
   }
 
   function launch(s, api) {
@@ -508,6 +555,10 @@
     const r = newRocket(s.tail0, s.padDir, { burn: cfg.burn, thrust: cfg.thrust, wob: cfg.wob, maxT: cfg.maxT, twin: cfg.twin, spinRate: cfg.spinRate, drag: cfg.drag });
     if (cfg.pad === 'pipe') r.vel = v3.scale(s.padDir, 36);       // spat out of the barrel
     if (cfg.vane) r.vane = cfg.vane;
+    if (cfg.pad === 'bottle') {
+      // the empty sharbat bottle is light: the kick of lift-off sends it straight over
+      s.bottle.w = (Math.random() < 0.5 ? -1 : 1) * cfg.kick * rnd(2.9, 3.5);   // enough to beat the spring's damping and go past the tipping point
+    }
     if (cfg.pad === 'sand') {
       // the kick of lift-off: the heavy bottle rocks... and goes over anyway
       const side = Math.random() < 0.5 ? -1 : 1;
@@ -590,6 +641,7 @@
       return false;
     }
     if (cfg.kick) stepBottle(s, api, dt);
+    if (s.glass) for (const g of s.glass) g.step(dt);
     for (const r of s.rockets) {
       if (r.done) continue;
       // behaviours
@@ -695,7 +747,7 @@
   }
 
   function statFor(s) {
-    const cfg = s.cfg, r = s.rockets[0], peak = r ? r.peak * UNIT_M : 0, secs = s.popT != null && s.liftT != null ? s.popT - s.liftT : 0;
+    const cfg = s.cfg, r = s.rockets[0], peak = r ? Math.max(r.peak, r.pos[1] + Math.max(0, r.vel[1]) ** 2 / (2 * G)) * UNIT_M : 0, secs = s.popT != null && s.liftT != null ? s.popT - s.liftT : 0;
     const head = s.kind === 'dud' ? ' · then just "phut"' : s.kind && KIND_NAME[s.kind] ? ` · ${KIND_NAME[s.kind]}` : '';
     if (cfg.count) return `Popped at ${secs.toFixed(1)} s · "${COUNT.slice(0, Math.max(1, Math.ceil(secs))).join('-')}"${s.kind === 'dud' ? ' · phut' : ''}`;
     if (cfg.boomerang) return isFinite(s.minBack) ? `Came back to ${s.minBack.toFixed(1)} m from us${head}` : `Peak ${peak.toFixed(0)} m${head}`;
@@ -705,7 +757,7 @@
     if (cfg.pad === 'brick') return `Scraped out of the brick · peak ${peak.toFixed(0)} m${head}`;
     if (cfg.homing) return s.balcony ? `Landed ${s.landDist.toFixed(0)} m away, in a balcony` : `Came down ${(s.landDist || 0).toFixed(0)} m away`;
     if (cfg.twin) return `Spun ${Math.round(r.spin / TAU)} times · peak ${peak.toFixed(1)} m · two bursts`;
-    return `Peak ${peak.toFixed(0)} m above our chhat${head}`;
+    return `Peak ${peak.toFixed(0)} m above our chhat${head}${s.bottle.broken ? ' · aur bottle? Toot gayi 🍾' : ''}`;
   }
 
   function skyDraw(s, api) {
@@ -723,7 +775,8 @@
       api.shadow(v3.add(s.base, v3.scale(s.padDir, 2)), 0.5, 0.4);
       api.drawFaces(Mesh.place(s.pipe.faces, alignY(s.padDir), v3.add(s.base, v3.scale(s.padDir, 2))));
     }
-    if (cfg.pad === 'bottle' || cfg.pad === 'sand') drawBottle(api, s.base, s.tilt + s.bottle.ang, cfg.pad === 'sand');
+    if (cfg.pad === 'bottle' || cfg.pad === 'sand') drawBottle(api, s.base, s.tilt + s.bottle.ang, cfg.pad === 'sand', s.bottle.broken);
+    if (s.glass) drawGlass(api.ctx, api, s.glass);
     drawFlare(api, s);
     // the rocket in flight
     if (r && !r.done) {

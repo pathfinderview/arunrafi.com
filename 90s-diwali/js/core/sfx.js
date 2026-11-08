@@ -175,6 +175,43 @@
     };
   }
 
+  // Glass: a sharbat bottle going over on a concrete chhat. One bright splintering crunch, then the
+  // pieces ring and skitter for half a second. small: a single shard landing.
+  function glass({ vol = 0.6, pan = 0, small = false } = {}) {
+    if (!ready()) return;
+    const t = ac.currentTime, bus = ac.createGain(); bus.gain.value = vol; out(bus, { pan, wet: 0.8 });
+    if (!small) {
+      const n = noise(t, 0.14), hp = ac.createBiquadFilter(), g = ac.createGain();
+      hp.type = 'highpass'; hp.frequency.value = 3000; env(g, t, 0.75, 0.001, 0.1);
+      n.connect(hp).connect(g).connect(bus);
+      const n2 = noise(t, 0.06), bp = ac.createBiquadFilter(), g2 = ac.createGain();
+      bp.type = 'bandpass'; bp.frequency.value = 1400; bp.Q.value = 0.8; env(g2, t, 0.5, 0.001, 0.04);
+      n2.connect(bp).connect(g2).connect(bus);
+    }
+    const count = small ? Math.round(rnd(2, 4)) : Math.round(rnd(11, 17));
+    for (let i = 0; i < count; i++) {
+      const at = t + (small ? rnd(0, 0.05) : Math.pow(rnd(0, 1), 1.6) * 0.48);
+      const f = rnd(2600, 9500), o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = f; env(g, at, rnd(0.07, 0.2) * (small ? 0.7 : 1), 0.0008, rnd(0.04, 0.18));
+      o.connect(g).connect(bus); o.start(at); o.stop(at + 0.3);
+      const o2 = ac.createOscillator(), g2 = ac.createGain();
+      o2.frequency.value = f * rnd(1.4, 1.9); env(g2, at, 0.05, 0.0008, rnd(0.03, 0.08));
+      o2.connect(g2).connect(bus); o2.start(at); o2.stop(at + 0.2);
+    }
+  }
+
+  // Rubber stamp on paper on a wooden table: a soft thwack with a little wood under it.
+  function thwack({ vol = 0.5, pan = 0 } = {}) {
+    if (!ready()) return;
+    const t = ac.currentTime;
+    const n = noise(t, 0.1), lp = ac.createBiquadFilter(), g = ac.createGain();
+    lp.type = 'lowpass'; lp.frequency.value = 1600; env(g, t, vol, 0.002, 0.07);
+    n.connect(lp).connect(g); out(g, { pan, wet: 0.5 });
+    const o = ac.createOscillator(), og = ac.createGain();
+    o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(70, t + 0.12);
+    env(og, t, vol * 0.9, 0.002, 0.16); o.connect(og); out(og, { pan, wet: 0.3 }); o.start(t); o.stop(t + 0.3);
+  }
+
   function rustle({ vol = 0.12, pan = 0 } = {}) {
     if (!ready()) return;
     const t = ac.currentTime, n = noise(t, 0.2), hp = ac.createBiquadFilter(), g = ac.createGain();
@@ -202,7 +239,7 @@
   function bus() { if (!ac) return null; return { ac, out, noise: (t, d) => noise(t, d), env, ready: ready() }; }
 
   root.Sfx = {
-    bus, unlock, attach, setSpace, boom, strike, crack, fuse, skid, rustle, whoosh, load, sample, MODES, SPACES,
+    bus, unlock, attach, setSpace, boom, strike, crack, fuse, skid, rustle, whoosh, glass, thwack, load, sample, MODES, SPACES,
     get muted() { return muted; }, set muted(v) { muted = v; if (master) master.gain.value = v ? 0 : 0.85; },
     get running() { return !!ac && ac.state === 'running'; },
   };

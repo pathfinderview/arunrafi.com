@@ -181,5 +181,5 @@
     });
   }
 
-  root.Phys = { UNIT_M, G, v3, M3, Body, Paper, shatter, integrateRotation, chaos: 1.3 };
+  root.Phys = { UNIT_M, G, v3, M3, Body, Paper, shatter, integrateRotation, chaos: 1.45 };
 })(typeof window !== 'undefined' ? window : globalThis);

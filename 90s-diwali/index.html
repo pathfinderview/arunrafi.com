@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>90s Diwali · Sector 8, Faridabad</title>
+<meta name="description" content="Sector 8, Faridabad, Diwali 1997. Every shararat we did with patakhe. Light them, then stamp: maine bhi kiya hai!">
+<meta property="og:title" content="90s Diwali: Maine bhi kiya hai!">
+<meta property="og:description" content="Bomb under Mummy's steel tumbler? Rocket flat on the road? Every Diwali shararat from the 90s. Light them. Stamp the ones you did.">
+<meta property="og:image" content="https://arunrafi.com/90s-diwali/assets/img/og.jpg">
+<meta property="og:url" content="https://arunrafi.com/90s-diwali/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1a0608">
+<link rel="canonical" href="https://arunrafi.com/90s-diwali/">
+<meta name="twitter:title" content="90s Diwali: Maine bhi kiya hai!">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Rozha+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="module" src="js/map/boot.js"></script>
+</head>
+<body>
+<canvas id="map" aria-label="Sector 8 on Diwali night, in 3D"></canvas>
+<canvas id="stage" aria-label="The moment"></canvas>
+<div id="markers" aria-label="Shararatein"></div>
+<div id="toran" aria-hidden="true"></div>
+<div id="side" aria-live="polite"></div>
+<div id="dip" aria-hidden="true"></div>
+
+<header id="top">
+  <div class="logo"><b>PATAKHA</b><i>'97</i></div>
+  <div class="right">
+    <div id="meter" role="status" title="Shararat-o-meter"><b>😇</b><span>Masoom</span><i></i></div>
+    <button id="zoom" aria-label="Poora mohalla dekho">🔭</button>
+    <button id="share" aria-label="Share">📤</button>
+    <button id="sound" aria-label="Sound">🔊</button>
+  </div>
+</header>
+
+<button id="back" aria-label="Wapas gali mein">←</button>
+<button id="light" hidden aria-label="Jalao">🔥<small>Jalao</small></button>
+<div id="done" hidden>
+  <button id="stamp">✋ Maine bhi kiya hai!</button>
+  <button id="again" aria-label="Ek aur baar">↻</button>
+</div>
+
+<section id="title">
+  <div class="t-inner">
+    <p class="place">Sector 8, Faridabad · Diwali 1997</p>
+    <h1>PATAKHA<i>'97</i></h1>
+    <p class="sub">Gali ke chhote shaitaanon ki saari shararatein.<br>Jalao. Bhaago. Aur batao: <b>maine bhi kiya hai!</b></p>
+    <button id="go">Chalo, gali mein! 🧨</button>
+    <p class="fine">Sound on karo. Headphones ho toh aur maza.</p>
+  </div>
+</section>
+
+<script src="js/config.js"></script>
+<script src="js/core/physics.js"></script>
+<script src="js/core/mesh.js"></script>
+<script src="js/core/sfx.js"></script>
+<script src="js/core/registry.js"></script>
+<script src="js/engine/stage.js"></script>
+<script src="js/tricks/tin-launch.js"></script>
+<script src="js/tricks/coconut-shell.js"></script>
+<script src="js/tricks/rocket-flat.js"></script>
+<script src="js/tricks/blast.js"></script>
+<script src="js/tricks/sky.js"></script>
+<script src="js/tricks/throw.js"></script>
+<script src="js/tricks/ladi.js"></script>
+<script src="js/tricks/chakri.js"></script>
+<script src="js/tricks/anaar.js"></script>
+<script src="js/tricks/snake.js"></script>
+<script src="js/tricks/sparkler.js"></script>
+<script src="js/tricks/caps.js"></script>
+<script src="js/tricks/special.js"></script>
+<script src="js/data/moments.js"></script>
+<script src="js/store.js"></script>
+<script src="js/life/director.js"></script>
+<script src="js/ui/bubbles.js"></script>
+<script src="js/ui/menace.js"></script>
+<script src="js/ui/hub.js"></script>
+<script src="js/map/points.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

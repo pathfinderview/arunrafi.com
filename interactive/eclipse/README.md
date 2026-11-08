@@ -1,3 +1,5 @@
+> **Superseded (8 November 2026).** `/solar-eclipse.html` is now a redirect to `/sun-moon-earth.html#solar` (Light, spin and shadow). Do not run `build.mjs` and copy its output over it. This folder and `/assets/eclipse/` are kept only as the source of the earlier 3D version.
+
 # The day the Sun disappears
 
 Canonical source for `/solar-eclipse.html`.

@@ -21,7 +21,6 @@ GROUPS = [
 ]
 DESCRIPTIONS = {
     'sun-moon-earth.html': 'How do the Sun, the Moon and the Earth work? Spin the Earth, move the Moon, fire a cannon into orbit and cast eclipse shadows yourself. Every question a child asks, answered.',
-    'solar-eclipse.html': 'Move the Moon, follow its shadow across Earth, and see a solar eclipse from the ground. A linked 3D model with simple lessons.',
     'mechanical-watch.html': 'How does a watch keep time with no battery? Wind a spring, turn the wheels, rock the escapement and swing the balance yourself, one part at a time.',
     'subscribe.html': 'Receive new essays by Arun Rafi through email or your preferred RSS reader.',
     'index.html': 'Short essays by Arun Rafi on learning, work, technology, and how we live.',
@@ -54,6 +53,8 @@ def enrich():
                 posts[match[1]] = (path.name, plain(heading[1]))
     for path in pages:
         source = path.read_text()
+        if 'http-equiv="refresh"' in source:
+            continue  # redirect stubs keep their own canonical and stay out of the sitemap
         if path.name == 'index.html':
             def add_summary(match):
                 filename, title = match.group(1), match.group(2)
@@ -122,7 +123,7 @@ def enrich():
     ET.register_namespace('', 'http://www.sitemaps.org/schemas/sitemap/0.9')
     tree = ET.Element('{http://www.sitemaps.org/schemas/sitemap/0.9}urlset')
     for path in pages:
-        if path.name == '404.html':
+        if path.name == '404.html' or 'http-equiv="refresh"' in path.read_text():
             continue
         element = ET.SubElement(tree, 'url')
         ET.SubElement(element, 'loc').text = BASE + ('/' if path.name == 'index.html' else '/' + path.name)

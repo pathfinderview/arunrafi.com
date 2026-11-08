@@ -13,3 +13,5 @@ Use the writing site's quiet layout: a short heading, generous space, restrained
 The mechanical watch in `watch/` is the first implementation of this format.
 
 The solar eclipse in `eclipse/` adds linked space and ground perspectives. Its Explore and Story tabs share a side panel, keeping controls beside the scene on desktop. Night colours suit the astronomical subject. Always state which views compress distances, and keep physical calculations separate from display scaling.
+
+`sun-moon-earth.html` (Light, spin and shadow) follows the hand-written format of the current watch page. It is one self-contained file with 2D SVG figures, edited directly; there is no build step. It covers light, day and night, size and distance, orbits, seasons, Moon phases, both kinds of eclipse and eclipse seasons. It supersedes the 3D eclipse page in Tools, but `solar-eclipse.html` stays live and is linked from chapter 7.

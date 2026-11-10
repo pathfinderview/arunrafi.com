@@ -60,9 +60,13 @@ p{margin:0 0 1em}
 .dek{font-size:1.22rem;color:var(--soft);line-height:1.5;max-width:30rem}
 .hero{padding:30px 0 0;text-align:center}
 .hero .dek{margin:0 auto}
-.stack-wrap{position:relative;max-width:min(680px,96vw);margin:6px auto 0;aspect-ratio:820/760;perspective:1500px;touch-action:pan-y;cursor:crosshair}
+.stack-wrap{position:relative;max-width:min(680px,96vw);margin:6px auto 0;aspect-ratio:820/760;perspective:1500px;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none}
+.stack-wrap.grabbing{cursor:grabbing}
+.hero-hint{text-align:center;margin:8px auto 0;font:12px/1.3 var(--sans);color:var(--muted)}
+.hero-hint button{font:inherit;color:var(--muted);background:none;border:1px solid var(--rule2);border-radius:99px;padding:3px 10px;margin-left:6px;cursor:pointer}
+.hero-hint button:hover{color:var(--ink)}
 .stack{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
-.stack svg.layer{position:absolute;inset:0;width:100%;height:100%;overflow:visible;will-change:transform;backface-visibility:hidden}
+.stack svg.layer{position:absolute;inset:0;width:100%;height:100%;overflow:visible;will-change:transform;backface-visibility:visible}
 .hero-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin:0 auto;font:13px/1 var(--sans);color:var(--muted)}
 .hero-controls input{width:min(280px,56vw);accent-color:var(--amber)}
 .specs{display:grid;grid-template-columns:repeat(4,1fr);max-width:44rem;margin:34px auto 0;padding:0 20px;font:12px/1.4 var(--mono);color:var(--muted);text-align:center}
@@ -297,6 +301,7 @@ svg.bp .steel-o{stroke:var(--ink)!important;stroke-width:1!important}
 </header>
 <div class="stack-wrap" id="stackwrap"><div class="stack" id="stack"></div></div>
 <div class="hero-controls">Assembled <input type="range" id="explode" min="0" max="1" step="0.001" value="0" aria-label="Take the watch apart"> Apart</div>
+<p class="hero-hint">Drag the watch to turn it all the way round <button type="button" id="resetview">Reset view</button></p>
 <div class="specs">
   <div><b>28,800</b>ticks / hour</div>
   <div><b>4 Hz</b>balance</div>
@@ -906,23 +911,32 @@ function buildMovement(L,opt){opt=opt||{};const {m,arb,pos,T,Re,Rb,dirE,PR,bar,t
   const mv=buildMovement({plate:layers[0],train:layers[1],bridges:layers[2],balance:layers[3],dial:layers[4],hands:layers[5],crystal:layers[6]},{dial:true});
   mv.setTime(new Date());
   const labels=layers.map((s,i)=>{const g=G(s,{opacity:0});const y=300-i*80;S('path',{d:`M${MV.PR+30} ${y}L${MV.PR+56} ${y}`,class:'layer-lead'},g);const t=S('text',{x:MV.PR+62,y:y+5,class:'layer-label strong'},g);t.textContent=names[i];return g;});
-  const st={rx:0,ry:0,e:0,te:0,hover:false,px:0,py:0,touched:false};
+  const st={rx:0,ry:0,e:0,te:0,hover:false,px:0,py:0,touched:false,yaw:0,pitch:0,vy:0,vp:0,drag:null,user:false};
   const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   function layout(){const e=st.e;
     for(let i=0;i<7;i++){layers[i].style.transform=`translateZ(${((i-3)*(2+68*e)).toFixed(1)}px)`;labels[i].setAttribute('opacity',clamp((e-.15)/.3,0,1));}
-    const brx=st.rx+42*e,bry=st.ry-14*e;stack.style.transform=`rotateX(${brx.toFixed(2)}deg) rotateY(${bry.toFixed(2)}deg)`;
+    const bp=38*e;st.pitch=clamp(st.pitch,-86-bp,86-bp);const brx=clamp(bp+st.pitch+st.rx,-88,88),bry=-18*e+st.yaw+st.ry;stack.style.transform=`rotateX(${brx.toFixed(2)}deg) rotateY(${bry.toFixed(2)}deg)`;
     setLightForTilt(brx*D,bry*D);
     const k=8+61*e,dx=-Light.local[0]*k,dy=-Light.local[1]*k;
     for(const s of[mv.shTrain,mv.shBridges,mv.shCock])s.setAttribute('transform',`translate(${n2(dx)} ${n2(dy)})`);
     mv.shDx=dx*.5;mv.shDy=dy*.5;}
-  wrap.addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;const r=wrap.getBoundingClientRect();st.px=(e.clientX-r.left)/r.width*2-1;st.py=(e.clientY-r.top)/r.height*2-1;st.hover=true;});
+  wrap.addEventListener('pointerdown',e=>{if(e.button!==0)return;st.drag={x:e.clientX,y:e.clientY};st.user=true;st.reset=false;st.vy=st.vp=0;wrap.classList.add('grabbing');try{wrap.setPointerCapture(e.pointerId)}catch(_){}});
+  const endDrag=()=>{st.drag=null;wrap.classList.remove('grabbing');};
+  wrap.addEventListener('pointerup',endDrag);wrap.addEventListener('pointercancel',endDrag);
+  wrap.addEventListener('pointermove',e=>{if(!st.drag)return;const dx=e.clientX-st.drag.x,dy=e.clientY-st.drag.y;st.drag.x=e.clientX;st.drag.y=e.clientY;st.yaw+=dx*.45;st.pitch-=dy*.45;st.vy=dx*.45;st.vp=-dy*.45;st.drag.t=performance.now();});
+  const resetView=()=>{st.user=false;st.vy=st.vp=0;st.reset=true;};
+  wrap.addEventListener('dblclick',resetView);$('#resetview').addEventListener('click',resetView);
+  wrap.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||st.drag)return;const r=wrap.getBoundingClientRect();st.px=(e.clientX-r.left)/r.width*2-1;st.py=(e.clientY-r.top)/r.height*2-1;st.hover=true;});
   wrap.addEventListener('pointerleave',()=>st.hover=false);
   slider.addEventListener('input',()=>{st.te=+slider.value;st.touched=true;});
   const t0=performance.now();
   addLoop(wrap,(dt,now)=>{const T=(now-t0)/1000;
     if(!st.touched){st.te=T>1.2&&T<6.4?Math.sin((T-1.2)/5.2*Math.PI)*.62:0;slider.value=st.te.toFixed(3);}
     st.e=lerp(st.e,st.te,1-Math.exp(-dt*5));
-    let tx=0,ty=0;if(st.hover){tx=-st.py*11;ty=st.px*11;}else if(!reduce){tx=Math.sin(T*.45)*4;ty=Math.cos(T*.37)*5;}
+    if(!st.drag&&(st.vy||st.vp)){const f=Math.min(dt*60,3);st.yaw+=st.vy*f;st.pitch+=st.vp*f;const d=Math.exp(-dt*3.5);st.vy*=d;st.vp*=d;if(Math.abs(st.vy)+Math.abs(st.vp)<.02)st.vy=st.vp=0;}
+    if(st.drag&&performance.now()-(st.drag.t||0)>80){st.vy=st.vp=0;}
+    if(st.reset){const y0=Math.round(st.yaw/360)*360,k=1-Math.exp(-dt*6);st.yaw=lerp(st.yaw,y0,k);st.pitch=lerp(st.pitch,0,k);if(Math.abs(st.yaw-y0)<.05&&Math.abs(st.pitch)<.05){st.yaw=0;st.pitch=0;st.reset=false;}}
+    let tx=0,ty=0;if(st.drag||st.user){}else if(st.hover){tx=-st.py*8;ty=st.px*8;}else if(!reduce){tx=Math.sin(T*.45)*4;ty=Math.cos(T*.37)*5;}
     st.rx=lerp(st.rx,tx,1-Math.exp(-dt*5));st.ry=lerp(st.ry,ty,1-Math.exp(-dt*5));
     layout();mv.update(T);});
   layout();mv.update(0);

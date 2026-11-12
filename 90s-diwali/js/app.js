@@ -5,7 +5,7 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const M = Object.fromEntries(MOMENTS.map(m => [m.id, m]));
-  let map = null, current = null, hints = [], flat = false;
+  let map = null, current = null, hints = [], flat = false, soundState = () => {};
   const PTS = window.POINTS.filter(p => M[p.id] && DiwaliTricks.binding(p.id))
     .map(p => ({ ...p, title: M[p.id].title, line: M[p.id].line, icon: Hub.iconFor(M[p.id]) }));
   const byId = Object.fromEntries(PTS.map(p => [p.id, p]));
@@ -53,7 +53,7 @@
       Stage.view('roof', { zoom: 2.6, focus: [0.27, 0.72], dur: 1.2 }); await wait(1050);
       Stage.goPlace('lane'); Stage.view('lane', { zoom: 1, focus: [0.42, 0.6], dur: 1.2 }); Hub.show();
     }
-    document.body.classList.add('in-hub'); updateCount();
+    document.body.classList.add('in-hub'); updateCount(); soundState();
     hints.push(setTimeout(() => Bubbles.say('Scroll ya upar-neeche swipe karo: gali mein chalo 🚶', { side: 'right', kind: 'hint', ttl: 4800 }), 600));
     hints.push(setTimeout(() => Bubbles.say('Side mein drag karo: idhar-udhar dekho. Chamakti cheez pe tap karo ✨', { side: 'left', kind: 'hint', ttl: 5200 }), 2600));
     const m = location.hash.match(/#m\/(\d+)/); if (m && byId[+m[1]]) setTimeout(() => open(byId[+m[1]]), 800);
@@ -185,7 +185,21 @@
   function wire() {
     $('#light').onclick = lightIt; $('#stamp').onclick = stamp; $('#again').onclick = again; $('#back').onclick = close;
     $('#zoom').onclick = zoomToggle; $('#share').onclick = share;
-    $('#sound').onclick = () => { Sfx.unlock(); Sfx.muted = !Sfx.muted; $('#sound').textContent = Sfx.muted ? '🔇' : '🔊'; };
+    // the button shows what you'd actually hear: 🔊 playing, 🔇 you muted it, 🔈 asleep (a tap wakes it, never mutes it)
+    const soundIcon = soundState = () => {
+      const b = $('#sound'), st = Sfx.state;
+      b.textContent = st === 'off' ? '🔇' : st === 'on' ? '🔊' : '🔈';
+      b.classList.toggle('asleep', st === 'asleep' && (document.body.classList.contains('in-hub') || !!current));
+      b.setAttribute('aria-label', st === 'off' ? 'Sound chalu karo' : st === 'on' ? 'Sound band karo' : 'Sound jagao');
+    };
+    Sfx.onchange(soundIcon);
+    $('#sound').onclick = () => {
+      if (Sfx.muted) { Sfx.muted = false; Sfx.unlock(); Sfx.crack({ vol: .3, pieces: 1 }); }
+      else if (Sfx.state !== 'on') { Sfx.unlock(); Sfx.crack({ vol: .3, pieces: 1 }); }
+      else Sfx.muted = true;
+      soundIcon();
+    };
+    soundIcon();
     addEventListener('keydown', e => { if (e.key === 'Escape' && current) close(); if ((e.key === ' ' || e.key === 'Enter') && !$('#light').hidden && current) { e.preventDefault(); lightIt(); } });
   }
 

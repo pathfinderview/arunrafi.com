@@ -217,3 +217,24 @@ body.has-map .mk.done.near { opacity: .9; }
 .petal { position: fixed; z-index: 61; left: var(--x); top: var(--y); width: 11px; height: 15px; margin: -7px 0 0 -5px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; background: var(--c, #ff9f1c); box-shadow: inset -2px -2px 0 rgba(0, 0, 0, .18); pointer-events: none; animation: petal var(--d, 1.4s) cubic-bezier(.15, .7, .3, 1) forwards; }
 @keyframes petal { 0% { transform: translate(0, 0) rotate(0) scale(1); opacity: 1; } 70% { opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)) scale(.55); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { #title .ember, .petal { display: none; } }
+
+/* ---------- phones: every tap lands, no double-tap zoom, sound that tells the truth ---------- */
+html, body, button { touch-action: manipulation; }
+#markers .mk, #title, #top { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+body.has-map.touch .mk, body.has-map.touch .mk.near, body.has-map.touch .mk.dot { width: 48px; height: 48px; }
+body.has-map.touch .mk::before { inset: 17px; scale: var(--s, 1); }
+body.has-map.touch .mk.near::before { inset: 7px; }
+body.has-map.touch .mk.dot::before { inset: 23px; }
+body.has-map.touch .mk::after { inset: 11px; scale: var(--s, 1); }
+body.has-map.touch .mk.near::after { inset: 6px; }
+body.has-map.touch .mk.dot::after { inset: 17px; }
+body.has-map.touch .mk .em { scale: var(--s, 1); }
+body.has-map.touch .mk.near { z-index: 2; }
+body.has-map.touch .mk.near .tag { bottom: calc(24px + 22px * var(--s, 1)); max-width: min(220px, 46vw); font-size: 14px; }
+@media (pointer: coarse) {
+  #zoom, #share, #sound { min-width: 44px; min-height: 44px; display: grid; place-items: center; }
+  #top .right { gap: 6px; }
+  #meter { min-height: 40px; }
+}
+#sound.asleep { animation: wakeme 1.4s ease-in-out infinite; }
+@keyframes wakeme { 50% { box-shadow: 0 0 0 3px rgba(255, 210, 58, .55), 0 0 18px 4px rgba(255, 170, 60, .6); } }

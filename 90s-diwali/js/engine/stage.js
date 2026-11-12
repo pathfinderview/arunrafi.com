@@ -317,8 +317,6 @@
         if (run.t >= trick.fuse) goLive();
       } else if (run.phase === 'live') {
         run.t += dt;
-        // the share photo is taken at the loudest moment, not after the smoke clears
-        if (!run.hero && (run.t > (run.trick.heroAt ?? 0.3) || sparks.length > 900)) run.heroPending = true;
         if (trick.update(s, run.api, dt, run.t)) { setPhase('spent'); emit('end', { memory: run.memory, stat: trick.stat?.(s) || '', line: (typeof trick.spentLine === 'function' ? trick.spentLine(s, run.opts) : trick.spentLine) || '' }); }
       } else if (trick.interactive && (run.phase === 'armed' || run.phase === 'ready')) {
         trick.update(s, run.api, dt, -1);   // interactive tricks animate while waiting for the gesture
@@ -334,7 +332,6 @@
     if (wash > 0.005) { ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = `rgba(255,190,110,${wash})`; ctx.fillRect(-20, -20, W + 40, H + 40); ctx.globalCompositeOperation = 'source-over'; }
     wash *= Math.exp(-dt * 6);
     ctx.restore();
-    if (run?.heroPending) { run.heroPending = false; try { run.hero = canvas.toDataURL('image/jpeg', 0.85); } catch {} }
     pointer.justDown = pointer.justUp = false;
   }
 
@@ -380,7 +377,7 @@
     clearRemains() { for (const k in remains) delete remains[k]; papers.length = 0; },
     advance(seconds, fps = 60) { const n = Math.round(seconds * fps); for (let i = 0; i < n; i++) tick(1 / fps); return run?.phase; },
     snapshot() { return canvas.toDataURL('image/jpeg', 0.85); },
-    heroShot() { return run?.hero || canvas.toDataURL('image/jpeg', 0.85); },
+    heroShot() { return canvas.toDataURL('image/jpeg', 0.85); },   // on demand only: encoding every bang hitched phones
     glow(x, y, r, colour, a) { bloomDot(x, y, r, colour, a); },
     get canvas() { return canvas; },
     img,

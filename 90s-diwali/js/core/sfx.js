@@ -18,6 +18,10 @@
   };
 
   const rnd = (a, b) => a + Math.random() * (b - a);
+  // a lopsided soft clip: turns a low sine into the odd and even overtones a small speaker can play
+  const SAT = (() => { const c = new Float32Array(1024); for (let i = 0; i < 1024; i++) { const x = i / 511.5 - 1; c[i] = Math.tanh(5 * x + 0.35) - Math.tanh(0.35); } return c; })();
+  // phones and tablets lean on that layer; laptops and headphones get a touch of it for grit
+  const SMALL_SPEAKER = (typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches) ? 1 : 0.35;
 
   // Host bridge: reuse the site's AudioContext and master bus so its Sound button and compressor apply.
   let hostMuted = () => false;
@@ -29,12 +33,44 @@
     if (isMuted) hostMuted = isMuted;
     setSpace(space);
   }
+  // ---------- phones ----------
+  // iPhone plays Web Audio through the "ambient" session, which the Ring/Silent switch mutes, and most people
+  // keep their phone on silent. Asking for the "playback" session (iOS 16.4+) makes it sound like a video does.
+  // Older iPhones get the same session from a silent looping <audio> element started inside the tap.
+  const nav = typeof navigator !== 'undefined' ? navigator : {};
+  const isIOS = /iP(hone|ad|od)/.test(nav.userAgent || '') || (nav.platform === 'MacIntel' && nav.maxTouchPoints > 1);
+  let keepAlive = null, resumeAsked = -1e9;
+  const listeners = [];
+  const now = () => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  function silentWav() {
+    const n = 4000, b = new ArrayBuffer(44 + n), v = new DataView(b), w = (o, t) => { for (let i = 0; i < t.length; i++) v.setUint8(o + i, t.charCodeAt(i)); };
+    w(0, 'RIFF'); v.setUint32(4, 36 + n, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+    v.setUint32(24, 8000, true); v.setUint32(28, 8000, true); v.setUint16(32, 1, true); v.setUint16(34, 8, true); w(36, 'data'); v.setUint32(40, n, true);
+    for (let i = 0; i < n; i++) v.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+  }
+  function mediaSession() {
+    try { if (nav.audioSession && nav.audioSession.type !== 'playback') nav.audioSession.type = 'playback'; } catch {}
+    if (!isIOS || nav.audioSession || typeof Audio === 'undefined') return;
+    try {
+      if (!keepAlive) { keepAlive = new Audio(silentWav()); keepAlive.loop = true; keepAlive.setAttribute('playsinline', ''); keepAlive.setAttribute('x-webkit-airplay', 'deny'); keepAlive.disableRemotePlayback = true; }
+      if (keepAlive.paused) keepAlive.play().catch(() => {});
+    } catch {}
+  }
+  const state = () => muted ? 'off' : (ac && ac.state === 'running') ? 'on' : 'asleep';
+  function tell() { const st = state(); for (const f of listeners) try { f(st); } catch {} }
+  function resume() {
+    if (!ac || ac.state === 'running' || ac.state === 'closed') return;
+    resumeAsked = now();
+    try { const p = ac.resume(); if (p && p.then) p.then(tell, () => {}); } catch {}
+  }
   function unlock() {
+    mediaSession();
     if (!ac) {
       ac = new (root.AudioContext || root.webkitAudioContext)();
       const comp = ac.createDynamicsCompressor();
       comp.threshold.value = -14; comp.ratio.value = 4; comp.attack.value = 0.002; comp.release.value = 0.2;
-      master = ac.createGain(); master.gain.value = 0.85;
+      master = ac.createGain(); master.gain.value = muted ? 0 : 0.85;
       master.connect(comp).connect(ac.destination);
       verb = ac.createConvolver();
       verbSend = ac.createGain();
@@ -42,9 +78,17 @@
       noiseBuf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
       const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
       setSpace(space);
+      ac.onstatechange = tell;
     }
-    if (ac.state !== 'running') ac.resume();
+    resume();
     return ac;
+  }
+  // Leaving for WhatsApp, locking the phone or a call puts the audio to sleep, and only a touch may wake it.
+  // So every touch anywhere wakes it, not just the start button.
+  function wake() { if (ac) { mediaSession(); resume(); } }
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    for (const ev of ['touchend', 'pointerup', 'click', 'keydown']) document.addEventListener(ev, wake, { capture: true, passive: true });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); tell(); });
   }
 
   function setSpace(name) {
@@ -66,7 +110,7 @@
     const send = ac.createGain(); send.gain.value = wet; p.connect(send).connect(verb);
     return p;
   }
-  const ready = () => ac && !muted && !hostMuted() && ac.state === 'running';
+  const ready = () => ac && !muted && !hostMuted() && (ac.state === 'running' || (ac.state !== 'closed' && now() - resumeAsked < 700));
   function noise(t, dur) { const s = ac.createBufferSource(); s.buffer = noiseBuf; s.loop = true; s.loopStart = Math.random(); s.start(t, Math.random()); s.stop(t + dur); return s; }
   function env(g, t, peak, attack, decay) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + attack); g.gain.exponentialRampToValueAtTime(0.0001, t + attack + decay); }
 
@@ -83,6 +127,12 @@
     o.frequency.setValueAtTime(130 / Math.sqrt(size), t); o.frequency.exponentialRampToValueAtTime(36, t + 0.35);
     env(og, t, vol * (0.7 + muffle * 0.5) * Math.min(1.5, size), 0.004, 0.5 + size * 0.25);
     o.connect(og); out(og, { pan, wet: 0.4 }); o.start(t); o.stop(t + 1.2);
+    // a phone speaker can't play that thump, so give it the thump's overtones: the ear rebuilds the missing bass
+    const h = ac.createOscillator(), hs = ac.createWaveShaper(), hhp = ac.createBiquadFilter(), hg = ac.createGain();
+    h.frequency.setValueAtTime(130 / Math.sqrt(size), t); h.frequency.exponentialRampToValueAtTime(58, t + 0.38);
+    hs.curve = SAT; hhp.type = 'highpass'; hhp.frequency.value = 260; hhp.Q.value = 0.5;
+    env(hg, t, vol * SMALL_SPEAKER * 0.8 * Math.min(1.4, size) * (1 - muffle * 0.45), 0.003, 0.22 + size * 0.22);
+    h.connect(hs).connect(hhp).connect(hg); out(hg, { pan, wet: 0.45 }); h.start(t); h.stop(t + 0.9);
     // the gali answers: a slap-back off the facades for outdoor bangs
     if ((space === 'lane' || space === 'roof' || space === 'park') && size > 0.25) {
       const e = noise(t + 0.13, 0.4), elp = ac.createBiquadFilter(), eg = ac.createGain();
@@ -240,7 +290,8 @@
 
   root.Sfx = {
     bus, unlock, attach, setSpace, boom, strike, crack, fuse, skid, rustle, whoosh, glass, thwack, load, sample, MODES, SPACES,
-    get muted() { return muted; }, set muted(v) { muted = v; if (master) master.gain.value = v ? 0 : 0.85; },
+    get muted() { return muted; }, set muted(v) { muted = v; if (master) master.gain.value = v ? 0 : 0.85; tell(); },
     get running() { return !!ac && ac.state === 'running'; },
+    get state() { return state(); }, onchange(f) { listeners.push(f); },
   };
 })(typeof window !== 'undefined' ? window : globalThis);

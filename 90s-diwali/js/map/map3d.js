@@ -52,7 +52,7 @@ const TEX = {
 // ---------------------------------------------------------------- geometry buckets (merged per material)
 const buckets = {};
 function put(key, geo, color, m) {
-  geo = geo.toNonIndexed();
+  if (geo.index) geo = geo.toNonIndexed();   // already-flat shapes made three.js warn once each: thousands of warnings on load
   if (m) geo.applyMatrix4(m);
   const n = geo.attributes.position.count, col = new Float32Array(n * 3);
   for (let i = 0; i < n; i++) { col[i * 3] = color.r; col[i * 3 + 1] = color.g; col[i * 3 + 2] = color.b; }
@@ -382,7 +382,7 @@ export function init(canvas, { points, onPick, markerLayer }) {
   // fairy lights: three twinkle groups
   const bulbMats = [];
   for (const grp of fairy) {
-    const geos = grp.map(([p, c]) => { const g = new THREE.IcosahedronGeometry(.045, 0).toNonIndexed(); g.translate(p.x, p.y, p.z); const n = g.attributes.position.count, col = new Float32Array(n * 3); for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(col, 3)); return g; });
+    const geos = grp.map(([p, c]) => { let g = new THREE.IcosahedronGeometry(.045, 0); if (g.index) g = g.toNonIndexed(); g.translate(p.x, p.y, p.z); const n = g.attributes.position.count, col = new Float32Array(n * 3); for (let i = 0; i < n; i++) { col[i * 3] = c.r; col[i * 3 + 1] = c.g; col[i * 3 + 2] = c.b; } g.setAttribute('color', new THREE.BufferAttribute(col, 3)); return g; });
     if (!geos.length) continue;
     const m = new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false, transparent: true }); bulbMats.push(m);
     scene.add(new THREE.Mesh(mergeGeometries(geos), m));
@@ -461,19 +461,32 @@ export function init(canvas, { points, onPick, markerLayer }) {
     return { pt, el: b, v: new THREE.Vector3(pt.pos[0], pt.pos[1] + .9, pt.pos[2]) };
   });
   const tmp = new THREE.Vector3();
+  // On a phone the button stays a full 44px finger target and only the ember inside it shrinks with distance
+  // (--s), so a far point is still easy to hit. Labels can't wait for a hover there, so they reach further.
+  const touch = typeof matchMedia !== 'undefined' && matchMedia('(pointer: coarse)').matches;
+  if (touch) document.body.classList.add('touch');
   function placeMarkers() {
-    const W = innerWidth, H = innerHeight, c = cam.cur || cam;
-    const near = markers.map(m => [m, camera.position.distanceTo(m.v)]).filter(([, d]) => d < 22).sort((a, b) => a[1] - b[1]).slice(0, 4).map(([m]) => m);
-    for (const m of markers) m.el.classList.toggle('near', near.includes(m));
+    const W = innerWidth, H = innerHeight, c = cam.cur || cam, vis = [];
     for (const m of markers) {
       tmp.copy(m.v).project(camera);
       const on = tmp.z < 1 && Math.abs(tmp.x) < 1.15 && Math.abs(tmp.y) < 1.15;
       if (!on) { m.el.style.visibility = 'hidden'; continue; }
       const d = camera.position.distanceTo(m.v), s = THREE.MathUtils.clamp(16 / d, .55, 1.15);
+      const x = ((tmp.x + 1) / 2 * W) | 0, y = ((1 - tmp.y) / 2 * H) | 0;
       m.el.style.visibility = 'visible';
-      m.el.style.transform = `translate(${((tmp.x + 1) / 2 * W) | 0}px, ${((1 - tmp.y) / 2 * H) | 0}px) translate(-50%, -50%) scale(${s.toFixed(2)})`;
+      if (touch) { m.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%)`; m.el.style.setProperty('--s', s.toFixed(2)); }
+      else m.el.style.transform = `translate(${x}px, ${y}px) translate(-50%, -50%) scale(${s.toFixed(2)})`;
       m.el.classList.toggle('dot', d > 45);
+      vis.push({ m, d, x, y });
     }
+    // the nearest few on screen name themselves; on a phone, never two labels on top of each other
+    const reach = touch ? THREE.MathUtils.clamp((c.dist || 22) + 7, 22, 36) : 22, most = touch && W < 520 ? 3 : 4, near = [];
+    for (const v of vis.filter(v => v.d < reach).sort((a, b) => a.d - b.d)) {
+      if (near.length >= most) break;
+      if (touch && near.some(n => Math.abs(n.x - v.x) < Math.min(170, W * .42) && Math.abs(n.y - v.y) < 40)) continue;
+      near.push(v);
+    }
+    for (const m of markers) m.el.classList.toggle('near', near.some(n => n.m === m));
     youEl.style.top = `${((c.tz + 70) / 140 * 100).toFixed(1)}%`;
   }
 

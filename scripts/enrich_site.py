@@ -20,13 +20,13 @@ GROUPS = [
     ['burn-the-straight-line', 'what-iq-actually-measures-now', 'why-school-loses-to-a-patient-tutor', 'the-next-365-days', 'pareto-says', 'millennial-bug', 'vertical-writing', 'blender-spill', 'sweat-bass-sunburn-eye-contact'],
 ]
 DESCRIPTIONS = {
-    'sun-moon-earth.html': 'How do the Sun, the Moon and the Earth work? Spin the Earth, move the Moon, fire a cannon into orbit and cast eclipse shadows yourself. Every question a child asks, answered.',
+    'sun-moon-earth.html': 'Why does the Moon change shape? One story in nine pictures you can move, from tonight\'s Moon to the shadow that turns it red.',
     'mechanical-watch.html': 'How does a watch keep time with no battery? Wind a spring, turn the wheels, rock the escapement and swing the balance yourself, one part at a time.',
     'subscribe.html': 'Receive new essays by Arun Rafi through email or your preferred RSS reader.',
     'index.html': 'Short essays by Arun Rafi on learning, work, technology, and how we live.',
     'about.html': 'About Arun Rafi and the questions behind these essays on learning, work, technology, and life.',
     'now.html': 'What Arun Rafi is writing and thinking about now.',
-    'tools.html': 'Interactive experiments by Arun Rafi: explore the Sun, Moon and Earth, a mechanical watch, baby names, ELIZA, tokens, and long-context attention.',
+    'tools.html': 'Interactive experiments by Arun Rafi: why the Moon changes shape, a mechanical watch, baby names, ELIZA, tokens, and long-context attention.',
     'baby-names.html': 'Explore how the popularity of baby names changes over time.',
     'eliza.html': 'Try a recreation of ELIZA, an early chatbot, and explore the history behind it.',
     'token-calculator.html': 'Explore how text is split into tokens and how conversation length affects token use.',

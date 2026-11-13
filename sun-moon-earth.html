@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Light, spin and shadow — Arun Rafi</title>
+<title>Why the Moon changes shape — Arun Rafi</title>
 <script>
 (function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}
 if(!t){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}
@@ -13,610 +13,229 @@ document.documentElement.setAttribute('data-theme',t)})();
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",P052,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --bg:#f7f3ea; --ink:#1c1916; --soft:#4f483f; --muted:#8a8175; --rule:#e4dccb; --rule2:#d4c9b4;
-  --amber:#c8680f; --amber-soft:rgba(200,104,15,.12); --blue:#24469a;
+  --amber:#c8680f;
   --link:#0f5fb2; --focus:#0f5fb2;
-  --space:#0c1324; --space-line:#0c1324; --card:#fffdf8;
+  --space:#0c1324; --space-line:#0c1324;
 }
 html[data-theme="dark"]{
   --bg:#0e0d0b; --ink:#ede6d9; --soft:#c3b9a8; --muted:#8c8374; --rule:#25221d; --rule2:#38332b;
-  --amber:#f2a04a; --amber-soft:rgba(242,160,74,.13); --blue:#86a8f0;
+  --amber:#f2a04a;
   --link:#7fb2ff; --focus:#7fb2ff;
-  --space:#0a0f1c; --space-line:#1d2436; --card:#15140f;
+  --space:#0a0f1c; --space-line:#1d2436;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.62 var(--serif);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:19px/1.6 var(--serif);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
 a{color:var(--link);text-decoration:none}
 a:hover{text-decoration:underline}
 :focus-visible{outline:2px solid var(--focus);outline-offset:3px}
 .topbar{display:flex;justify-content:space-between;align-items:center;max-width:64rem;margin:0 auto;padding:18px 20px;font:14px/1 var(--sans);color:var(--muted)}
 .topbar a{color:var(--muted)}
 .topbar a:hover{color:var(--ink);text-decoration:none}
-.theme-toggle{background:transparent;color:var(--muted);border:1px solid var(--rule2);border-radius:999px;padding:7px 12px;font:13px/1 var(--sans);cursor:pointer}
+.theme-toggle{background:transparent;color:var(--muted);border:1px solid var(--rule2);border-radius:999px;padding:7px 12px;font:13px/1 var(--sans);cursor:pointer;min-height:36px}
 .theme-toggle:hover{color:var(--ink)}
-.wrap{max-width:38rem;margin:0 auto;padding:0 20px}
-.wide{max-width:60rem;margin:0 auto;padding:0 20px}
-.kicker{font:600 12px/1.2 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--amber);margin:0 0 18px}
-h1{font-weight:500;font-size:clamp(2.6rem,7vw,4.4rem);line-height:1.02;letter-spacing:-.015em;margin:0 0 22px}
-h2{font-weight:500;font-size:clamp(1.75rem,4vw,2.4rem);line-height:1.12;letter-spacing:-.01em;margin:6px 0 20px}
-h3{font:600 13px/1.3 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:34px 0 10px}
-p{margin:0 0 1.05em}
-.dek{font-size:1.2rem;color:var(--soft);line-height:1.55}
-.hero{padding:28px 0 10px}
-.hero-fig{max-width:60rem;margin:26px auto 0;padding:0 20px}
-.hero-cap{font:15px/1.55 var(--sans);color:var(--soft);text-align:center;margin:14px auto 0;max-width:34rem}
-.hero-cap strong{color:var(--ink);font-weight:600}
-section.ch{padding:76px 0 22px}
-.ch-head{border-top:1px solid var(--rule);padding-top:22px}
-.ch-num{font:600 12px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
-.ch-num span{color:var(--amber)}
-em.term{font-style:italic}
-.try{font:15px/1.55 var(--sans);color:var(--soft);border-left:2px solid var(--amber);padding:2px 0 2px 14px;margin:22px 0 0}
-.try b{font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:11px;color:var(--amber);margin-right:8px}
-.takeaway{font-size:1.32rem;line-height:1.4;font-style:italic;color:var(--ink);margin:30px 0 0}
-figure{margin:30px auto 0}
-figure.wide+section.wrap{padding-top:22px}
-.duo.lean{grid-template-columns:1.75fr 1fr}
-.space{background:var(--space);border:1px solid var(--space-line);border-radius:16px;overflow:hidden}
-.stage{position:relative}
+header.intro{text-align:center;max-width:36rem;margin:0 auto;padding:48px 20px 0}
+.kicker{font:600 12px/1.2 var(--sans);letter-spacing:.18em;text-transform:uppercase;color:var(--amber);margin:0 0 16px}
+h1{font-weight:500;font-size:clamp(2.7rem,7.5vw,4.6rem);line-height:1.02;letter-spacing:-.015em;margin:0 0 16px}
+.dek{font-size:1.2rem;color:var(--soft);line-height:1.5;margin:0}
+.chap{max-width:60rem;margin:0 auto;padding:120px 20px 0;text-align:center}
+.chap:first-of-type{padding-top:64px}
+.n{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--amber);color:var(--amber);font:600 14px/1 var(--sans);font-variant-numeric:tabular-nums}
+.chap h2{font-weight:500;font-size:clamp(1.9rem,4.6vw,2.8rem);line-height:1.1;letter-spacing:-.01em;margin:16px auto 12px;max-width:18ch}
+.a{font-size:1.18rem;line-height:1.5;color:var(--soft);max-width:29rem;margin:0 auto}
+figure{margin:30px auto 0;max-width:880px}
+.space{background:var(--space);border:1px solid var(--space-line);border-radius:18px;overflow:hidden}
 .stage svg{width:100%;height:auto;display:block;user-select:none;-webkit-user-select:none}
-.duo{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;align-items:stretch}
-.duo.even{grid-template-columns:1fr 1fr}
-.duo .space{display:flex;flex-direction:column;justify-content:center}
-.controls{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center;align-items:center;margin:14px 0 0;font:14px/1 var(--sans)}
-.pill{appearance:none;-webkit-appearance:none;border:1px solid var(--rule2);background:transparent;color:var(--ink);border-radius:999px;padding:9px 15px;font:inherit;cursor:pointer;min-height:38px;transition:border-color .15s,background .15s}
+.controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:16px 0 0;font:14px/1 var(--sans)}
+.pill{appearance:none;-webkit-appearance:none;border:1px solid var(--rule2);background:transparent;color:var(--ink);border-radius:999px;padding:10px 18px;font:inherit;cursor:pointer;min-height:44px;transition:border-color .15s}
 .pill:hover{border-color:var(--muted)}
 .pill.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .pill.primary:hover{opacity:.88}
-.pill[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
-.seg{display:inline-flex;border:1px solid var(--rule2);border-radius:999px;padding:3px;gap:2px;flex-wrap:wrap;justify-content:center}
-.seg button{appearance:none;border:0;background:transparent;color:var(--soft);border-radius:999px;padding:7px 12px;font:13px/1 var(--sans);cursor:pointer;min-height:32px}
+.seg{display:inline-flex;border:1px solid var(--rule2);border-radius:999px;padding:3px;gap:2px}
+.seg button{appearance:none;border:0;background:transparent;color:var(--soft);border-radius:999px;padding:8px 14px;font:14px/1 var(--sans);cursor:pointer;min-height:38px;min-width:44px;display:inline-flex;align-items:center;justify-content:center}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.slider{display:flex;align-items:center;gap:10px;font:13px/1 var(--sans);color:var(--muted)}
-.slider input{width:200px;accent-color:var(--amber)}
-.readout{font:14px/1.55 var(--sans);font-variant-numeric:tabular-nums;color:var(--muted);text-align:center;margin:12px auto 0;max-width:40rem;min-height:1.55em}
-.readout strong{color:var(--ink);font-weight:600}
-.msg{font:15px/1.5 var(--sans);color:var(--soft);text-align:center;min-height:3em;margin:12px auto 0;max-width:34rem}
-.msg strong{color:var(--ink)}
-.msg.hot{color:var(--amber)}
-.msg.hot strong{color:var(--amber)}
-figcaption{font:13px/1.5 var(--sans);color:var(--muted);text-align:center;margin:10px auto 0;max-width:34rem}
-.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0 0}
-.chips button{appearance:none;border:1px solid var(--rule2);background:transparent;color:var(--soft);border-radius:999px;padding:6px 12px;font:13px/1 var(--sans);cursor:pointer;min-height:34px;display:inline-flex;align-items:center;gap:7px}
-.chips button[aria-pressed="true"]{border-color:var(--amber);color:var(--amber)}
-.chips svg{width:16px;height:16px;display:block}
-/* facts */
-.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:26px 0 0}
-.fact{display:block;border:1px solid var(--rule);border-radius:14px;padding:16px 18px 14px;color:var(--ink);background:var(--card);transition:border-color .15s}
-.fact:hover{border-color:var(--amber);text-decoration:none}
-.fact .n{font:600 12px/1 var(--sans);letter-spacing:.14em;color:var(--amber)}
-.fact b{display:block;font-weight:500;font-size:1.22rem;line-height:1.25;margin:8px 0 6px}
-.fact span{display:block;font:13.5px/1.45 var(--sans);color:var(--muted)}
-/* kids ask */
-.asks{margin:34px 0 0;border-top:1px solid var(--rule)}
-.asks .lbl{font:600 11px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:16px 0 4px}
-details.ask{border-bottom:1px solid var(--rule)}
-details.ask summary{cursor:pointer;list-style:none;padding:13px 30px 13px 0;position:relative;font:17px/1.4 var(--serif);color:var(--ink)}
-details.ask summary::-webkit-details-marker{display:none}
-details.ask summary::after{content:"+";position:absolute;right:4px;top:11px;font:400 20px/1 var(--sans);color:var(--amber);transition:transform .2s}
-details.ask[open] summary::after{transform:rotate(45deg)}
-details.ask p{font-size:17px;color:var(--soft);margin:0 0 14px}
-/* callouts */
-.warn{font:15px/1.55 var(--sans);color:var(--ink);background:var(--amber-soft);border-radius:12px;padding:14px 16px;margin:24px 0 0}
-.warn b{color:var(--amber)}
-.dates{font:14px/1.5 var(--sans);margin:22px 0 0;border-top:1px solid var(--rule)}
-.dates div{display:grid;grid-template-columns:8.5rem 6.5rem 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--rule)}
-.dates time{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
-.dates .k{color:var(--amber)}
-.dates .w{color:var(--muted)}
-/* strip for eclipse seasons */
-.strip-lbl{font:600 11px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;text-align:center}
-.strip{display:grid;grid-template-columns:repeat(13,1fr);gap:4px}
-.strip .cell{background:var(--space);border-radius:8px;border:1px solid var(--space);position:relative;transition:border-color .2s,box-shadow .2s}
-.strip .cell svg{width:100%;height:auto;display:block}
-.strip .cell.ecl{border-color:var(--amber)}
-.strip .cell.now{box-shadow:0 0 0 2px var(--ink)}
-.strip .cell span{position:absolute;left:0;right:0;bottom:3px;text-align:center;font:10px/1 var(--sans);color:#8a94aa}
-.strip .cell.ecl span{color:#f2a04a;font-weight:600}
-.numbers{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:34px 0 0;border-top:1px solid var(--rule)}
-.numbers div{padding:18px 10px;text-align:center;border-left:1px solid var(--rule);border-bottom:1px solid var(--rule)}
-.numbers div:nth-child(4n+1){border-left:0}
-.numbers b{display:block;font-weight:500;font-size:1.6rem;line-height:1.1;font-variant-numeric:tabular-nums}
-.numbers span{font:12px/1.35 var(--sans);color:var(--muted)}
-.notes{font:14px/1.6 var(--sans);color:var(--muted);margin-top:40px}
-.notes summary{cursor:pointer;color:var(--soft)}
-.notes p{margin:12px 0 0}
-.faq-group{margin-top:8px}
-.qlinks{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}
-.qlinks a{border:1px solid var(--rule2);border-radius:999px;padding:8px 14px;font:14.5px/1.3 var(--sans);color:var(--ink);background:var(--card);transition:border-color .15s,color .15s}
-.qlinks a:hover{border-color:var(--amber);color:var(--amber);text-decoration:none}
-ol.home{list-style:none;counter-reset:h;padding:0;margin:26px 0 0}
-ol.home li{counter-increment:h;position:relative;padding:0 0 22px 52px;margin:0}
-ol.home li::before{content:counter(h);position:absolute;left:0;top:2px;width:34px;height:34px;border-radius:50%;background:var(--amber-soft);color:var(--amber);font:600 15px/34px var(--sans);text-align:center}
-ol.home b{display:block;font-weight:600;font:600 13px/1.3 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);margin:6px 0 4px}
-ol.home p{margin:0;font-size:17.5px;color:var(--soft)}
-.legend-line{display:flex;gap:18px;justify-content:center;font:13px/1 var(--sans);color:var(--muted);margin:10px 0 0}
-.legend-line i{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
-footer{max-width:38rem;margin:60px auto 0;padding:20px 20px 60px;border-top:1px solid var(--rule);font:14px/1.6 var(--sans);color:var(--muted)}
+.seg svg{width:22px;height:22px;display:block}
+.msg{font:15px/1.5 var(--sans);color:var(--soft);text-align:center;min-height:1.5em;margin:14px auto 0;max-width:34rem}
+.msg strong{color:var(--ink);font-weight:600}
+.hint{font:13px/1.5 var(--sans);color:var(--muted);margin:8px auto 0}
+.phase{font-size:1.7rem;line-height:1.2;margin:22px 0 0}
+.msg.sub{margin-top:4px;color:var(--muted)}
+/* the month calendar */
+.cal{padding:22px 18px 18px;text-align:left}
+.cal-h{font:600 11px/1 var(--sans);letter-spacing:.16em;text-transform:uppercase;color:#f2a04a;margin:0 0 10px 4px}
+.cal-h.down{color:#8e9ab3;margin-top:18px}
+.cal-grid{display:grid;grid-template-columns:repeat(15,1fr);gap:4px}
+.cal-c{appearance:none;border:1px solid transparent;background:transparent;border-radius:10px;padding:6px 0 5px;cursor:pointer;color:#8e9ab3;font:10.5px/1 var(--sans);min-height:44px}
+.cal-c svg{width:100%;max-width:40px;height:auto;display:block;margin:0 auto}
+.cal-c span{display:block;height:11px;margin-top:5px;text-align:center;white-space:nowrap}
+.cal-c:hover{background:rgba(255,255,255,.05)}
+.cal-c.sel{background:rgba(255,255,255,.08)}
+.cal-c.tonight{border-color:#f2a04a}
+.cal-c.tonight span{color:#f2a04a;font-weight:600}
+/* try it at home */
+.steps{list-style:none;counter-reset:s;margin:26px auto 0;padding:0;max-width:25rem;text-align:left}
+.steps li{counter-increment:s;position:relative;padding:0 0 12px 42px;font-size:1.08rem;line-height:1.45;color:var(--soft)}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--amber);color:var(--bg);font:600 13px/26px var(--sans);text-align:center}
+.end{max-width:34rem;margin:120px auto 0;padding:0 20px;text-align:center}
+.end p{font-size:1.32rem;line-height:1.4;font-style:italic;margin:0}
+.notes{font:13px/1.6 var(--sans);color:var(--muted);margin:28px 0 0;text-align:left}
+.notes summary{cursor:pointer;text-align:center;color:var(--muted)}
+.notes p{margin:10px 0 0}
+footer{max-width:38rem;margin:60px auto 0;padding:20px 20px 60px;border-top:1px solid var(--rule);font:14px/1.6 var(--sans);color:var(--muted);text-align:center}
 footer a{color:var(--muted)}
 footer a:hover{color:var(--ink)}
-/* ---------- SVG ---------- */
+/* SVG */
 svg text{font-family:var(--sans)}
 .st{fill:#8e9ab3;font-size:calc(var(--u,1)*12.5px)}
 .st-b{fill:#eef2fa;font-size:calc(var(--u,1)*14px);font-weight:600}
+.st-big{fill:#eef2fa;font-size:calc(var(--u,1)*20px);font-weight:600}
 .st-a{fill:#f2a04a;font-size:calc(var(--u,1)*11px);font-weight:600;letter-spacing:.1em;text-transform:uppercase}
 .st-s{fill:#6f7a92;font-size:calc(var(--u,1)*11px)}
-.mid{text-anchor:middle}.end{text-anchor:end}
+.mid{text-anchor:middle}.end-a{text-anchor:end}
 .ocean{fill:#2c63c4}.land{fill:#4b9a5c}.ice{fill:#e9f0f7}
 .night{fill:#03060f;opacity:.8}
 .moonb{fill:#d6d1c4}.mare{fill:#9f998c}.crater{fill:#efebe1}
 .moon-night{fill:#060912;opacity:.92}
 .orbit{fill:none;stroke:#34405a;stroke-width:1.2;stroke-dasharray:3 5}
-.orbit-solid{fill:none;stroke:#46536f;stroke-width:1.2}
-.ray{stroke:#ffd27a;stroke-opacity:.16;stroke-width:1.2}
-.beam{fill:#ffcf73;opacity:.05}
-.lead{stroke:#5c6884;stroke-width:.8;fill:none}
+.ray{stroke:#ffd27a;stroke-opacity:.12;stroke-width:1.2}
 .sight{stroke:#f2a04a;stroke-width:1.4;stroke-dasharray:4 4;fill:none}
-.umbra{fill:#000;opacity:.85}
-.penumbra{fill:#000;opacity:.45}
-.edge{fill:none;stroke:#3e4a66;stroke-width:.8;stroke-dasharray:2 3}
 .you{fill:#f2a04a;stroke:#0c1324;stroke-width:1.5}
-.friend{fill:#86a8f0;stroke:#0c1324;stroke-width:1.5}
-.marker{fill:#f2a04a}
 .grab{cursor:grab;touch-action:none}
 .grab:active{cursor:grabbing}
 .hint-ring{fill:none;stroke:#f2a04a;stroke-width:1.5;animation:pulse 1.8s ease-out infinite;transform-box:fill-box;transform-origin:center;pointer-events:none}
 @keyframes pulse{0%{opacity:.9;transform:scale(.6)}100%{opacity:0;transform:scale(1.6)}}
 .arrow{fill:none;stroke:#f2a04a;stroke-width:1.8;stroke-linecap:round}
 .ah{fill:#f2a04a}
-.fade{transition:opacity .35s}
 @media (max-width:760px){
   body{font-size:18px}
-  section.ch{padding-top:58px}
-  .duo,.duo.even,.duo.lean{grid-template-columns:1fr}
-  .duo .stage.space[style*="max-width:340px"]{max-width:300px!important}
-  .facts{grid-template-columns:1fr}
-  .numbers{grid-template-columns:repeat(2,1fr)}
-  .numbers div:nth-child(4n+1){border-left:1px solid var(--rule)}
-  .numbers div:nth-child(2n+1){border-left:0}
-  .slider input{width:150px}
-  .strip{grid-template-columns:repeat(7,1fr)}
-  .dates div{grid-template-columns:7.2rem 1fr;}
-  .dates .w{grid-column:1/-1;margin-top:-6px}
+  .chap{padding-top:92px}
+  .cal{padding:16px 10px 12px}
+  .cal-grid{grid-template-columns:repeat(8,1fr);row-gap:2px}
 }
 @media (prefers-reduced-motion:reduce){.hint-ring{animation:none}}
 </style>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="How do the Sun, the Moon and the Earth work? Spin the Earth, move the Moon, fire a cannon into orbit and cast eclipse shadows yourself. Every question a child asks, answered.">
+  <meta name="description" content="Why does the Moon change shape? One story in nine pictures you can move, from tonight&#x27;s Moon to the shadow that turns it red.">
   <link rel="canonical" href="https://arunrafi.com/sun-moon-earth.html">
-  <meta property="og:title" content="Light, spin and shadow — Arun Rafi">
-  <meta property="og:description" content="How do the Sun, the Moon and the Earth work? Spin the Earth, move the Moon, fire a cannon into orbit and cast eclipse shadows yourself. Every question a child asks, answered.">
+  <meta property="og:title" content="Why the Moon changes shape — Arun Rafi">
+  <meta property="og:description" content="Why does the Moon change shape? One story in nine pictures you can move, from tonight&#x27;s Moon to the shadow that turns it red.">
   <meta property="og:url" content="https://arunrafi.com/sun-moon-earth.html">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Arun Rafi">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Light, spin and shadow — Arun Rafi">
-  <meta name="twitter:description" content="How do the Sun, the Moon and the Earth work? Spin the Earth, move the Moon, fire a cannon into orbit and cast eclipse shadows yourself. Every question a child asks, answered.">
+  <meta name="twitter:title" content="Why the Moon changes shape — Arun Rafi">
+  <meta name="twitter:description" content="Why does the Moon change shape? One story in nine pictures you can move, from tonight&#x27;s Moon to the shadow that turns it red.">
 </head>
 <body>
 <div class="topbar"><a href="/tools.html">← Arun Rafi · Tools</a><button class="theme-toggle" type="button" id="theme">Theme</button></div>
 
 <main>
-<header class="wrap hero">
-  <p class="kicker">How the Sun, the Moon and the Earth work</p>
-  <h1>Light, spin and shadow</h1>
-  <p class="dek">Day and night. Summer and winter. A Moon that changes shape, and the rare day the Sun goes dark. All of it comes from one star, two balls of rock, and a few simple facts. Every drawing below is something you can move.</p>
+<header class="intro">
+  <p class="kicker">The Moon</p>
+  <h1>Why the Moon changes shape</h1>
+  <p class="dek">One story in nine pictures. Touch them all.</p>
 </header>
-<figure class="hero-fig" id="fig-hero">
-  <div class="stage space"><svg viewBox="0 0 720 380" role="img" aria-label="The Sun, the Earth and the Moon right now, seen from above the North Pole. Not to scale."></svg></div>
+
+<section class="chap" id="c0">
+  <div class="n">0</div>
+  <h2>Look up tonight</h2>
+  <p class="a">This is the Moon tonight. Every night it looks a little different.</p>
+  <figure id="fig-now"><div class="stage space"><svg viewBox="0 0 720 330" role="img" aria-label="The Moon's shape tonight"></svg></div></figure>
+  <p class="phase" id="now-name"></p>
+  <p class="msg sub" id="now-sub"></p>
+  <div class="controls"><button class="pill" id="now-prev" type="button" aria-label="Night before">‹</button><button class="pill primary" id="now-next" type="button">Next night ›</button><button class="pill" id="now-reset" type="button" hidden>Tonight</button></div>
+</section>
+
+<section class="chap" id="c1">
+  <div class="n">1</div>
+  <h2>The Moon makes no light</h2>
+  <p class="a">It is a ball of grey rock. The Sun lights one half of it. Always half.</p>
+  <figure id="fig-light"><div class="stage space"><svg viewBox="0 0 720 360" aria-label="A Sun you can drag around the Moon"></svg></div></figure>
+  <p class="hint">Drag the Sun.</p>
+</section>
+
+<section class="chap" id="c2">
+  <div class="n">2</div>
+  <h2>We see it from the side</h2>
+  <p class="a">The Moon goes round us. From here we see some of its day, and some of its night.</p>
+  <figure id="fig-side"><div class="stage space"><svg viewBox="0 0 720 360" aria-label="The Moon going round the Earth, and the shape you see"></svg></div></figure>
+  <p class="msg" id="side-msg"></p>
+  <div class="controls"><button class="pill primary" id="side-play" type="button">Play a month</button></div>
+  <p class="hint">Drag the Moon.</p>
+</section>
+
+<section class="chap" id="c3">
+  <div class="n">3</div>
+  <h2>One trip takes a month</h2>
+  <p class="a">29½ days, from new Moon to new Moon. The word month comes from Moon.</p>
+  <figure><div class="space cal" id="cal"></div></figure>
+  <p class="msg" id="cal-msg"></p>
+</section>
+
+<section class="chap" id="c4">
+  <div class="n">4</div>
+  <h2>So it is often out in the day</h2>
+  <p class="a">The Moon rises about 50 minutes later each day. Which part of the day it's up depends on its shape.</p>
+  <figure id="fig-day"><div class="stage space"><svg viewBox="0 0 720 340" aria-label="The sky through one day, with the Sun and the Moon"></svg></div></figure>
   <div class="controls">
-    <button class="pill primary" id="hero-play" type="button">Speed up time</button>
-    <div class="seg" id="hero-speed" role="group" aria-label="How fast"><button type="button" data-v="1" aria-pressed="true">1 hour a second</button><button type="button" data-v="24">1 day a second</button></div>
-    <button class="pill" id="hero-now" type="button" hidden>Back to now</button>
+    <div class="seg" id="day-ph" role="group" aria-label="Moon shape"></div>
+    <button class="pill primary" id="day-play" type="button">Play a day</button>
   </div>
-  <p class="hero-cap" id="hero-cap">Working out where everything is right now…</p>
-</figure>
-
-<section class="wrap ch" id="facts">
-  <div class="ch-head"><div class="ch-num">The idea in one page</div></div>
-  <h2>Four facts explain it all</h2>
-  <p>You don't need to remember a hundred things about the sky. You need four. Everything else on this page follows from them, and you can <a href="#home">test each one with a lamp and a ball</a>.</p>
-  <div class="facts">
-    <a class="fact" href="#light"><span class="n">01</span><b>Only the Sun makes light.</b><span>The Earth and the Moon just bounce it. So half of each is always lit.</span></a>
-    <a class="fact" href="#spin"><span class="n">02</span><b>The Earth spins.</b><span>That gives us day and night.</span></a>
-    <a class="fact" href="#gravity"><span class="n">03</span><b>Things go round.</b><span>The Earth circles the Sun (a year, the seasons). The Moon circles the Earth (a month, its changing shape).</span></a>
-    <a class="fact" href="#solar"><span class="n">04</span><b>Everything in sunlight casts a shadow.</b><span>When the shadows land on each other, we get eclipses.</span></a>
-  </div>
-  <h3>Or start with a question</h3>
-  <nav class="qlinks" aria-label="Questions">
-    <a href="#spin">Where does the Sun go at night?</a>
-    <a href="#month">Why does the Moon change shape?</a>
-    <a href="#light">Does the Moon have its own light?</a>
-    <a href="#gravity">Why doesn't the Moon fall down?</a>
-    <a href="#size">How big is the Sun?</a>
-    <a href="#year">Why is summer hot?</a>
-    <a href="#month">Why can I see the Moon in the day?</a>
-    <a href="#solar">How can the Sun disappear?</a>
-    <a href="#lunar">Why does the Moon turn red?</a>
-    <a href="#rare">Why aren't there eclipses every month?</a>
-    <a href="#questions">Why is the sky blue?</a>
-    <a href="#home">Can I try it at home?</a>
-  </nav>
+  <p class="msg" id="day-msg"></p>
 </section>
 
-<!-- 01 LIGHT -->
-<section class="wrap ch" id="light">
-  <div class="ch-head"><div class="ch-num"><span>01</span> · Light</div></div>
-  <h2>Only the Sun shines</h2>
-  <p>The Sun is a star. It is a giant ball of gas so hot that it glows, like the wire in an old light bulb. It makes its own light.</p>
-  <p>The Earth and the Moon are balls of rock. They make no light at all. We see them only because sunlight lands on them and bounces off. So at every moment, exactly <em>half</em> of each ball is in sunshine, and the other half is in the dark.</p>
-  <p>Moonlight is just sunlight that has bounced off the Moon and travelled on to us.</p>
-  <p class="try"><b>Try</b>Drag the Sun anywhere. The bright half of the Earth and of the Moon always turns to face it. Then switch the Sun off.</p>
-</section>
-<figure class="wide" id="fig-light">
-  <div class="stage space" style="max-width:860px;margin:0 auto"><svg viewBox="0 0 720 380" aria-label="A draggable Sun lighting the Earth and the Moon"></svg></div>
-  <div class="controls"><button class="pill" id="li-off" type="button" aria-pressed="false">Switch the Sun off</button></div>
-  <p class="msg" id="li-msg"></p>
-</figure>
-<section class="wrap">
-  <p class="takeaway">All the light comes from one place. Every shape, shadow and season on this page is just a question of which half is lit, and who is looking.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Does the Moon make its own light?</summary><p>No. The Moon is made of grey rock, about as dark as an old road. It looks bright only because the Sun is shining on it and the sky around it is black. If the Sun went out, the Moon would vanish too.</p></details>
-    <details class="ask"><summary>Why is the Sun so hot?</summary><p>The Sun is so heavy that its own weight squeezes its middle incredibly hard. Down there, tiny bits of gas smash into each other and stick together, and every time they do, a little burst of energy comes out. This happens trillions of times every second. That energy is the Sun's heat and light.</p></details>
-    <details class="ask"><summary>Why mustn't I look at the Sun?</summary><p>Its light is strong enough to burn the back of your eye in a few seconds. The back of the eye can't feel pain, so you wouldn't even notice it happening. Never look straight at the Sun, not even with sunglasses on.</p></details>
-  </div>
-</section>
-
-<!-- 02 SPIN -->
-<section class="wrap ch" id="spin">
-  <div class="ch-head"><div class="ch-num"><span>02</span> · Spin</div></div>
-  <h2>Day and night</h2>
-  <p>The Earth spins like a top. It turns all the way round once every 24 hours, and that is what we call a <em class="term">day</em>.</p>
-  <p>The half facing the Sun has daytime. The half facing away has night. As the Earth turns, it carries you out of the dark half into the light (sunrise), across the light (midday), and out the other side (sunset).</p>
-  <p>So the Sun doesn't really rise or set. It stays where it is. We are the ones turning.</p>
-  <p class="try"><b>Try</b>Press Play, or drag the Earth to spin it. Watch what you see, and what a friend on the other side of the world sees at the same moment.</p>
-</section>
-<figure class="wide" id="fig-spin">
-  <div class="duo">
-    <div class="stage space"><svg id="sp-earth" viewBox="0 0 380 360" aria-label="The Earth seen from above the North Pole, with you and a friend standing on it"></svg></div>
-    <div class="stage space"><svg id="sp-sky" viewBox="0 0 360 360" aria-label="What you and your friend see in the sky"></svg></div>
-  </div>
+<section class="chap" id="c5">
+  <div class="n">5</div>
+  <h2>It always shows us one face</h2>
+  <p class="a">It turns once on every trip round, so the same side always faces us.</p>
+  <figure id="fig-face"><div class="stage space"><svg viewBox="0 0 720 360" aria-label="The Moon turning as it goes round the Earth"></svg></div></figure>
   <div class="controls">
-    <button class="pill primary" id="sp-play" type="button">Play</button>
-    <div class="seg" id="sp-speed" role="group" aria-label="Speed"><button type="button" data-v="16" aria-pressed="true">1 day = 16 s</button><button type="button" data-v="5">1 day = 5 s</button></div>
+    <div class="seg" id="face-spin" role="group" aria-label="Does the Moon turn?"><button type="button" data-v="1" aria-pressed="true">It turns</button><button type="button" data-v="0">It doesn't</button></div>
+    <button class="pill primary" id="face-play" type="button">Play a month</button>
   </div>
-  <p class="msg" id="sp-msg"></p>
-  <figcaption>Seen from above the North Pole. The land is simplified. Sizes and distances are not to scale.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="takeaway">Day and night are not something the Sun does. They are something the Earth does.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Where does the Sun go at night?</summary><p>Nowhere. It is still shining, just on the other half of the world. While you sleep, children on the far side of the Earth are having their lunch.</p></details>
-    <details class="ask"><summary>Why don't we feel the Earth spinning?</summary><p>Because it turns perfectly smoothly, with no bumps and no sudden stops, and everything turns together: you, the air, your house, the sea. It's like a smooth ride in a plane. You feel it speed up and slow down, but not cruising along. And the Earth never speeds up or slows down. At the equator, the ground is moving at about 1,670 km an hour.</p></details>
-    <details class="ask"><summary>Why can't we see stars in the daytime?</summary><p>They are still there. The sunlit sky is so bright that it drowns them out, the way a torch is hard to see in a sunny garden. At night our half of the Earth faces away from the Sun, out into space, and the stars appear.</p></details>
-  </div>
+  <p class="msg" id="face-msg"></p>
 </section>
 
-<!-- 03 SIZE -->
-<section class="wrap ch" id="size">
-  <div class="ch-head"><div class="ch-num"><span>03</span> · Size</div></div>
-  <h2>How big, how far</h2>
-  <p>Drawings of space, including most of the ones on this page, squash everything to fit. The real sizes and distances are hard to believe.</p>
-  <p>The Sun is 109 times wider than the Earth. About a million Earths would fit inside it. The Earth is almost four times wider than the Moon.</p>
-  <p>And they are very far apart. Thirty Earths in a row would just reach the Moon. The Sun is about 390 times farther away than that.</p>
-  <p class="try"><b>Try</b>Look at real sizes, then switch to real distances and shine a light from the Earth to the Moon. It moves at the real speed of light.</p>
-</section>
-<figure class="wide" id="fig-size">
-  <div class="stage space" style="max-width:900px;margin:0 auto"><svg viewBox="0 0 720 300" aria-label="The Sun, the Earth and the Moon drawn to true scale"></svg></div>
-  <div class="controls">
-    <div class="seg" id="sz-mode" role="group" aria-label="What to show"><button type="button" data-v="size" aria-pressed="true">Real sizes</button><button type="button" data-v="dist">Real distances</button></div>
-    <button class="pill" id="sz-beam" type="button">Shine a light at the Moon</button>
-  </div>
-  <p class="msg" id="sz-msg"></p>
-</figure>
-<section class="wrap">
-  <p>Now for a lucky coincidence, the one that makes total eclipses possible. The Sun is about 400 times wider than the Moon. It is also about 400 times farther away. Those two cancel out, so from the Earth the Sun and the Moon look almost exactly the same size.</p>
-  <p class="try"><b>Try</b>Drag the Moon closer to the eye and farther away. On the right, see how big it looks against the Sun.</p>
-</section>
-<figure class="wide" id="fig-same">
-  <div class="duo lean">
-    <div class="stage space"><svg viewBox="0 0 620 260" aria-label="An eye, the Moon and the Sun on one line of sight. Drag the Moon."></svg></div>
-    <div class="stage space"><svg id="same-sky" viewBox="0 0 260 260" aria-label="How big the Moon looks against the Sun"></svg></div>
-  </div>
-  <p class="msg" id="same-msg"></p>
-  <figcaption>The gap to the Sun is squashed. Really the Sun is 400 times farther away than the Moon, and 400 times wider.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="takeaway">Big and far looks the same as small and near. That is why the little Moon can cover the giant Sun so exactly.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>How long would it take to drive to the Moon?</summary><p>At 100 km an hour, without ever stopping, about 160 days: more than five months. Driving to the Sun would take about 170 years. The astronauts who went to the Moon got there in three days, because a rocket is much faster than a car.</p></details>
-    <details class="ask"><summary>Why does the Moon look so big when it's low in the sky?</summary><p>It's a trick your brain plays. Near the ground, the Moon sits next to trees and houses, and your brain decides it must be enormous. Try this: hold your arm out straight and cover the low Moon with your little fingernail. Do it again later when the Moon is high. It's exactly the same size both times.</p></details>
-    <details class="ask"><summary>Is the Sun the biggest star?</summary><p>No, it's quite an ordinary star. Some stars are so huge that, if one sat where the Sun is, it would swallow the Earth and Mars. The Sun only looks like the biggest because it is by far the closest. All the other stars are so far away that they look like tiny dots.</p></details>
-  </div>
+<section class="chap" id="c6">
+  <div class="n">6</div>
+  <h2>From the Moon, Earth changes too</h2>
+  <p class="a">Its shapes are the opposite of ours. Earth's light makes the Moon's dark part glow.</p>
+  <figure id="fig-earth"><div class="stage space"><svg viewBox="0 0 720 360" aria-label="The Moon seen from the Earth, and the Earth seen from the Moon"></svg></div></figure>
+  <p class="msg" id="earth-msg"></p>
+  <p class="hint">Drag the Moon.</p>
 </section>
 
-<!-- 04 GRAVITY -->
-<section class="wrap ch" id="gravity">
-  <div class="ch-head"><div class="ch-num"><span>04</span> · Going round</div></div>
-  <h2>Why the Moon doesn't fall</h2>
-  <p>Everything pulls on everything else. This pull is called <em class="term">gravity</em>, and the bigger something is, the harder it pulls. The Earth is very big, so it pulls everything towards its middle. That is why a dropped ball falls, and why you stay on the ground.</p>
-  <p>The Earth pulls on the Moon too. So why doesn't the Moon fall down? It does. It is falling all the time. But it is also moving sideways very fast. In the time it falls a little, it travels so far sideways that the round Earth curves away beneath it. It keeps falling, and it keeps missing. That is an <em class="term">orbit</em>.</p>
-  <p class="try"><b>Try</b>Fire the cannon from the top of a very tall mountain. Then fire again, faster. At just the right speed, the ball falls all the way round the Earth and never lands.</p>
-</section>
-<figure class="wide" id="fig-grav">
-  <div class="stage space" style="max-width:760px;margin:0 auto"><svg viewBox="0 0 720 480" aria-label="A cannon on a mountain on the Earth, firing balls at different speeds"></svg></div>
-  <div class="controls">
-    <label class="slider">Slow <input type="range" id="gr-speed" min="0.2" max="1.5" step="0.01" value="0.6" aria-label="Cannon speed"> Fast</label>
-    <button class="pill primary" id="gr-fire" type="button">Fire</button>
-    <button class="pill" id="gr-down" type="button" aria-pressed="false">Which way is down?</button>
-  </div>
-  <div class="chips" id="gr-presets"><button type="button" data-v="0.45">Slow</button><button type="button" data-v="0.8">Faster</button><button type="button" data-v="1">Orbit speed</button><button type="button" data-v="1.12">Faster still</button><button type="button" data-v="1.45">Too fast</button></div>
-  <p class="msg" id="gr-msg"></p>
-  <figcaption>The mountain is drawn far too tall, and there is no air to slow the ball. Real orbit speed near the ground is about 8 km a second.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="takeaway">An orbit is falling with enough sideways speed to keep missing the ground. The Moon goes round the Earth like this, and the Earth goes round the Sun.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Why don't people in Australia fall off?</summary><p>Because "down" means towards the middle of the Earth, wherever you are. For people in Australia, down points to the middle of the Earth too. Nobody is upside down: everybody stands with their feet towards the centre. Press <em>Which way is down?</em> above to see.</p></details>
-    <details class="ask"><summary>Will the Moon ever crash into us?</summary><p>No. It's actually drifting away, very slowly: about 4 centimetres a year, roughly as fast as your fingernails grow.</p></details>
-    <details class="ask"><summary>How fast are we going round the Sun?</summary><p>About 30 kilometres every second. That's over 100,000 km an hour, much faster than any rocket. We don't feel it, for the same reason we don't feel the spin: it's perfectly smooth.</p></details>
-  </div>
+<section class="chap" id="c7">
+  <div class="n">7</div>
+  <h2>And it isn't Earth's shadow</h2>
+  <p class="a">Earth's shadow points away from the Sun. The Moon can only reach it when it's full.</p>
+  <figure id="fig-shadow"><div class="stage space"><svg viewBox="0 0 720 340" aria-label="The Earth's shadow, the Moon's shadow, and what you see"></svg></div></figure>
+  <div class="controls"><button class="pill primary" id="sh-play" type="button">Play a month</button></div>
+  <p class="msg" id="sh-msg"></p>
+  <p class="hint">Drag the Moon to new and full.</p>
 </section>
 
-<!-- 05 YEAR -->
-<section class="wrap ch" id="year">
-  <div class="ch-head"><div class="ch-num"><span>05</span> · The year</div></div>
-  <h2>Round the Sun, and the seasons</h2>
-  <p>The Earth travels all the way round the Sun once a <em class="term">year</em>. The trip takes 365 days and about a quarter. Those quarters add up, which is why every fourth year gets an extra day, 29 February.</p>
-  <p>The Earth also leans. The line it spins around, from the North Pole to the South Pole, is tipped over by about 23½°. And it keeps leaning the same way all year long, like a tilted spinning top.</p>
-  <p>So for half the year, the northern half of the Earth leans towards the Sun. The Sun climbs high, the days are long, and sunlight falls almost straight down. That is summer. For the other half, the north leans away: the Sun stays low, the days are short, and the same sunlight is spread thin over more ground. That is winter.</p>
-  <p class="try"><b>Try</b>Drag the Earth round the Sun, or press Play. Pick a place. Below, watch how much of its daily circle is in sunlight, how high the Sun climbs at midday, and how spread out its light is.</p>
-</section>
-<figure class="wide" id="fig-year">
-  <div class="stage space" style="max-width:860px;margin:0 auto"><svg id="yr-orbit" viewBox="0 0 720 320" aria-label="The Earth going round the Sun with its tilted axis"></svg></div>
-  <div class="chips" id="yr-city">
-    <button type="button" data-lat="1.35">Singapore</button>
-    <button type="button" data-lat="13.08" aria-pressed="true">Chennai</button>
-    <button type="button" data-lat="28.61">Delhi</button>
-    <button type="button" data-lat="51.51">London</button>
-    <button type="button" data-lat="69.65">Tromsø</button>
-    <button type="button" data-lat="-33.87">Sydney</button>
-  </div>
-  <div class="controls">
-    <button class="pill primary" id="yr-play" type="button">Play</button>
-    <label class="slider">Jan <input type="range" id="yr-day" min="0" max="365" step="1" value="172" aria-label="Day of the year"> Dec</label>
-  </div>
-  <div class="duo even" style="max-width:860px;margin:14px auto 0">
-    <div class="stage space"><svg id="yr-globe" viewBox="0 0 360 360" aria-label="The Earth seen side-on, showing how much of the chosen place's daily loop is in sunlight"></svg></div>
-    <div class="stage space"><svg id="yr-place" viewBox="0 0 360 360" aria-label="The Sun's path across the sky and how spread out the sunlight is"></svg></div>
-  </div>
-  <p class="readout" id="yr-read"></p>
-  <figcaption>Top: the orbit, seen at a slant, which is why it looks squashed. It is really very nearly a circle. Left: the Earth seen side-on with the Sun to its left. As the Earth spins, your town travels once round its circle every day. The part of the circle in sunlight is your daytime.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="takeaway">The seasons come from the lean, not from the distance. In fact, the Earth is closest to the Sun in early January, in the middle of the northern winter.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Is it summer because we're closer to the Sun?</summary><p>No. Our distance from the Sun changes by only about 3% during the year, and we are closest in January, which is winter in India, Europe and America. The lean matters much more. If distance made the seasons, the whole world would have summer at the same time. It doesn't.</p></details>
-    <details class="ask"><summary>Why is it summer in Australia at Christmas?</summary><p>When the north leans away from the Sun, the south must lean towards it. So the two halves of the Earth always have opposite seasons. Pick Sydney above and drag the Earth to December.</p></details>
-    <details class="ask"><summary>Why doesn't it snow in Chennai?</summary><p>Close to the equator, the midday Sun is high in the sky all year, whichever way the Earth is leaning, and the days stay close to 12 hours long. So it is warm all year. The seasons there are mostly about rain, not cold. Compare Chennai with London and Tromsø above.</p></details>
-    <details class="ask"><summary>Why does the Sun shine at midnight in some places?</summary><p>Near the North Pole in summer, the lean tips that part of the Earth so far towards the Sun that it never turns into the dark half, even at midnight. In winter it stays in the dark for weeks. Try Tromsø in June and December.</p></details>
-  </div>
-</section>
-
-<!-- 06 MONTH -->
-<section class="wrap ch" id="month">
-  <div class="ch-head"><div class="ch-num"><span>06</span> · The month</div></div>
-  <h2>Why the Moon changes shape</h2>
-  <p>The Moon travels round the Earth about once a month. The word <em>month</em> even comes from <em>Moon</em>. From one full moon to the next takes 29½ days.</p>
-  <p>Remember fact one: half of the Moon is always lit by the Sun. The Moon itself never changes. What changes is how much of that lit half we can see from the Earth.</p>
-  <p>When the Moon is between us and the Sun, its lit side faces away from us and we see nothing: a <em class="term">new moon</em>. When it is on the far side of us, we see its whole lit face: a <em class="term">full moon</em>. In between, we see part of it, a thin <em class="term">crescent</em>, a half, or a fat <em class="term">gibbous</em> moon.</p>
-  <p class="try"><b>Try</b>Drag the Moon round the Earth, or press Play. On the right is the shape you would see from the Earth.</p>
-</section>
-<figure class="wide" id="fig-month">
-  <div class="duo">
-    <div class="stage space"><svg id="mo-orbit" viewBox="0 0 400 360" aria-label="The Moon going round the Earth, seen from above"></svg></div>
-    <div class="stage space"><svg id="mo-view" viewBox="0 0 300 300" aria-label="The Moon as you would see it from the Earth"></svg></div>
-  </div>
-  <div class="chips" id="mo-phases"></div>
-  <div class="controls">
-    <button class="pill primary" id="mo-play" type="button">Play</button>
-    <button class="pill" id="mo-mark" type="button" aria-pressed="false">Mark one spot on the Moon</button>
-    <button class="pill" id="mo-nospin" type="button" aria-pressed="false">What if the Moon didn't spin?</button>
-  </div>
-  <p class="readout" id="mo-read"></p>
-  <p class="msg" id="mo-msg"></p>
-  <figcaption>The Moon's distance is squashed: it is really about 30 Earths away. The view on the right is for the northern half of the world. From Australia or Argentina, the Moon looks upside down.</figcaption>
-</figure>
-<section class="wrap">
-  <p>One more thing to notice: we always see the same face of the Moon, with the same dark patches. That's because the Moon does spin, but slowly. It turns exactly once for each trip round the Earth, so the same side always faces us. Mark a spot on the Moon above and watch it.</p>
-  <p class="takeaway">The Moon is always half lit. Its phases are just our changing view of that lit half.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Why can I see the Moon in the daytime?</summary><p>The Moon is in the sky for about half of every day, and it doesn't care whether the Sun is up. A half moon rises around midday, so it's easy to spot in the afternoon sky. Only around new moon is it too close to the Sun to see.</p></details>
-    <details class="ask"><summary>Why does the Moon follow our car?</summary><p>Because it is so far away. Trees and houses beside the road are close, so they rush past. But you'd have to drive for hours before your direction to the Moon changed even a little. So the Moon seems to keep pace with you, wherever you go.</p></details>
-    <details class="ask"><summary>Is there a man in the Moon?</summary><p>The dark patches are huge plains of old lava that flowed out and cooled billions of years ago. People around the world see different pictures in them: a face, a rabbit, a woman carrying sticks. What do you see?</p></details>
-    <details class="ask"><summary>Is the far side of the Moon always dark?</summary><p>No. It gets just as much sunlight as the side we see. At new moon, when our side is dark, the far side is in full daylight. We just never get to see it from the Earth.</p></details>
-  </div>
-</section>
-
-<!-- 07 SOLAR ECLIPSE -->
-<section class="wrap ch" id="solar">
-  <div class="ch-head"><div class="ch-num"><span>07</span> · Shadow</div></div>
-  <h2>The day the Sun disappears</h2>
-  <p>Once a month, at new moon, the Moon passes between the Earth and the Sun. Usually it passes a little above or below the Sun (the next chapters explain why). But sometimes it lines up exactly, and the Moon blocks the Sun. This is a <em class="term">solar eclipse</em>.</p>
-  <p>Like everything in sunlight, the Moon casts a shadow. Its darkest part is small: only a hundred kilometres or so wide by the time it reaches the Earth. If you stand inside it, the Moon covers the whole Sun. Day turns into deep twilight, the air cools, birds go quiet, and the Sun's glowing outer layer, the <em class="term">corona</em>, appears around a black Moon. This is a <em class="term">total eclipse</em>. People farther away, in the paler part of the shadow, see only a bite taken out of the Sun.</p>
-  <p>The Moon's path round the Earth is not a perfect circle. When the Moon is farther away, it looks a little smaller than the Sun and can't cover all of it. Then you see a ring of fire: an <em class="term">annular eclipse</em>.</p>
-  <p class="try"><b>Try</b>Press Play to watch the Moon pass. Drag the little person to stand somewhere else on the Earth. Then move the Moon far away and play it again.</p>
-</section>
-<figure class="wide" id="fig-solar">
-  <div class="stage space" style="max-width:920px;margin:0 auto"><svg viewBox="0 0 720 340" aria-label="The Moon's shadow falling on the Earth, seen from above"></svg></div>
-  <div class="duo even" style="max-width:920px;margin:14px auto 0;align-items:center">
-    <div class="stage space" style="max-width:340px;width:100%;margin:0 auto"><svg id="so-sky" viewBox="0 0 300 300" aria-label="The sky as seen by the little person"></svg></div>
-    <div>
-      <div class="controls" style="justify-content:flex-start">
-        <button class="pill primary" id="so-play" type="button">Play</button>
-        <button class="pill" id="so-align" type="button">Line them up</button>
-      </div>
-      <div class="controls" style="justify-content:flex-start">
-        <div class="seg" id="so-dist" role="group" aria-label="Moon's distance"><button type="button" data-v="363300" aria-pressed="true">Moon close</button><button type="button" data-v="384400">Average</button><button type="button" data-v="405500">Moon far</button></div>
-      </div>
-      <p class="msg" id="so-msg" style="text-align:left;margin-left:0"></p>
-    </div>
-  </div>
-  <figcaption>Seen from above. The Moon's distance is squashed, and its shadow is stretched to match, so the shadow still reaches the Earth exactly as it really does. The sky view is a drawing: never look at the real Sun like this.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="warn"><b>Never look at the Sun, even when it is mostly covered.</b> A thin sliver of Sun is still bright enough to hurt your eyes. Use proper eclipse glasses, or make a pinhole in a card and let it cast a little image of the Sun on the ground. Only during the minutes of totality, when the Sun is completely hidden, is it safe to look directly.</p>
-  <h3>The next solar eclipses</h3>
-  <div class="dates">
-    <div><time datetime="2027-02-06">6 Feb 2027</time><span class="k">Ring of fire</span><span class="w">Chile, Argentina, the South Atlantic and West Africa</span></div>
-    <div><time datetime="2027-08-02">2 Aug 2027</time><span class="k">Total</span><span class="w">Spain, Morocco, Algeria, Tunisia, Libya, Egypt, Saudi Arabia and Yemen. Up to 6 minutes 23 seconds of darkness</span></div>
-    <div><time datetime="2028-01-26">26 Jan 2028</time><span class="k">Ring of fire</span><span class="w">Ecuador, Peru, Brazil, Portugal and Spain</span></div>
-    <div><time datetime="2028-07-22">22 Jul 2028</time><span class="k">Total</span><span class="w">Australia (including Sydney) and New Zealand</span></div>
-  </div>
-  <p style="font:13px/1.5 var(--sans);color:var(--muted);margin-top:10px">A partial eclipse is visible over a much wider area around each path. Dates from <a href="https://science.nasa.gov/eclipses/future-eclipses/">NASA</a>; check a local guide for times where you live.</p>
-  <p class="takeaway">A solar eclipse is simply standing in the Moon's shadow.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Why do animals act strangely during an eclipse?</summary><p>The light fades like dusk, but in a few minutes instead of an hour, and it gets cooler. Birds fly home to roost, crickets start chirping, and some flowers begin to close. A few minutes later it's suddenly morning again.</p></details>
-    <details class="ask"><summary>How long does a total eclipse last?</summary><p>The whole show, from first bite to last, takes two or three hours. But the total part, at any one spot, lasts only a few minutes, never more than about seven and a half. The Moon's shadow races across the Earth faster than a jet plane.</p></details>
-    <details class="ask"><summary>Could I see a total eclipse from my house?</summary><p>Probably not without travelling. There's a total eclipse somewhere on Earth about every 18 months, but the shadow's path is narrow. Any one spot waits, on average, a few hundred years between total eclipses. That's why people travel across the world to stand in the shadow.</p></details>
-  </div>
-</section>
-
-<!-- 08 LUNAR ECLIPSE -->
-<section class="wrap ch" id="lunar">
-  <div class="ch-head"><div class="ch-num"><span>08</span> · Shadow, the other way</div></div>
-  <h2>When the Moon turns red</h2>
-  <p>The Earth casts a shadow too, much bigger than the Moon's. At full moon, the Moon is on the far side of the Earth from the Sun. If the three line up exactly, the Moon slides into the Earth's shadow. This is a <em class="term">lunar eclipse</em>.</p>
-  <p>Everyone on the night side of the Earth can see it at the same time. It is completely safe to watch, and it lasts for hours.</p>
-  <p>The strange part: the Moon doesn't go black. It turns a deep coppery red. That red light has come through the Earth's air. The air bends a little sunlight round the edge of the Earth and into the shadow, and on the way it turns red, just like the Sun at sunset. During a lunar eclipse, the Moon is lit by all the sunrises and sunsets on Earth at once.</p>
-  <p class="try"><b>Try</b>Press Play, or drag the Moon through the Earth's shadow. Then press <em>Why red?</em></p>
-</section>
-<figure class="wide" id="fig-lunar">
-  <div class="stage space" style="max-width:920px;margin:0 auto"><svg viewBox="0 0 720 320" aria-label="The Moon passing through the Earth's shadow, seen from above"></svg></div>
-  <div class="duo even" style="max-width:920px;margin:14px auto 0;align-items:center">
-    <div class="stage space" style="max-width:340px;width:100%;margin:0 auto"><svg id="lu-sky" viewBox="0 0 300 300" aria-label="The Moon as seen from the night side of the Earth"></svg></div>
-    <div>
-      <div class="controls" style="justify-content:flex-start">
-        <button class="pill primary" id="lu-play" type="button">Play</button>
-        <button class="pill" id="lu-red" type="button" aria-pressed="false">Why red?</button>
-      </div>
-      <p class="msg" id="lu-msg" style="text-align:left;margin-left:0"></p>
-    </div>
-  </div>
-  <figcaption>Seen from above, with the distances squashed. The shadow sizes at the Moon are to scale: the Earth's dark shadow is nearly three Moons wide.</figcaption>
-</figure>
-<section class="wrap">
-  <h3>The next total lunar eclipses</h3>
-  <div class="dates">
-    <div><time datetime="2028-12-31">31 Dec 2028</time><span class="k">Total</span><span class="w">Seen from Asia, Australia, Europe and Africa (New Year's Eve)</span></div>
-    <div><time datetime="2029-06-26">26 Jun 2029</time><span class="k">Total</span><span class="w">A long one, about 100 minutes of red Moon. Seen from the Americas, Europe and Africa</span></div>
-    <div><time datetime="2029-12-20">20 Dec 2029</time><span class="k">Total</span><span class="w">Seen from the Americas, Europe, Africa and Asia</span></div>
-  </div>
-  <p style="font:13px/1.5 var(--sans);color:var(--muted);margin-top:10px">There are also partial lunar eclipses on 12 January and 6 July 2028. Dates from <a href="https://science.nasa.gov/eclipses/future-eclipses/">NASA</a>. The Moon must be above your horizon at the time to see it.</p>
-  <p class="takeaway">A solar eclipse is the Moon's shadow on the Earth. A lunar eclipse is the Earth's shadow on the Moon.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>Why do people call it a blood moon?</summary><p>Only because of the colour. Nothing happens to the Moon itself. It's the same grey rock, lit by reddish light that has squeezed through the Earth's air.</p></details>
-    <details class="ask"><summary>Why are lunar eclipses easier to see than solar ones?</summary><p>The Earth's shadow is big enough to swallow the whole Moon, so everyone who can see the Moon sees the eclipse: about half the world at once. A solar eclipse is the other way round. The Moon's shadow is a small spot on the big Earth, so only people inside that spot see the total part.</p></details>
-  </div>
-</section>
-
-<!-- 09 RARE -->
-<section class="wrap ch" id="rare">
-  <div class="ch-head"><div class="ch-num"><span>09</span> · The tilt</div></div>
-  <h2>Why eclipses don't happen every month</h2>
-  <p>If the Moon passes between us and the Sun every month, why isn't there a solar eclipse every month?</p>
-  <p>Because the Moon's path is tipped. Its orbit is tilted by about 5° compared with the Earth's path round the Sun. Picture two hula hoops, one slightly tipped, crossing at two points. Most months, at new moon, the Moon slips just above or just below the Sun, and its shadow misses the Earth. At full moon, it slips above or below the Earth's shadow.</p>
-  <p>Things only line up when a new moon or full moon happens near one of the two crossing points. That happens during two short windows each year, called <em class="term">eclipse seasons</em>. It's why eclipses often come in pairs: a solar eclipse and a lunar eclipse about two weeks apart.</p>
-  <p class="try"><b>Try</b>Press Play to run through a year. Each square below is one new moon or one full moon. Then drag the tilt down to zero, and see what would happen if the hoops were flat.</p>
-</section>
-<figure class="wide" id="fig-rare">
-  <div class="stage space" style="max-width:920px;margin:0 auto"><svg viewBox="0 0 720 320" aria-label="The Earth going round the Sun, with the Moon's tilted orbit around it"></svg></div>
-  <div style="max-width:920px;margin:0 auto">
-    <div class="strip-lbl">Each new moon · the Moon against the Sun</div>
-    <div class="strip" id="ra-new"></div>
-    <div class="strip-lbl">Each full moon · the Moon against the Earth's shadow</div>
-    <div class="strip" id="ra-full"></div>
-  </div>
-  <div class="controls">
-    <button class="pill primary" id="ra-play" type="button">Play a year</button>
-    <label class="slider">Flat <input type="range" id="ra-tilt" min="0" max="5.1" step="0.1" value="5.1" aria-label="Tilt of the Moon's orbit"> 5° tilt</label>
-  </div>
-  <p class="readout" id="ra-read"></p>
-  <p class="msg" id="ra-msg"></p>
-  <figcaption>An illustrative year, not a forecast. The tilt is drawn three times steeper than it really is so you can see it.</figcaption>
-</figure>
-<section class="wrap">
-  <p class="takeaway">An eclipse needs two things at once: a new or full moon, and the Moon at a crossing point. That only happens a few times a year.</p>
-  <div class="asks"><div class="lbl">Children ask</div>
-    <details class="ask"><summary>How many eclipses are there in a year?</summary><p>Every year has at least two solar eclipses somewhere on Earth, and some years have up to five. Lunar eclipses are similar. Many are only partial, and each one can be seen only from part of the world.</p></details>
-    <details class="ask"><summary>Do eclipses happen at the same time every year?</summary><p>Not quite. The crossing points slowly creep round, so the eclipse seasons arrive about 19 days earlier each year. After about 18 years and 11 days, the Sun, the Earth and the Moon come back to almost the same arrangement, and a very similar eclipse happens again. People noticed this pattern thousands of years ago and used it to predict eclipses.</p></details>
-  </div>
-</section>
-
-<!-- HOME -->
-<section class="wrap ch" id="home">
-  <div class="ch-head"><div class="ch-num">Try it at home</div></div>
-  <h2>A lamp, an orange and a ball</h2>
-  <p>Everything on this page works in your living room. Make the room dark. A lamp with its shade taken off, or a torch on a table, is the Sun.</p>
-  <ol class="home">
-    <li><b>Day and night</b><p>Put a small sticker on an orange: that's you. Hold the orange near the lamp and turn it slowly, the same way as the drawing in chapter 2. When does your sticker see sunrise? When does it see sunset? Is the lamp moving?</p></li>
-    <li><b>The seasons</b><p>Push a pencil through the orange from top to bottom and tip it a little. Walk slowly round the lamp, keeping the pencil pointing at the same corner of the room. Notice when the top half leans towards the lamp (northern summer) and when it leans away (northern winter).</p></li>
-    <li><b>The Moon's shapes</b><p>Push a ball onto a pencil or stick. Your head is the Earth. Hold the ball out at arm's length, a little higher than your head, and face the lamp. Now turn slowly on the spot, all the way round. Watch the lit part of the ball grow from nothing, to a crescent, to a half, to full, and back again.</p></li>
-    <li><b>Eclipses</b><p>Do it again, but hold the ball exactly at head height. When the ball is in front of the lamp, it blocks it: a solar eclipse. When it's behind your head, your head's shadow falls on it: a lunar eclipse. Now hold it a little higher, as the Moon's tipped path does, and watch it miss both times.</p></li>
-    <li><b>The real sizes</b><p>If the Earth were a marble 1 cm wide, the Moon would be a crumb 3 mm wide, a ruler's length away (30 cm). The Sun would be a ball as tall as a small child (1.1 m), about 118 metres down the road. Try pacing that out in a park.</p></li>
+<section class="chap" id="c8">
+  <div class="n">8</div>
+  <h2>Try it with a lamp</h2>
+  <p class="a">A dark room. One lamp. A ball. You are the Earth.</p>
+  <figure id="fig-lamp"><div class="stage space"><svg viewBox="0 0 720 320" aria-label="A child turning on the spot, holding a ball up near a lamp"></svg></div></figure>
+  <ol class="steps">
+    <li>Hold the ball up at arm's length, a little above your head.</li>
+    <li>Turn slowly to your left.</li>
+    <li>Watch it go new, half, full, half, new.</li>
   </ol>
 </section>
 
-<!-- FAQ -->
-<section class="wrap ch" id="questions">
-  <div class="ch-head"><div class="ch-num">More questions</div></div>
-  <h2>Everything else children ask</h2>
-  <p>The questions that didn't fit into a chapter. Each answer is short enough to read aloud.</p>
-  <div class="asks faq-group"><div class="lbl">The Sun</div>
-    <details class="ask"><summary>Why is the sky blue?</summary><p>Sunlight looks white, but it's a mix of all the colours of the rainbow. When it passes through the air, the blue part gets bounced around the most, all over the sky. So wherever you look, blue light is coming at you from the air. On the Moon, which has no air, the sky is black even in the daytime.</p></details>
-    <details class="ask"><summary>Why is the sunset orange and red?</summary><p>When the Sun is low, its light has to pass through much more air to reach you. By the time it arrives, most of the blue has been bounced away, and the oranges and reds are left. It's the same reason the Moon turns red during a lunar eclipse.</p></details>
-    <details class="ask"><summary>How long does sunlight take to reach us?</summary><p>About 8 minutes and 20 seconds. So when you see the Sun, you are seeing it as it was 8 minutes ago. Light from the Moon takes just over one second.</p></details>
-    <details class="ask"><summary>Will the Sun ever go out?</summary><p>Yes, but not for a very, very long time. The Sun has been shining for about 4½ billion years, and it has enough fuel for about 5 billion more. Nobody alive today, or for millions of generations, needs to worry about it.</p></details>
-    <details class="ask"><summary>What colour is the Sun really?</summary><p>White. It looks yellow from the ground because the air takes away a little of its blue, and orange or red near sunset when the air takes away more. Astronauts in space see a white Sun.</p></details>
-  </div>
-  <div class="asks faq-group"><div class="lbl">The Moon</div>
-    <details class="ask"><summary>Where did the Moon come from?</summary><p>Scientists think that long ago, when the Earth was very young, another small planet crashed into it. The crash threw a huge cloud of rock into space, and over time that rock clumped together into the Moon.</p></details>
-    <details class="ask"><summary>Has anyone been to the Moon?</summary><p>Yes. Twelve astronauts walked on the Moon between 1969 and 1972. Because the Moon has no wind or rain, their footprints are probably still there.</p></details>
-    <details class="ask"><summary>Why does the Moon have holes?</summary><p>Those round holes are craters, made by space rocks crashing into the Moon. The Earth gets hit too, but our wind, rain and plants wear the marks away. The Moon has no air or weather, so its craters stay for billions of years.</p></details>
-    <details class="ask"><summary>Could I breathe on the Moon?</summary><p>No. The Moon has no air at all, which is why astronauts wear spacesuits. With no air, there is no sound either, and the sky stays black even in the daytime.</p></details>
-    <details class="ask"><summary>Why is the Moon sometimes orange?</summary><p>When the Moon is low, its light travels through lots of air, which takes away the blue and leaves orange, just like a sunset. When it climbs higher, it turns white again.</p></details>
-  </div>
-  <div class="asks faq-group"><div class="lbl">The Earth</div>
-    <details class="ask"><summary>Why is the Earth round?</summary><p>Gravity pulls everything towards the middle. When something is as big as a planet, its gravity pulls every bit of it in as close to the centre as it can get. The shape where everything is as close to the middle as possible is a ball.</p></details>
-    <details class="ask"><summary>What makes the sea go in and out?</summary><p>The Moon's gravity. It pulls a little harder on the side of the Earth facing it, and a little less on the far side, so the oceans bulge out on both sides. As the Earth spins, your beach passes through both bulges, so most places get two high tides a day.</p></details>
-    <details class="ask"><summary>If the Earth moves so fast, why don't we fly off?</summary><p>Gravity holds us down, and the motion is perfectly smooth. Everything around us, including the air, moves along with us. Just as you can pour a drink on a smooth train ride, nothing on Earth notices how fast we're going.</p></details>
-    <details class="ask"><summary>Why is a day 24 hours, a month about 30 days, and a year 365 days?</summary><p>They all come from the sky. A day is one spin of the Earth. A month was first the time from one new moon to the next. A year is one trip round the Sun. People invented hours, minutes and calendars to divide those up.</p></details>
-  </div>
-</section>
-
-<section class="wrap ch" id="numbers">
-  <div class="ch-head"><div class="ch-num">In numbers</div></div>
-  <h2>One star, two balls of rock</h2>
-  <p>One star that makes light. A spinning Earth that leans. A Moon that circles on a slightly tipped path. And the shadows they cast. Every day and night, every season, every Moon shape and every eclipse comes from those.</p>
-  <div class="numbers">
-    <div><b>109</b><span>Earths across the Sun</span></div>
-    <div><b>3.7</b><span>Moons across the Earth</span></div>
-    <div><b>384,400 km</b><span>to the Moon, on average</span></div>
-    <div><b>150 million km</b><span>to the Sun</span></div>
-    <div><b>24 h</b><span>one spin of the Earth</span></div>
-    <div><b>29.5 days</b><span>new moon to new moon</span></div>
-    <div><b>23.4°</b><span>the Earth's lean</span></div>
-    <div><b>5.1°</b><span>the tilt of the Moon's path</span></div>
-  </div>
+<div class="end">
+  <p>One lamp. One ball. You in the middle, turning.</p>
   <details class="notes">
-    <summary>Notes on these drawings</summary>
-    <p>Most drawings squash distances so that all three bodies fit; each says so beneath it. The size and distance chapter is to true scale, and its on-screen distances are worked out from the size of your screen, assuming a standard 96 pixels per inch.</p>
-    <p>The live Moon at the top is calculated in your browser from the date, using a short series for the Sun's and Moon's positions. It is accurate to within a few hours, which is plenty for naming the phase. "You" is placed from your device's clock, so it shows the hour of the day rather than your exact longitude.</p>
-    <p>In the solar eclipse drawing, the Moon's distance is compressed and its shadow is stretched by the same amount, so the shadow's width where it meets the Earth is to scale (it really is that small). The sky view uses the same numbers: the real sizes and distances of the Sun and the Moon. The lunar eclipse shows the Earth's shadow at its real size at the Moon's distance, but ignores the slight widening caused by the air. The year of eclipses in chapter 9 uses average motions and fixed crossing points, so it shows the pattern, not real dates. The Earth's air, the Sun's glow and the colours are illustrative.</p>
-    <p>Sources: <a href="https://science.nasa.gov/sun/facts/">NASA Sun facts</a>, <a href="https://science.nasa.gov/moon/facts/">NASA Moon facts</a>, <a href="https://science.nasa.gov/eclipses/future-eclipses/">NASA future eclipses</a>. Updated 8 November 2026.</p>
+    <summary>About these pictures</summary>
+    <p>Distances are squashed so everything fits. Tonight's Moon in chapter 0 and the calendar in chapter 3 are worked out in your browser from today's date, close to the day. Chapter 4 shows the sky as seen from the northern half of the world, facing south; in the southern half the shapes are flipped.</p>
+    <p>Sources: <a href="https://science.nasa.gov/moon/moon-phases/">NASA Moon phases</a> and <a href="https://science.nasa.gov/moon/facts/">NASA Moon facts</a>.</p>
   </details>
-</section>
+</div>
 </main>
 
 <footer><a href="/tools.html">More tools</a> · <a href="/">Writing</a> · Arun Rafi</footer>
@@ -771,912 +390,385 @@ function phaseName(E){E=mod(E,360);
   if(E<190)return 'full moon';if(E<260)return 'waning gibbous';if(E<280)return 'last quarter';return 'waning crescent';}
 function nextPhase(from,target){let prev=mod(sky(from).E-target,360);for(let h=1;h<24*32;h++){const t=new Date(from.getTime()+h*36e5);const cur=mod(sky(t).E-target,360);if(cur<prev&&prev>300&&cur<60)return t;prev=cur;}return null;}
 
-/* =====================================================================
-   HERO: right now, with a time machine
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-hero'), svg=$('svg',fig); watch(svg);
-  const EX=430,EY=190,ER=46,MR=150;
-  for(let y=24;y<380;y+=30)S('line',{x1:110,y1:y,x2:720,y2:y,class:'ray','stroke-opacity':.07},svg);
-  sun(svg,svg,-150,190,230,1.25);
-  T(svg,24,196,'Sun','st-b');
-  S('circle',{cx:EX,cy:EY,r:MR,class:'orbit'},svg);
-  const E=earth(svg,svg,EX,EY,ER,{polar:true,seed:21});
-  const you=G(svg);
-  S('line',{x1:0,y1:0,x2:13,y2:0,stroke:'#f2a04a','stroke-width':2.2,'stroke-linecap':'round'},you);
-  S('circle',{cx:17,cy:0,r:4.2,class:'you'},you);
-  const youL=T(svg,0,0,'You','st-b',{fill:'#f2a04a'});
-  const eL=T(svg,EX,EY+ER+20,'Earth','st-b',{class:'st-b mid'});
-  const M=moon(svg,svg,0,0,13);
-  const mL=T(svg,0,0,'Moon','st',{class:'st mid'});
-  T(svg,650,24,'The Moon','st',{class:'st mid'});
-  T(svg,650,40,'as you see it','st',{class:'st mid'});
-  const IM=moon(svg,svg,650,90,36,{dim:.88});
-  const insetL=T(svg,650,146,'','st-b',{class:'st-b mid'});
-  const clock=T(svg,704,352,'','st-b',{class:'st-b end'});
-  const clock2=T(svg,704,334,'','st',{class:'st end'});
-  T(svg,16,366,'Seen from above the North Pole. Not to scale.','st-s');
-  const cap=$('#hero-cap'), playB=$('#hero-play'), nowB=$('#hero-now');
-  const fmtD=d=>d.toLocaleDateString(undefined,{weekday:'long',day:'numeric',month:'long'});
-  let sim=null, playing=false, speed=1, lastCap=0;
-  function draw(now){
-    const h=now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
-    const aY=Math.PI-(h-12)/12*Math.PI;
-    E.set(Math.PI,0,aY-Math.PI);
-    you.setAttribute('transform',`translate(${EX} ${EY}) rotate(${n2(aY/D)}) translate(${ER-1} 0)`);
-    const lx=EX+(ER+34)*Math.cos(aY),ly=EY+(ER+34)*Math.sin(aY)+4;
-    eL.setAttribute('y',Math.sin(aY)>0.25?EY-ER-12:EY+ER+20);
-    youL.setAttribute('x',n2(lx));youL.setAttribute('y',n2(ly));youL.setAttribute('text-anchor',Math.cos(aY)>.3?'start':Math.cos(aY)<-.3?'end':'middle');
-    const Edeg=sky(now).E, Er=Edeg*D;
-    const a=Math.PI-Er, mx=EX+MR*Math.cos(a), my=EY+MR*Math.sin(a);
-    M.move(mx,my);M.set(Math.PI,0);
-    mL.setAttribute('x',n2(EX+(MR+36)*Math.cos(a)));mL.setAttribute('y',n2(EY+(MR+36)*Math.sin(a)+4));
-    IM.set(Edeg<180?0:Math.PI,-Math.cos(Er));
-    const name=phaseName(Edeg);
-    insetL.textContent=name.charAt(0).toUpperCase()+name.slice(1);
-    clock2.textContent=now.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});
-    clock.textContent=fmtHour(h);
-    return {h,Edeg,Er,name};
-  }
-  function caption(now,live){
-    const {h,Er,name}=draw(now);
-    const pct=Math.round((1-Math.cos(Er))/2*100);
-    let part;
-    if(h<4.5||h>=21.5)part='night: your side of the Earth is facing away from the Sun';
-    else if(h<6.5)part='early morning: the Earth is about to turn you into the sunlight';
-    else if(h<11)part='morning, on the sunny side of the Earth';
-    else if(h<13.5)part='around midday: you are facing the Sun';
-    else if(h<17)part='afternoon, on the sunny side of the Earth';
-    else if(h<19)part='evening: the Earth is turning you away from the Sun';
-    else part='evening, on the dark side of the Earth';
-    if(!live){
-      cap.innerHTML=`<strong>Fast-forward: ${fmtD(now)}, ${fmtHour(h)}.</strong> It's ${part}. The Moon is a <strong>${name}</strong>, ${pct}% lit. ${speed<12?'Watch the Earth turn you through day and night.':'Watch the Moon creep round and change shape, about once a month.'}`;
-      return;}
-    const nf=nextPhase(now,180), nn=nextPhase(now,0);
-    let moonTxt;
-    if(name==='new moon')moonTxt=`The Moon is a <strong>new moon</strong>, too close to the Sun to see. The next full moon is on <strong>${fmtD(nf)}</strong>.`;
-    else if(name==='full moon')moonTxt=`Tonight is a <strong>full moon</strong>, ${pct}% lit. The next new moon is on <strong>${fmtD(nn)}</strong>.`;
-    else moonTxt=`The Moon is a <strong>${name}</strong>, ${pct}% lit. Next full moon: <strong>${fmtD(nf)}</strong>.`;
-    cap.innerHTML=`It's <strong>${fmtHour(h)}</strong> where you are: ${part}. ${moonTxt}`;
-  }
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Speed up time';if(v&&!sim)sim=new Date();nowB.hidden=!sim;}
-  playB.addEventListener('click',()=>setPlay(!playing));
-  nowB.addEventListener('click',()=>{setPlay(false);sim=null;nowB.hidden=true;caption(new Date(),true);});
-  seg('hero-speed',v=>{speed=+v;if(!playing)setPlay(true);});
-  addLoop(fig,(dt,t)=>{if(!playing)return;sim=new Date(sim.getTime()+dt*speed*36e5);
-    if(t-lastCap>200){lastCap=t;caption(sim,false);}else draw(sim);});
-  caption(new Date(),true); setInterval(()=>{if(!sim)caption(new Date(),true);},60000);
-})();
-
-/* =====================================================================
-   01 LIGHT
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-light'), svg=$('svg',fig); watch(svg);
-  const EX=390,EY=240,ER=50,MX=585,MY=110,MRr=17;
-  let sx=120,sy=150,off=false,touched=false;
-  const rays=G(svg);
-  const path=S('polyline',{class:'sight',fill:'none'},svg);
-  const ah=arrowHead(svg,nid('ah'));path.setAttribute('marker-end',ah);
-  const pathL=T(svg,0,0,'moonlight','st-a',{class:'st-a mid'});
-  const E=earth(svg,svg,EX,EY,ER,{seed:5});
-  const M=moon(svg,svg,MX,MY,MRr);
-  T(svg,EX,EY+ER+22,'Earth','st-b',{class:'st-b mid'});
-  T(svg,MX,MY-MRr-12,'Moon','st-b',{class:'st-b mid'});
-  T(svg,650,272,'The Moon,','st',{class:'st mid'});
-  T(svg,650,287,'seen from Earth','st',{class:'st mid'});
-  const IM=moon(svg,svg,650,328,26,{dim:.9});
-  const sunG=G(svg,{class:'grab fade'});
-  sun(svg,sunG,0,0,40,1.8);
-  const sunL=T(sunG,0,58,'Sun · drag me','st-b',{class:'st-b mid'});
-  const hint=S('circle',{r:46,class:'hint-ring'},sunG);
-  const msg=$('#li-msg');
-  function lineTo(x,y){S('line',{x1:n2(sx),y1:n2(sy),x2:n2(x),y2:n2(y),class:'ray','stroke-width':1.6},rays);}
-  function render(){
-    sunG.setAttribute('transform',`translate(${n2(sx)} ${n2(sy)})`);
-    sunG.style.opacity=off?.12:1;
-    rays.innerHTML='';
-    const aE=Math.atan2(sy-EY,sx-EX), aM=Math.atan2(sy-MY,sx-MX);
-    if(!off){
-      [[EX,EY,ER,aE],[MX,MY,MRr,aM]].forEach(b=>{const n=b[3]+Math.PI/2;for(const s of [-.8,0,.8])lineTo(b[0]+b[2]*s*Math.cos(n),b[1]+b[2]*s*Math.sin(n));});
-    }
-    E.set(aE,off?-1:0);M.set(aM,off?-1:0);
-    // phase seen from Earth
-    const v=[MX-EX,MY-EY], s=[sx-EX,sy-EY];
-    const a1=[sx-MX,sy-MY],a2=[EX-MX,EY-MY];
-    const k=(a1[0]*a2[0]+a1[1]*a2[1])/Math.hypot(...a1)/Math.hypot(...a2);
-    const cross=v[0]*s[1]-v[1]*s[0];
-    IM.set(cross>0?0:Math.PI,off?-1:k);
-    const f=(1+k)/2;
-    path.style.display=off||f<0.04?'none':'';pathL.style.display=path.style.display;
-    path.setAttribute('points',`${n2(sx)},${n2(sy)} ${MX},${MY} ${n2(EX+(MX-EX)*0.28)},${n2(EY+(MY-EY)*0.28)}`);
-    pathL.setAttribute('x',n2((MX+EX)/2+18));pathL.setAttribute('y',n2((MY+EY)/2+4));
-    if(off){msg.innerHTML='<strong>With the Sun off, nothing shines.</strong> The Earth goes dark, and the Moon disappears too. It never had any light of its own.';}
-    else if(f>0.93)msg.innerHTML=`From Earth, you would see a <strong>full Moon</strong>: its whole sunlit half faces you.`;
-    else if(f<0.06)msg.innerHTML=`The Moon's sunlit half faces away from Earth. From Earth you would see <strong>almost nothing</strong>: a new moon.`;
-    else msg.innerHTML=`From Earth you can see part of the Moon's sunlit half, so it looks <strong>${Math.round(f*100)}% lit</strong>. The Moon is still half lit, as always.`;
-  }
-  drag(sunG,svg,p=>{
-    let x=clamp(p.x,30,690),y=clamp(p.y,30,350);
-    for(const b of [[EX,EY,ER+62],[MX,MY,MRr+60]]){const dx=x-b[0],dy=y-b[1],d=Math.hypot(dx,dy);if(d<b[2]){x=b[0]+dx/(d||1)*b[2];y=b[1]+dy/(d||1)*b[2];}}
-    sx=x;sy=y;render();
-  },()=>{if(!touched){touched=true;hint.remove();sunL.textContent='Sun';}});
-  $('#li-off').addEventListener('click',e=>{off=!off;e.currentTarget.setAttribute('aria-pressed',off);e.currentTarget.textContent=off?'Switch the Sun on':'Switch the Sun off';render();});
-  render();
-})();
-
-/* =====================================================================
-   02 SPIN: day and night
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-spin'), svg=$('#sp-earth'), sk=$('#sp-sky'); watch(svg);watch(sk);
-  const CX=215,CY=180,R=118;
-  S('rect',{x:0,y:CY-R,width:CX,height:2*R,class:'beam'},svg);
-  for(let y=CY-R+8;y<CY+R;y+=20){const xe=CX-Math.sqrt(R*R-(y-CY)*(y-CY));S('line',{x1:6,y1:y,x2:n2(xe-2),y2:y,class:'ray'},svg);}
-  T(svg,12,28,'Sunlight','st-a');
-  const ahId=nid('ah');const ah=arrowHead(svg,ahId);
-  S('path',{d:'M14 40 L70 40',class:'arrow','marker-end':ah},svg);
-  const E=earth(svg,svg,CX,CY,R,{polar:true,seed:41});
-  T(svg,CX-62,CY+R+30,'Day','st-a',{class:'st-a mid'});
-  T(svg,CX+62,CY+R+30,'Night','st-a',{class:'st-a mid',fill:'#86a8f0'});
-  // spin arrow (counter-clockwise from above)
-  const a0=-15*D,a1=-62*D,ar=R+16;
-  S('path',{d:`M${n2(CX+ar*Math.cos(a0))} ${n2(CY+ar*Math.sin(a0))}A${ar} ${ar} 0 0 0 ${n2(CX+ar*Math.cos(a1))} ${n2(CY+ar*Math.sin(a1))}`,class:'arrow','marker-end':ah},svg);
-  T(svg,372,CY-22,'spins','st',{class:'st end'});T(svg,372,CY-7,'this way','st',{class:'st end'});
-  function person(cls,color){const g=G(svg);S('line',{x1:0,y1:0,x2:15,y2:0,stroke:color,'stroke-width':2.6,'stroke-linecap':'round'},g);S('circle',{cx:20,cy:0,r:5,class:cls},g);const l=T(svg,0,0,'','st-b',{fill:color});return {g,l};}
-  const P1=person('you','#f2a04a'),P2=person('friend','#86a8f0');
-  P1.l.textContent='You';P2.l.textContent='Friend';
-  const spHint=S('circle',{cx:20,cy:0,r:10,class:'hint-ring'},P1.g);
-  const hit=S('circle',{cx:CX,cy:CY,r:R+6,fill:'transparent',class:'grab'},svg);
-  // sky panels
-  function panel(top,who,color){
-    const g=G(sk);const cp=nid('cp');const c=S('clipPath',{id:cp},defs(sk));S('rect',{x:10,y:top,width:340,height:160,rx:12},c);
-    const grad=linear(sk,[[0,'#000'],[1,'#000']],{x1:0,y1:0,x2:0,y2:1});
-    const inner=G(g,{'clip-path':`url(#${cp})`});
-    S('rect',{x:10,y:top,width:340,height:160,fill:grad.url},inner);
-    const st=stars(sk,inner,340,120,40,top+5);st.setAttribute('transform',`translate(10 ${top})`);
-    const sunG=G(inner);sun(sk,sunG,0,0,13,2.2);
-    const ground=S('rect',{x:10,y:top+126,width:340,height:34},inner);
-    S('path',{d:`M10 ${top+126} q40 -8 80 -3 t90 -2 t80 2 t90 -4 v8 h-340z`,fill:'#000',opacity:.25},inner);
-    const lab=T(sk,22,top+22,who,'st-b',{fill:color});
-    const time=T(sk,22,top+40,'','st-b');
-    const name=T(sk,338,top+22,'','st-a',{class:'st-a end'});
-    T(sk,22,top+148,'east','st-s',{fill:'#cfd6e4',opacity:.7});T(sk,338,top+148,'west','st-s',{class:'st-s end',fill:'#cfd6e4',opacity:.7});
-    return {top,grad,st,sunG,ground,time,name};
-  }
-  const sky1=panel(10,'You','#f2a04a'), sky2=panel(190,'Your friend, 10½ hours behind','#86a8f0');
-  function dayName(h){h=mod(h,24);if(h<4.5)return 'Night';if(h<5.6)return 'Dawn';if(h<6.6)return 'Sunrise';if(h<11.3)return 'Morning';if(h<12.7)return 'Midday';if(h<17.4)return 'Afternoon';if(h<18.4)return 'Sunset';if(h<19.4)return 'Dusk';if(h<22)return 'Evening';return 'Night';}
-  function paint(P,h){
-    const H=(mod(h,24)-6)/12*Math.PI, alt=60*Math.sin(H);
-    const x=180-140*Math.cos(H), y=P.top+126-100*Math.sin(H);
-    P.sunG.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);
-    const t=clamp((alt+10)/22,0,1);
-    const top=mix('#050a18','#3f86d6',t), base=mix('#0a1328','#a9d2f2',t);
-    const w=clamp(1-Math.abs(alt+1)/9,0,1);
-    P.grad.stops[0].setAttribute('stop-color',top);P.grad.stops[1].setAttribute('stop-color',mix(base,'#f0915a',w*.9));
-    P.st.setAttribute('opacity',n2(clamp((-alt-2)/8,0,1)));
-    P.ground.setAttribute('fill',mix('#0b140f','#3e6e40',t));
-    P.time.textContent=fmtHour(h);P.name.textContent=dayName(h);
-  }
-  let hY=7.5, playing=false, period=16, touched=false;
-  const msg=$('#sp-msg');
-  function side(h){h=mod(h,24);return (h>6&&h<18)?'day':'night';}
-  function render(){
-    const aY=Math.PI-(hY-12)/12*Math.PI, aF=aY+10.5/12*Math.PI;
-    E.set(Math.PI,0,aY-Math.PI);
-    [[P1,aY],[P2,aF]].forEach(([P,a])=>{P.g.setAttribute('transform',`translate(${CX} ${CY}) rotate(${n2(a/D)}) translate(${R-1} 0)`);
-      const lx=CX+(R+38)*Math.cos(a),ly=CY+(R+38)*Math.sin(a)+5;P.l.setAttribute('x',n2(lx));P.l.setAttribute('y',n2(ly));P.l.setAttribute('text-anchor',Math.cos(a)>.35?'start':Math.cos(a)<-.35?'end':'middle');});
-    paint(sky1,hY);paint(sky2,hY-10.5);
-    const s1=side(hY),s2=side(hY-10.5);
-    msg.innerHTML=s1===s2?`You and your friend are both on the <strong>${s1} side</strong> right now. It's ${fmtHour(hY)} for you and ${fmtHour(hY-10.5)} for your friend.`
-      :`You are on the <strong>${s1} side</strong> and your friend is on the <strong>${s2} side</strong>, at the very same moment. It's ${fmtHour(hY)} for you and ${fmtHour(hY-10.5)} for your friend.`;
-  }
-  let lastA=0;
-  drag(hit,svg,p=>{const a=Math.atan2(p.y-CY,p.x-CX);const d=wrapA(a-lastA);lastA=a;hY=mod(hY-d*12/Math.PI,24);render();},
-    p=>{lastA=Math.atan2(p.y-CY,p.x-CX);setPlay(false);if(spHint.parentNode)spHint.remove();});
-  const playB=$('#sp-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play';if(v&&spHint.parentNode)spHint.remove();}
-  playB.addEventListener('click',()=>setPlay(!playing));
-  seg('sp-speed',v=>{period=+v;});
-  addLoop(fig,dt=>{if(!playing)return;hY=mod(hY+dt*24/period,24);render();});
-  render();
-})();
-
-/* =====================================================================
-   03 SIZE & DISTANCE
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-size'), svg=$('svg',fig); watch(svg);
-  stars(svg,svg,720,300,60,9);
-  // sizes
-  const gS=G(svg,{class:'fade'});
-  const SX=160,SY=155,SR=120,ERs=SR/109;
-  sun(svg,gS,SX,SY,SR,1.18);
-  for(let i=0;i<109;i++)S('circle',{cx:n2(SX-SR+ERs+i*2*ERs),cy:SY,r:n2(ERs*.92),fill:'#2c63c4'},gS);
-  T(gS,SX,24,'The Sun','st-b',{class:'st-b mid'});
-  T(gS,SX,294,'109 Earths fit across it','st',{class:'st mid'});
-  const ex=410;
-  S('circle',{cx:ex,cy:SY,r:n2(ERs),class:'ocean'},gS);
-  S('circle',{cx:ex+5,cy:SY,r:.6,class:'moonb'},gS);
-  S('circle',{cx:ex+2,cy:SY,r:9,fill:'none',stroke:'#f2a04a','stroke-width':1.2},gS);
-  T(gS,ex+2,SY-18,'Earth and Moon','st-b',{class:'st-b mid',fill:'#f2a04a'});
-  T(gS,ex+2,SY+28,'to the same scale','st',{class:'st mid'});
-  const MGX=600,MGY=155,MGR=100;
-  S('line',{x1:ex+2,y1:SY-9,x2:MGX,y2:MGY-MGR,class:'lead'},gS);S('line',{x1:ex+2,y1:SY+9,x2:MGX,y2:MGY+MGR,class:'lead'},gS);
-  S('circle',{cx:MGX,cy:MGY,r:MGR,fill:'#080d1a',stroke:'#5c6884','stroke-width':1},gS);
-  const Em=earth(svg,gS,MGX-22,MGY,50,{seed:3});Em.set(Math.PI,0.15);
-  const Mm=moon(svg,gS,MGX+58,MGY,13.6);Mm.set(Math.PI,0.15);
-  T(gS,MGX-22,MGY+70,'Earth','st',{class:'st mid'});T(gS,MGX+58,MGY+32,'Moon','st',{class:'st mid'});
-  T(gS,MGX,MGY+MGR+20,'magnified 45×','st-s',{class:'st-s mid'});
-  // distances
-  const gD=G(svg,{class:'fade'});gD.style.opacity=0;gD.style.pointerEvents='none';
-  const E0=40,ER=8,DM=30.17*2*ER, mx=E0+DM;
-  for(let i=1;i<30;i++)S('circle',{cx:n2(E0+i*2*ER),cy:150,r:ER-.5,fill:'none',stroke:'#2c63c4','stroke-opacity':.35},gD);
-  const Ed=earth(svg,gD,E0,150,ER,{seed:3});Ed.set(Math.PI,0);
-  const Md=moon(svg,gD,mx,150,2.18);Md.set(Math.PI,0);
-  T(gD,E0,128,'Earth','st-b',{class:'st-b mid'});T(gD,mx,128,'Moon','st-b',{class:'st-b mid'});
-  S('line',{x1:E0,y1:184,x2:mx,y2:184,stroke:'#5c6884'},gD);S('line',{x1:E0,y1:178,x2:E0,y2:190,stroke:'#5c6884'},gD);S('line',{x1:mx,y1:178,x2:mx,y2:190,stroke:'#5c6884'},gD);
-  T(gD,(E0+mx)/2,204,'384,400 km: thirty Earths in a row','st',{class:'st mid'});
-  const ahS=arrowHead(svg,nid('ah'));
-  S('path',{d:'M610 150 L700 150',class:'arrow','marker-end':ahS},gD);
-  const sunT1=T(gD,705,104,'','st-b',{class:'st-b end'}), sunT2=T(gD,705,122,'','st',{class:'st end'}), sunT3=T(gD,705,182,'','st',{class:'st end'});
-  const beamLine=S('line',{x1:E0+ER,y1:150,x2:E0+ER,y2:150,stroke:'#fff6c8','stroke-width':2,'stroke-linecap':'round'},gD);
-  const beamDot=S('circle',{cx:E0+ER,cy:150,r:3.5,fill:'#fff6c8',opacity:0},gD);
-  const timer=T(gD,(E0+mx)/2,100,'','st-b',{class:'st-b mid',fill:'#fff6c8'});
-  let mode='size',beam=-1;
-  const msg=$('#sz-msg'),beamB=$('#sz-beam');
-  function screen(){const k=(svg.clientWidth||720)/720, cm=2.54/96;return {cm:u=>u*k*cm};}
-  function sunText(){const sc=screen();const distM=sc.cm(150e6/12742*2*ER)/100, diaCm=sc.cm(109*2*ER);
-    const thing=diaCm<35?'a football':diaCm<90?'a beach ball':'a big exercise ball';
-    sunT1.textContent='The Sun is that way:';
-    sunT2.textContent=`${Math.round(distM)} metres from the Earth,`;
-    sunT3.textContent=`a ball the size of ${thing}`;
-    return {distM,diaCm,thing};}
-  function setMode(m){mode=m;gS.style.opacity=m==='size'?1:0;gD.style.opacity=m==='dist'?1:0;beamB.style.display=m==='dist'?'':'none';
-    if(m==='size')msg.innerHTML='The Sun is <strong>109 times wider</strong> than the Earth. The little dot on the right is the Earth with the Moon beside it, drawn at the same scale.';
-    else{const s=sunText();msg.innerHTML=`On this drawing the Earth is a pea on your screen. At the same scale, the Sun would be <strong>${s.thing} about ${Math.round(s.distM)} metres away</strong>, far off your screen.`;}}
-  svg._onResize=()=>{if(mode==='dist')setMode('dist');};
-  seg('sz-mode',v=>setMode(v));
-  beamB.addEventListener('click',()=>{beam=0;timer.textContent='';msg.innerHTML='Light is the fastest thing there is…';});
-  addLoop(fig,dt=>{if(beam<0)return;beam+=dt;const T_=1.282,u=Math.min(1,beam/T_);const x=E0+ER+(mx-2.18-E0-ER)*u;
-    beamLine.setAttribute('x2',n2(x));beamDot.setAttribute('cx',n2(x));beamDot.setAttribute('opacity',u<1?1:0);timer.textContent=beam.toFixed(1)+' s';
-    if(u>=1&&beam>T_+.02){timer.textContent='1.3 seconds';msg.innerHTML='Light takes about <strong>1.3 seconds</strong> to reach the Moon. Sunlight takes <strong>8 minutes and 20 seconds</strong> to reach us.';beam=-1;}});
-  setMode('size');
-})();
-
-(function(){
-  const fig=$('#fig-same'), svg=$('svg',fig), sk=$('#same-sky'); watch(svg);watch(sk);
-  const AY=130,EYX=36,RM=13,REAL=236,SUNX=580,RS=RM*(SUNX-EYX)/(REAL-EYX);
-  stars(svg,svg,620,260,30,77);
-  const cone=S('path',{fill:'#f2a04a',opacity:.07},svg);
-  const l1=S('line',{class:'sight'},svg),l2=S('line',{class:'sight'},svg);
-  S('line',{x1:EYX,y1:AY,x2:610,y2:AY,stroke:'#2a3550','stroke-dasharray':'2 4'},svg);
-  sun(svg,svg,SUNX,AY,RS,1.6);
-  T(svg,SUNX,AY+RS+26,'Sun','st-b',{class:'st-b mid'});
-  S('path',{d:`M478 ${AY-10} l6 6 -6 8 6 6`,stroke:'#8e9ab3',fill:'none'},svg);S('path',{d:`M486 ${AY-10} l6 6 -6 8 6 6`,stroke:'#8e9ab3',fill:'none'},svg);
-  T(svg,485,AY+30,'really 400×','st-s',{class:'st-s mid'});T(svg,485,AY+44,'farther','st-s',{class:'st-s mid'});
-  // eye
-  const eye=G(svg,{transform:`translate(${EYX} ${AY})`});
-  S('path',{d:'M-14 0 Q0 -11 14 0 Q0 11 -14 0Z',fill:'#e9eef7'},eye);S('circle',{cx:3,cy:0,r:4.5,fill:'#2c63c4'},eye);S('circle',{cx:4,cy:0,r:2,fill:'#05070d'},eye);
-  T(svg,EYX,AY+30,'You','st-b',{class:'st-b mid'});
-  S('line',{x1:REAL,y1:AY+22,x2:REAL,y2:AY+30,stroke:'#f2a04a'},svg);
-  T(svg,REAL,AY+46,'real distance','st-a',{class:'st-a mid'});
-  const mg=G(svg,{class:'grab'});
-  const M=moon(svg,mg,0,0,RM);M.set(0,0);
-  const hint=S('circle',{r:RM+6,class:'hint-ring'},mg);
-  const ml=T(mg,0,-RM-12,'Moon · drag me','st-b',{class:'st-b mid'});
-  // sky
-  const CX=130,CY=130,SKR=118,SSR=44;
-  const cp=clipCircle(sk,CX,CY,SKR);
-  const inner=G(sk,{'clip-path':cp.url});
-  const skyBg=S('rect',{x:0,y:0,width:260,height:260},inner);
-  const st=stars(sk,inner,260,260,40,5);
-  const corona=S('circle',{cx:CX,cy:CY,r:SSR*2.6,fill:radial(sk,[[0,'#ffffff',.9],[.38,'#e8eefc',.55],[.55,'#c9d6f2',.18],[1,'#9fb3e0',0]])},inner);
-  const sunG=G(inner);sun(sk,sunG,CX,CY,SSR,1.5);
-  const mdisc=S('circle',{cx:CX,cy:CY,fill:'#0b0f1b'},inner);
-  S('circle',{cx:CX,cy:CY,r:SKR,fill:'none',stroke:'#2a3550'},sk);
-  T(sk,CX,252,'What you see','st',{class:'st mid'});
-  const msg=$('#same-msg');
-  let x=REAL;
-  function render(){
-    const d=x-EYX, a=Math.asin(RM/d), w=(610-EYX)*Math.tan(a);
-    mg.setAttribute('transform',`translate(${n2(x)} ${AY})`);
-    cone.setAttribute('d',`M${EYX} ${AY}L610 ${n2(AY-w)}L610 ${n2(AY+w)}Z`);
-    l1.setAttribute('x1',EYX);l1.setAttribute('y1',AY);l1.setAttribute('x2',610);l1.setAttribute('y2',n2(AY-w));
-    l2.setAttribute('x1',EYX);l2.setAttribute('y1',AY);l2.setAttribute('x2',610);l2.setAttribute('y2',n2(AY+w));
-    const ratio=(REAL-EYX)/d, mr=SSR*ratio;
-    mdisc.setAttribute('r',n2(Math.min(mr,200)));
-    const total=ratio>=0.995;
-    const cov=Math.min(1,ratio*ratio);
-    skyBg.setAttribute('fill',total?'#060a16':mix('#4f8fd8','#1b2a4a',smooth(clamp((cov-.6)/.4,0,1))));
-    st.setAttribute('opacity',total?1:0);corona.setAttribute('opacity',total?clamp(1.4-(ratio-1)*1.2,0.15,1):0);
-    if(Math.abs(ratio-1)<0.03)msg.innerHTML='<strong>The real distance.</strong> The Moon looks just as big as the Sun, so it can cover it exactly, and the Sun\'s faint glow appears around it.';
-    else if(ratio>1)msg.innerHTML=`Closer than the real Moon, it looks <strong>${ratio.toFixed(1)}× wider</strong> than the Sun. It hides the Sun completely, and some of its glow too.`;
-    else msg.innerHTML=`Farther than the real Moon, it looks only <strong>${Math.round(ratio*100)}%</strong> as wide as the Sun. A ring of sunlight shows around it.`;
-  }
-  drag(mg,svg,p=>{x=clamp(p.x,EYX+50,460);render();},()=>{if(hint.parentNode){hint.remove();ml.textContent='Moon';}});
-  render();
-})();
-
-/* =====================================================================
-   04 GRAVITY: Newton's cannon
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-grav'), svg=$('svg',fig); watch(svg);
-  const CX=360,CY=246,R=110,LX=374,LY=112,R0=CY-LY,VC=120,GM=VC*VC*R0;
-  stars(svg,svg,720,480,90,13);
-  S('circle',{cx:CX,cy:CY,r:R+7,fill:'none',stroke:'#7fb2ff','stroke-opacity':.18,'stroke-width':6},svg);
-  const trails=G(svg);
-  const E=earth(svg,svg,CX,CY,R,{seed:17});E.set(-Math.PI/2,0.3);E.night.style.opacity=.2;
-  S('path',{d:`M336 ${CY-R+4} L360 ${LY+4} L384 ${CY-R+4}Z`,fill:'#7a6650',stroke:'#4d3f30'},svg);
-  S('path',{d:`M352 ${LY+18} L360 ${LY+4} L368 ${LY+18}Z`,fill:'#eef2f7'},svg);
-  const cannon=G(svg,{transform:`translate(360 ${LY})`});
-  S('rect',{x:-4,y:-5,width:20,height:8,rx:3,fill:'#c9ccd6',stroke:'#5d656e'},cannon);S('circle',{cx:0,cy:3,r:4.5,fill:'#7a5a33',stroke:'#3e2d18'},cannon);
-  T(svg,410,LY-14,'A cannon on a very tall mountain','st',{});
-  const ballsG=G(svg);
-  // which way is down
-  const downG=G(svg,{class:'fade'});downG.style.opacity=0;
-  const ahD=arrowHead(svg,nid('ah'));
-  for(let i=0;i<8;i++){const a=-Math.PI/2+Math.PI/8+i*TAU/8;const g=G(downG,{transform:`translate(${CX} ${CY}) rotate(${n2(a/D)})`});
-    S('line',{x1:R,y1:0,x2:R+16,y2:0,stroke:'#e9eef7','stroke-width':2.4,'stroke-linecap':'round'},g);S('line',{x1:R+9,y1:-5,x2:R+9,y2:5,stroke:'#e9eef7','stroke-width':2,'stroke-linecap':'round'},g);
-    S('circle',{cx:R+21,cy:0,r:4.4,fill:'#e9eef7'},g);
-    S('path',{d:`M${R-6} 0 L${R-40} 0`,class:'arrow','marker-end':ahD},g);}
-  T(downG,CX,CY+4,'down','st-a',{class:'st-a mid'});
-  const msg=$('#gr-msg'), sp=$('#gr-speed');
-  const balls=[];
-  function predict(s){const v=s*VC,En=v*v/2-GM/R0;
-    if(En>=0)return {k:'escape'};
-    const a=-GM/(2*En),r2=2*a-R0;
-    if(s<1&&r2<R)return {k:'land'};
-    return {k:s<0.98?'orbit-low':s<=1.02?'orbit':'orbit-high'};}
-  function fire(){
-    const s=+sp.value;
-    if(balls.length>=6){const b=balls.shift();b.el.remove();b.tr.remove();}
-    balls.forEach((b,i)=>{b.tr.setAttribute('stroke-opacity',.25);});
-    const tr=S('polyline',{fill:'none',stroke:'#f2a04a','stroke-width':1.8,'stroke-opacity':.9,'stroke-linejoin':'round'},trails);
-    const el=S('circle',{r:5,fill:'#ffe2a8',stroke:'#c8680f'},ballsG);
-    const b={x:LX,y:LY,vx:s*VC,vy:0,pts:[[LX,LY]],swept:0,lastA:Math.atan2(LY-CY,LX-CX),state:'fly',tr,el,s,p:predict(s)};
-    balls.push(b);
-    const kms=(s*7.9).toFixed(1);
-    if(b.p.k==='escape')msg.innerHTML=`About ${kms} km a second. <strong>Too fast!</strong> The Earth's pull can't turn it round, and it flies off into space.`;
-    else if(b.p.k==='land')msg.innerHTML=`About ${kms} km a second. It curves down and hits the ground…`;
-    else if(b.p.k==='orbit')msg.innerHTML=`About ${kms} km a second. <strong>It's in orbit!</strong> It falls all the way round the Earth and comes back to the mountain. Without air to slow it, it would go round forever.`;
-    else if(b.p.k==='orbit-low')msg.innerHTML=`About ${kms} km a second. It dips close to the ground, but just misses. <strong>It's in orbit</strong>, a slightly squashed one.`;
-    else msg.innerHTML=`About ${kms} km a second. <strong>Still in orbit</strong>, but a stretched one. It swings far out, then falls back round. That's how the Moon's slightly oval path works.`;
-  }
-  $('#gr-fire').addEventListener('click',fire);
-  $('#gr-presets').addEventListener('click',e=>{const bt=e.target.closest('button');if(!bt)return;sp.value=bt.dataset.v;setPressed($('#gr-presets'),bt);fire();});
-  sp.addEventListener('input',()=>setPressed($('#gr-presets'),null));
-  $('#gr-down').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);downG.style.opacity=on?1:0;
-    if(on)msg.innerHTML='Everyone stands with their feet towards the middle of the Earth. <strong>"Down" always points to the centre</strong>, so nobody is upside down, and nobody falls off.';});
-  addLoop(fig,dt=>{
-    for(const b of balls){
-      if(b.state!=='fly')continue;
-      const n=12,h=dt/n;
-      for(let i=0;i<n;i++){
-        let dx=b.x-CX,dy=b.y-CY,r=Math.hypot(dx,dy),a=GM/(r*r*r);
-        b.vx-=a*dx*h/2;b.vy-=a*dy*h/2;b.x+=b.vx*h;b.y+=b.vy*h;
-        dx=b.x-CX;dy=b.y-CY;r=Math.hypot(dx,dy);a=GM/(r*r*r);b.vx-=a*dx*h/2;b.vy-=a*dy*h/2;
-        if(r<=R){b.x=CX+dx/r*R;b.y=CY+dy/r*R;b.state='landed';break;}
-        if(r>900){b.state='gone';break;}
-      }
-      const ang=Math.atan2(b.y-CY,b.x-CX);b.swept+=wrapA(ang-b.lastA);b.lastA=ang;
-      if(Math.abs(b.swept)<TAU+0.05){b.pts.push([b.x,b.y]);b.tr.setAttribute('points',b.pts.map(p=>n2(p[0])+','+n2(p[1])).join(' '));}
-      b.el.setAttribute('cx',n2(b.x));b.el.setAttribute('cy',n2(b.y));
-      if(b.state==='landed'&&b===balls[balls.length-1]){const km=Math.round(Math.abs(b.swept)*6371/10)*10;
-        msg.innerHTML=`It landed about <strong>${km.toLocaleString()} km</strong> away. Fire faster, and it lands farther, because the round Earth curves away beneath it.`;}
-      if(b.state==='gone')b.el.remove();
-    }
-  });
-})();
-
-/* =====================================================================
-   05 YEAR & SEASONS
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-year'), svg=$('#yr-orbit'), ps=$('#yr-place'), gl=$('#yr-globe'); watch(svg);watch(ps);watch(gl);
-  const CX=360,CY=172,RX=272,RY=112,SE=RY/RX,CE=Math.sqrt(1-SE*SE),TILT=23.44*D;
-  stars(svg,svg,720,320,70,31);
-  S('ellipse',{cx:CX,cy:CY,rx:RX,ry:RY,class:'orbit-solid'},svg);
-  for(let m=0;m<12;m++){const doy=[0,31,59,90,120,151,181,212,243,273,304,334][m]+14;const t=Math.PI+(doy-172)/365.25*TAU;
-    T(svg,CX+(RX+26)*Math.cos(t),CY-(RY+18)*Math.sin(t)+4,MON[m],'st-s',{class:'st-s mid'});}
-  const back=G(svg);sun(svg,svg,CX,CY,26,2);const front=G(svg);
-  const eg=G(back,{class:'grab'});
-  const E=earth(svg,eg,0,0,21,{seed:9});
-  const axis=S('line',{stroke:'#e9eef7','stroke-width':1.6,'stroke-linecap':'round'},eg);
-  const nL=T(eg,0,0,'N','st-b',{class:'st-b mid'});
-  S('circle',{r:40,fill:'transparent'},eg);
-  const hint=S('circle',{r:28,class:'hint-ring'},eg);
-  const date=T(svg,16,28,'','st-b'), sea={};
-  const lean=T(svg,704,28,'','st-a',{class:'st-a end'});
-  // place panel
-  const title=T(ps,16,24,'','st-b');
-  const HZ=150,X0=24,X1=340,AS=105/90;
-  const hx=h=>X0+h*(X1-X0)/24;
-  const area=S('path',{fill:'#ffcf6a',opacity:.16},ps);
-  const below=S('path',{fill:'none',stroke:'#3b4660','stroke-width':1.4,'stroke-dasharray':'3 4'},ps);
-  const above=S('path',{fill:'none',stroke:'#ffcf6a','stroke-width':2},ps);
-  S('line',{x1:X0,y1:HZ,x2:X1,y2:HZ,stroke:'#6f7a92'},ps);
-  [[6,'6 am'],[12,'noon'],[18,'6 pm']].forEach(a=>{S('line',{x1:hx(a[0]),y1:HZ,x2:hx(a[0]),y2:HZ+5,stroke:'#6f7a92'},ps);T(ps,hx(a[0]),HZ+18,a[1],'st-s',{class:'st-s mid'});});
-  T(ps,X0,HZ+18,'horizon','st-s');
-  const noonDot=G(ps);sun(ps,noonDot,0,0,7,2.2);
-  const noonL=T(ps,0,0,'','st-b',{class:'st-b mid'});
-  const riseL=T(ps,0,HZ-7,'','st-s',{class:'st-s end'}),setL=T(ps,0,HZ-7,'','st-s',{class:'st-s'});
-  // flashlight
-  const FY=318;
-  T(ps,16,210,'The midday sunlight','st-b');
-  const cpid=nid('cp');const cpe=S('clipPath',{id:cpid},defs(ps));S('rect',{x:0,y:218,width:360,height:FY-218},cpe);
-  const beam=S('path',{fill:'#ffd27a',opacity:.22,'clip-path':`url(#${cpid})`},ps);
-  const beamE1=S('line',{stroke:'#ffd27a','stroke-opacity':.6,'clip-path':`url(#${cpid})`},ps),beamE2=S('line',{stroke:'#ffd27a','stroke-opacity':.6,'clip-path':`url(#${cpid})`},ps);
-  S('rect',{x:16,y:FY,width:328,height:14,fill:'#2b3a2c'},ps);
-  const spot=S('rect',{y:FY-2,height:4,fill:'#fff2b8'},ps);
-  const spotL=T(ps,180,FY+32,'','st',{class:'st mid'});
-  const noSun=T(ps,180,280,'','st-b',{class:'st-b mid'});
-  // side-on globe: the daily circle
-  const GX=180,GY=192,GR=108,EPS=16*D,cE=Math.cos(EPS),sE=Math.sin(EPS);
-  T(gl,16,24,'Your daily circle','st-b');
-  for(let y=GY-GR+14;y<GY+GR;y+=24){const xe=GX-Math.sqrt(GR*GR-(y-GY)*(y-GY));S('line',{x1:4,y1:y,x2:n2(xe-3),y2:y,class:'ray'},gl);}
-  T(gl,16,42,'Sunlight','st-a');
-  const GE=earth(gl,gl,GX,GY,GR,{seed:9});GE.set(Math.PI,0);GE.land.style.opacity=.45;
-  const gEq=S('path',{fill:'none',stroke:'#cfd6e4','stroke-opacity':.35,'stroke-width':1},gl);
-  const gBL=S('path',{fill:'none',stroke:'#f2a04a','stroke-opacity':.45,'stroke-width':1.6,'stroke-dasharray':'3 4'},gl);
-  const gBD=S('path',{fill:'none',stroke:'#86a8f0','stroke-opacity':.45,'stroke-width':1.6,'stroke-dasharray':'3 4'},gl);
-  const gFL=S('path',{fill:'none',stroke:'#f2a04a','stroke-width':3.4,'stroke-linecap':'round'},gl);
-  const gFD=S('path',{fill:'none',stroke:'#86a8f0','stroke-width':3.4,'stroke-linecap':'round'},gl);
-  const gAx=S('line',{stroke:'#e9eef7','stroke-width':1.8,'stroke-linecap':'round'},gl);
-  const gN=T(gl,0,0,'N','st-b',{class:'st-b mid'});
-  const gDot=S('circle',{r:6,stroke:'#0c1324','stroke-width':1.5},gl);
-  const gL1=T(gl,180,330,'','st-b',{class:'st-b mid'}), gL2=T(gl,180,348,'','st',{class:'st mid'});
-  let gDec=0,gT=0;
-  const gP=(ws,wp,wq)=>[GX-GR*ws,GY-GR*(wp*cE-wq*sE)];
-  function circPt(phi,dec,t){const sp=Math.sin(phi),cp=Math.cos(phi),sd=Math.sin(dec),cd=Math.cos(dec),ct=Math.cos(t);
-    const ws=sp*sd+cp*ct*cd, wp=sp*cd-cp*ct*sd, wq=cp*Math.sin(t);return {ws,wp,wq,front:wq*cE+wp*sE>0};}
-  function globe(dec,phi,place){
-    gDec=dec;
-    const d={FL:'',FD:'',BL:'',BD:''};let lit=0,N=120,prev=null,eq='';
-    for(let i=0;i<=N;i++){const t=i/N*TAU;const p=circPt(phi,dec,t);const xy=gP(p.ws,p.wp,p.wq);
-      if(i>0){const m=circPt(phi,dec,(i-.5)/N*TAU);const k=(m.front?'F':'B')+(m.ws>0?'L':'D');if(m.ws>0)lit++;
-        d[k]+='M'+n2(prev[0])+' '+n2(prev[1])+'L'+n2(xy[0])+' '+n2(xy[1]);}
-      prev=xy;
-      const q=circPt(0,dec,t);if(q.front){const e=gP(q.ws,q.wp,q.wq);eq+=(eq&&circPt(0,dec,(i-1)/N*TAU).front?'L':'M')+n2(e[0])+' '+n2(e[1]);}}
-    gFL.setAttribute('d',d.FL||'M0 0');gFD.setAttribute('d',d.FD||'M0 0');gBL.setAttribute('d',d.BL||'M0 0');gBD.setAttribute('d',d.BD||'M0 0');gEq.setAttribute('d',eq||'M0 0');
-    const a1=gP(Math.sin(dec)*1.14,Math.cos(dec)*1.14,0),a0=gP(-Math.sin(dec)*1.14,-Math.cos(dec)*1.14,0);
-    gAx.setAttribute('x1',n2(a0[0]));gAx.setAttribute('y1',n2(a0[1]));gAx.setAttribute('x2',n2(a1[0]));gAx.setAttribute('y2',n2(a1[1]));
-    gN.setAttribute('x',n2(a1[0]-Math.sin(dec)*10));gN.setAttribute('y',n2(a1[1]-6));
-    const f=lit/N;
-    if(f>0.995){gL1.textContent=`${place}: the whole circle is in sunlight`;gL2.textContent='The Sun never sets today';}
-    else if(f<0.005){gL1.textContent=`${place}: the whole circle is in shadow`;gL2.textContent='The Sun never rises today';}
-    else{gL1.textContent=`${place}: ${Math.round(f*100)}% of the circle is in sunlight`;gL2.textContent=`so about ${Math.round(f*24*2)/2} hours of daylight`;}
-  }
-  let t=Math.PI,lat=13.08,place='Chennai',playing=false;
-  const read=$('#yr-read'),slider=$('#yr-day');
-  const doyOf=t=>mod(172+(t-Math.PI)/TAU*365.25,365.25);
-  function season(doy,la){if(Math.abs(la)<23.4)return 'warm all year';const n=doy>=79&&doy<172?'spring':doy>=172&&doy<266?'summer':doy>=266&&doy<355?'autumn':'winter';
-    if(la>0)return n;return {spring:'autumn',summer:'winter',autumn:'spring',winter:'summer'}[n];}
-  function render(fromSlider){
-    const st=Math.sin(t),ct=Math.cos(t);
-    const x=CX+RX*ct,y=CY-RY*st;
-    (st>0?back:front).appendChild(eg);
-    eg.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);
-    E.set(Math.atan2(st*SE,-ct),st*CE);
-    const ax=Math.sin(TILT),ay=-Math.cos(TILT)*CE,L=36;
-    axis.setAttribute('x1',n2(-ax*L));axis.setAttribute('y1',n2(-ay*L));axis.setAttribute('x2',n2(ax*L));axis.setAttribute('y2',n2(ay*L));
-    nL.setAttribute('x',n2(ax*(L+9)));nL.setAttribute('y',n2(ay*(L+9)+4));
-    const doy=doyOf(t);
-    const Ls=t-Math.PI/2, dec=Math.asin(Math.sin(TILT)*Math.sin(Ls));
-    date.textContent=doyToDate(doy);
-    const nd=dec/D;
-    sea.textContent=Math.abs(nd)<4?'Neither half leans towards the Sun':nd>0?'The north leans towards the Sun':'The north leans away from the Sun';
-    lean.textContent=Math.abs(nd)<4?'neither half leans to the Sun':nd>0?'the north leans to the Sun':'the north leans away';
-    if(!fromSlider)slider.value=Math.round(doy);
-    // place
-    const phi=lat*D;
-    const alt=h=>Math.asin(Math.sin(phi)*Math.sin(dec)+Math.cos(phi)*Math.cos(dec)*Math.cos((h-12)*15*D));
-    let dA='',dB='',dArea='',prevUp=null;
-    const pts=[];for(let h=0;h<=24.001;h+=0.25)pts.push([h,alt(h)]);
-    pts.forEach((p,i)=>{const X=n2(hx(p[0])),Y=n2(HZ-Math.max(-25,p[1]/D)*AS);const up=p[1]>-0.0145;
-      if(up)dA+=(prevUp===true?'L':'M')+X+' '+Y;else dB+=(prevUp===false?'L':'M')+X+' '+Y;
-      if(up&&prevUp!==true&&i>0){dB+='L'+X+' '+Y;}
-      if(!up&&prevUp===true){dA+='L'+X+' '+Y;}
-      prevUp=up;});
-    const upPts=pts.filter(p=>p[1]>0);
-    if(upPts.length){dArea='M'+n2(hx(upPts[0][0]))+' '+HZ+upPts.map(p=>'L'+n2(hx(p[0]))+' '+n2(HZ-p[1]/D*AS)).join('')+'L'+n2(hx(upPts[upPts.length-1][0]))+' '+HZ+'Z';}
-    above.setAttribute('d',dA||'M0 0');below.setAttribute('d',dB||'M0 0');area.setAttribute('d',dArea||'M0 0');
-    const an=alt(12), anD=an/D;
-    noonDot.setAttribute('transform',`translate(${n2(hx(12))} ${n2(HZ-Math.max(-25,anD)*AS)})`);noonDot.style.opacity=anD>0?1:.25;
-    noonL.setAttribute('x',n2(hx(12)));noonL.setAttribute('y',n2(Math.max(38,HZ-anD*AS-14)));
-    noonL.textContent=anD>0?`midday: ${Math.round(anD)}° high`:'no sunrise today';
-    const c0=(Math.sin(-0.833*D)-Math.sin(phi)*Math.sin(dec))/(Math.cos(phi)*Math.cos(dec));
-    let dayLen;
-    if(c0<=-1){dayLen=24;riseL.textContent='';setL.textContent='';}
-    else if(c0>=1){dayLen=0;riseL.textContent='';setL.textContent='';}
-    else{const H0=Math.acos(c0)/D/15;dayLen=2*H0;riseL.setAttribute('x',n2(hx(12-H0)-5));setL.setAttribute('x',n2(hx(12+H0)+5));
-      riseL.textContent='sunrise '+fmtHour(12-H0);setL.textContent='sunset '+fmtHour(12+H0);
-      if(H0<2.2||H0>10.6){riseL.textContent='';setL.textContent='';}}
-    title.textContent=`The Sun's path across the sky in ${place}`;
-    globe(dec,phi,place);
-    // flashlight
-    if(anD>0.5){
-      const a=an,W=46,w=Math.min(300,W/Math.sin(a)),cx=196,dx=-Math.cos(a),dy=-Math.sin(a),Lb=260;
-      const p1=[cx-w/2,FY],p2=[cx+w/2,FY],q1=[p1[0]+dx*Lb,p1[1]+dy*Lb],q2=[p2[0]+dx*Lb,p2[1]+dy*Lb];
-      beam.setAttribute('d',`M${n2(p1[0])} ${FY}L${n2(p2[0])} ${FY}L${n2(q2[0])} ${n2(q2[1])}L${n2(q1[0])} ${n2(q1[1])}Z`);
-      [[beamE1,p1,q1],[beamE2,p2,q2]].forEach(([l,p,q])=>{l.setAttribute('x1',n2(p[0]));l.setAttribute('y1',n2(p[1]));l.setAttribute('x2',n2(q[0]));l.setAttribute('y2',n2(q[1]));});
-      spot.setAttribute('x',n2(cx-w/2));spot.setAttribute('width',n2(w));spot.setAttribute('opacity',n2(0.25+0.75*Math.sin(a)));
-      const f=1/Math.sin(a);
-      spotL.textContent=f<1.08?'Straight down: the light is strongest':`Spread over ${f.toFixed(1)}× more ground, so it's weaker`;
-      noSun.textContent='';[beam,beamE1,beamE2,spot].forEach(e=>e.style.display='');
-    } else {[beam,beamE1,beamE2,spot].forEach(e=>e.style.display='none');spotL.textContent='';noSun.textContent='The Sun stays below the horizon';}
-    const dist=149.6*(1-0.0167*Math.cos(TAU*(doy-3)/365.25));
-    const se=season(doy,lat);
-    const dl=dayLen>=24?'the Sun never sets':dayLen<=0?'the Sun never rises':'daylight '+fmtDur(dayLen);
-    read.innerHTML=`<strong>${doyToDate(doy)} in ${place}</strong> · ${dl} · ${se==='warm all year'?'warm all year round':se} · Earth is ${dist.toFixed(1)} million km from the Sun${doy<12||doy>360?' (closest all year)':doy>176&&doy<192?' (farthest all year)':''}`;
-  }
-  drag(eg,svg,p=>{t=Math.atan2(-(p.y-CY)/RY,(p.x-CX)/RX);render();},()=>{setPlay(false);if(hint.parentNode)hint.remove();});
-  slider.addEventListener('input',()=>{setPlay(false);t=Math.PI+(+slider.value-172)/365.25*TAU;render(true);});
-  $('#yr-city').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setPressed($('#yr-city'),b);lat=+b.dataset.lat;place=b.textContent;render();});
-  const playB=$('#yr-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play';}
-  playB.addEventListener('click',()=>setPlay(!playing));
-  addLoop(fig,dt=>{
-    gT+=dt*TAU/5;const p=circPt(lat*D,gDec,gT);const xy=gP(p.ws,p.wp,p.wq);
-    gDot.setAttribute('cx',n2(xy[0]));gDot.setAttribute('cy',n2(xy[1]));gDot.setAttribute('fill',p.ws>0?'#ffd27a':'#86a8f0');gDot.setAttribute('opacity',p.front?1:.45);
-    if(!playing)return;t+=dt*TAU/24;render();});
-  render();
-})();
-
-/* =====================================================================
-   06 MONTH: phases
-   ===================================================================== */
-(function(){
-  const fig=$('#fig-month'), svg=$('#mo-orbit'), vw=$('#mo-view'); watch(svg);watch(vw);
-  const CX=232,CY=180,OR=130,MR=15;
-  S('rect',{x:0,y:0,width:400,height:360,class:'beam',opacity:.025},svg);
-  for(let y=20;y<360;y+=26)S('line',{x1:4,y1:y,x2:60,y2:y,class:'ray'},svg);
-  T(svg,12,24,'Sunlight','st-a');
-  const ah=arrowHead(svg,nid('ah'));S('path',{d:'M14 36 L64 36',class:'arrow','marker-end':ah},svg);
-  S('circle',{cx:CX,cy:CY,r:OR,class:'orbit'},svg);
-  T(svg,CX-OR,CY+38,'New','st-s',{class:'st-s mid'});T(svg,CX+OR,CY+38,'Full','st-s',{class:'st-s mid'});
-  T(svg,CX,CY+OR+30,'First quarter','st-s',{class:'st-s mid'});T(svg,CX,CY-OR-22,'Last quarter','st-s',{class:'st-s mid'});
-  const sight=S('line',{class:'sight'},svg);
-  const E=earth(svg,svg,CX,CY,30,{polar:true,seed:51});E.set(Math.PI,0,0);
-  const mg=G(svg,{class:'grab'});
-  const M=moon(svg,mg,0,0,MR);
-  const spot=S('circle',{r:3.2,fill:'#f2a04a',stroke:'#0c1324','stroke-width':1},mg);spot.style.display='none';
-  S('circle',{r:MR+12,fill:'transparent'},mg);
-  const hint=S('circle',{r:MR+5,class:'hint-ring'},mg);
-  // view
-  const st=stars(vw,vw,300,300,50,61);
-  const VM=moon(vw,vw,150,138,96,{dim:.9});
-  const vspot=S('circle',{r:6,fill:'#f2a04a',stroke:'#0c1324','stroke-width':1.5},VM.top);vspot.style.display='none';
-  const vname=T(vw,150,268,'','st-b',{class:'st-b mid'});
-  T(vw,150,286,'what you see from Earth','st-s',{class:'st-s mid'});
-  // phase chips
-  const chips=$('#mo-phases');
-  const PH=[[0,'New'],[45,'Crescent'],[90,'First quarter'],[135,'Gibbous'],[180,'Full'],[225,'Gibbous'],[270,'Last quarter'],[315,'Crescent']];
-  PH.forEach(([e,l])=>{const b=document.createElement('button');b.type='button';b.dataset.e=e;
-    const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','-10 -10 20 20');
-    S('circle',{r:9,fill:'#d6d1c4'},s);const p=S('path',{fill:'#1a1f2c',d:nightD(9,-Math.cos(e*D))},s);p.setAttribute('transform',`rotate(${e<180?0:180})`);
-    S('circle',{r:9,fill:'none',stroke:'#8a8175','stroke-width':.8},s);
-    b.appendChild(s);b.appendChild(document.createTextNode(l));chips.appendChild(b);});
-  let Ed=60,playing=false,mark=false,nospin=false;
-  const read=$('#mo-read'),msg=$('#mo-msg');
-  function render(){
-    const Er=Ed*D,a=Math.PI-Er,x=CX+OR*Math.cos(a),y=CY+OR*Math.sin(a);
-    mg.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);M.set(Math.PI,0);
-    sight.setAttribute('x1',n2(CX+32*Math.cos(a)));sight.setAttribute('y1',n2(CY+32*Math.sin(a)));sight.setAttribute('x2',n2(x-(MR+3)*Math.cos(a)));sight.setAttribute('y2',n2(y-(MR+3)*Math.sin(a)));
-    const toward=a+Math.PI, sa=nospin?0:toward;
-    spot.setAttribute('cx',n2((MR-4)*Math.cos(sa)));spot.setAttribute('cy',n2((MR-4)*Math.sin(sa)));spot.style.display=mark?'':'none';
-    const off=nospin?wrapA(sa-toward):0;
-    VM.lon(off);
-    VM.set(Ed<180?0:Math.PI,-Math.cos(Er));
-    const vis=Math.cos(off)>0;vspot.style.display=mark&&vis?'':'none';
-    vspot.setAttribute('cx',n2(96*.0*Math.cos(0)+96*Math.sin(-off)*0));vspot.setAttribute('cx',n2(-96*Math.sin(off)*.95));vspot.setAttribute('cy',0);
-    const pct=Math.round((1-Math.cos(Er))/2*100), day=Ed/360*29.53;
-    const name=phaseName(Ed);
-    vname.textContent=name.charAt(0).toUpperCase()+name.slice(1)+' · '+pct+'% lit';
-    chips.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',Math.abs(wrapA((+b.dataset.e-Ed)*D))<22.5*D?'true':'false'));
-    const rise=6+Ed/360*24;
-    const when=name==='new moon'?'Too close to the Sun to see.':
-      Ed<100?'Look for it in the west in the afternoon and evening.':Ed<170?'Look for it in the afternoon and evening.':Ed<190?'Up all night, from sunset to sunrise.':Ed<270?'Up late at night and in the morning.':'Look for it in the east before sunrise and in the morning.';
-    read.innerHTML=`<strong>Day ${day.toFixed(0)} of 29½</strong> · rises about ${fmtHour(Math.round(rise*2)/2)}, sets about ${fmtHour(Math.round(rise*2)/2+12)} · ${when}`;
-    if(nospin)msg.innerHTML=`<strong>If the Moon didn't spin</strong>, we would see different sides of it as it went round, and the dark patches would slide out of view. Sometimes we would see the far side. That never happens: the Moon spins exactly once per trip.`;
-    else if(mark)msg.innerHTML='The orange spot always faces the Earth. As the Moon goes round, it turns exactly once, so <strong>we always see the same face</strong>.';
-    else if(name==='new moon')msg.innerHTML='The Moon is between the Earth and the Sun. Its lit half faces away from us, so we see <strong>nothing</strong>.';
-    else if(name==='full moon')msg.innerHTML='The Earth is between the Sun and the Moon. We see the <strong>whole lit half</strong>: a full moon.';
-    else msg.innerHTML=`The Moon is always half lit (look at it on the left). From Earth we see part of that lit half: <strong>${pct}%</strong> of the disc.`;
-  }
-  drag(mg,svg,p=>{const a=Math.atan2(p.y-CY,p.x-CX);Ed=mod((Math.PI-a)/D,360);render();},()=>{setPlay(false);if(hint.parentNode)hint.remove();});
-  chips.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setPlay(false);Ed=+b.dataset.e;render();});
-  const playB=$('#mo-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play';}
-  playB.addEventListener('click',()=>{setPlay(!playing);if(hint.parentNode)hint.remove();});
-  $('#mo-mark').addEventListener('click',e=>{mark=!mark;e.currentTarget.setAttribute('aria-pressed',mark);render();});
-  $('#mo-nospin').addEventListener('click',e=>{nospin=!nospin;e.currentTarget.setAttribute('aria-pressed',nospin);if(nospin&&!mark){mark=true;$('#mo-mark').setAttribute('aria-pressed','true');}render();});
-  addLoop(fig,dt=>{if(!playing)return;Ed=mod(Ed+dt*360/14,360);render();});
-  render();
-})();
-
-/* =====================================================================
-   07 SOLAR ECLIPSE
-   ===================================================================== */
 const RS=696000,RMk=1737.4,REk=6371,DSUN=149.6e6;
-function overlap(r1,r2,d){ // area of intersection of two circles
+function overlap(r1,r2,d){
   if(d>=r1+r2)return 0;if(d<=Math.abs(r1-r2))return Math.PI*Math.min(r1,r2)**2;
   const a=r1*r1*Math.acos((d*d+r1*r1-r2*r2)/(2*d*r1)),b=r2*r2*Math.acos((d*d+r2*r2-r1*r1)/(2*d*r2));
   return a+b-0.5*Math.sqrt((-d+r1+r2)*(d+r1-r2)*(d-r1+r2)*(d+r1+r2));}
+function playBtn(id,label,on){const b=$(id);const st={on:false};st.set=v=>{st.on=v;b.textContent=v?'Pause':label;};b.addEventListener('click',()=>{if(on)on(!st.on);st.set(!st.on);});return st;}
+function label(svg,x,y,txt,cls,anchor){return T(svg,x,y,txt,cls||'st',{class:(cls||'st')+(anchor?' '+anchor:'')});}
+
+/* ---------- Moon helpers ---------- */
+const SYN=29.530588;
+const cap1=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function simpleName(E){E=mod(E,360);if(E<12||E>=348)return 'new';if(E<78)return 'crescent';if(E<102)return 'half';if(E<168)return 'gibbous';if(E<192)return 'full';if(E<258)return 'gibbous';if(E<282)return 'half';return 'crescent';}
+function moonName(E){const s=simpleName(E);return s==='crescent'||s==='gibbous'?cap1(s):cap1(s)+' Moon';}
+function growing(E){E=mod(E,360);if(E<12||E>=348||(E>=168&&E<192))return '';return E<180?'growing':'shrinking';}
+/* the shape you see from Earth (lit side on the right while growing, as seen from the north) */
+function showPhase(M,E){M.set(mod(E,360)<180?0:Math.PI,-Math.cos(E*D));}
+function fmtDate(d){return d.toLocaleDateString(undefined,{weekday:'short',day:'numeric',month:'short'});}
+/* a round window placed inside a picture: 300-unit coordinates, circle of radius 135 at (150,150) */
+function porthole(svg,cx,cy,r){
+  const s=r/135,g=G(svg,{transform:`translate(${n2(cx-150*s)} ${n2(cy-150*s)}) scale(${n2(s)})`});
+  const cp=clipCircle(svg,150,150,135);
+  S('circle',{cx:150,cy:150,r:135,fill:'#070b16'},g);
+  const inner=G(g,{'clip-path':cp.url});
+  S('circle',{cx:150,cy:150,r:135,fill:'none',stroke:'#3a4766','stroke-width':n2(2/s)},g);
+  return {g,inner};
+}
+function sunlight(svg,h,x2){for(let y=24;y<h;y+=26)S('line',{x1:4,y1:y,x2:x2||52,y2:y,class:'ray'},svg);label(svg,14,22,'Sunlight','st-a');}
+/* a small Moon on an orbit that you drag, with a pulsing hint until first touch */
+function orbitMoon(svg,parent,MR){
+  const g=G(parent,{class:'grab'});
+  const M=moon(svg,g,0,0,MR);
+  S('circle',{r:MR+18,fill:'transparent'},g);
+  const hint=S('circle',{r:MR+5,class:'hint-ring'},g);
+  return {g,M,unhint(){if(hint.parentNode)hint.remove();}};
+}
+function orbitDrag(o,svg,CX,CY,onE,onStart){drag(o.g,svg,p=>onE(mod((Math.PI-Math.atan2(p.y-CY,p.x-CX))/D,360)),()=>{o.unhint();if(onStart)onStart();});}
+const orbitXY=(CX,CY,R,E)=>{const a=Math.PI-E*D;return [CX+R*Math.cos(a),CY+R*Math.sin(a),a];};
+
+/* ===================== 0 · TONIGHT ===================== */
 (function(){
-  const fig=$('#fig-solar'), svg=$('svg',fig), sk=$('#so-sky'); watch(svg);watch(sk);
-  const EX=600,EY=170,ER=56,MRd=ER*RMk/REk,g=REk/ER;
-  stars(svg,svg,720,340,50,71);
-    sun(svg,svg,-170,170,215,1.15);
-  T(svg,64,26,'Sun','st-b');T(svg,64,42,'(really much farther away)','st-s');
-  const orbit=S('circle',{cx:EX,cy:EY,class:'orbit'},svg);
-  const pen=S('path',{class:'penumbra'},svg), umb=S('path',{class:'umbra'},svg), ant=S('path',{fill:'#000',opacity:.6},svg);
-  const pe1=S('path',{class:'edge'},svg);
-  const E=earth(svg,svg,EX,EY,ER,{seed:23});E.set(Math.PI,0);
-  const ecp=clipCircle(svg,EX,EY,ER);
-  const onE=G(svg,{'clip-path':ecp.url});
-  const penE=S('path',{fill:'#000',opacity:.5},onE);
-  const spotG=G(svg);const spotC=S('circle',{fill:'#000'},spotG);const spotR=S('circle',{fill:'none',stroke:'#f2a04a','stroke-width':1.4},spotG);
-  const spotL=T(svg,712,EY+ER+44,'','st-a',{class:'st-a end'});
-  T(svg,EX,EY+ER+22,'Earth','st-b',{class:'st-b mid'});
-  const mg=G(svg,{class:'grab'});
-  const M=moon(svg,mg,0,0,MRd);M.set(Math.PI,0);
-  S('circle',{r:MRd+12,fill:'transparent'},mg);
-  const mL=T(svg,0,0,'Moon','st-b',{class:'st-b mid'});
-  const pg=G(svg,{class:'grab'});
-  S('line',{x1:0,y1:0,x2:-12,y2:0,stroke:'#f2a04a','stroke-width':2.4,'stroke-linecap':'round'},pg);S('circle',{cx:-16,cy:0,r:4.4,class:'you'},pg);S('circle',{cx:-10,cy:0,r:14,fill:'transparent'},pg);
-  const pHint=S('circle',{cx:-14,cy:0,r:9,class:'hint-ring'},pg);
-  const pL=T(svg,0,0,'You','st-b',{fill:'#f2a04a',class:'st-b end'});
-  // sky
-  const SC=150,SKR=135,SSR=52;
-  const cp=clipCircle(sk,SC,SC,SKR);
-  const inner=G(sk,{'clip-path':cp.url});
-  const skyBg=S('rect',{x:0,y:0,width:300,height:300},inner);
-  const sst=stars(sk,inner,300,300,45,8);
-  const corona=G(inner);
-  S('circle',{cx:SC,cy:SC,r:SSR*2.8,fill:radial(sk,[[0,'#ffffff',.95],[.36,'#eef3ff',.6],[.5,'#cfdbf5',.2],[1,'#9fb3e0',0]])},corona);
-  for(let i=0;i<14;i++){const a=i*TAU/14+(i%2)*.2,l=SSR*(1.8+((i*37)%10)/8);S('path',{d:`M${n2(SC+SSR*.9*Math.cos(a-.1))} ${n2(SC+SSR*.9*Math.sin(a-.1))}L${n2(SC+l*Math.cos(a))} ${n2(SC+l*Math.sin(a))}L${n2(SC+SSR*.9*Math.cos(a+.1))} ${n2(SC+SSR*.9*Math.sin(a+.1))}Z`,fill:'#e8eefc',opacity:.35},corona);}
-  const sunG=G(inner);sun(sk,sunG,SC,SC,SSR,1.6);
-  const mdisc=S('circle',{fill:'#0b0f1b'},inner);
-  S('circle',{cx:SC,cy:SC,r:SKR,fill:'none',stroke:'#2a3550'},sk);
-  const skyL=T(sk,SC,290,'','st',{class:'st mid'});
-  let Dk=363300, phi=-0.16, psi=0, playing=false, dir=1;
-  const msg=$('#so-msg');
-  function geom(){const Dd=190*Dk/384400;const f=(Dk-REk)/(Dd-ER);
-    const mx=EX-Dd*Math.cos(phi), my=EY-Dd*Math.sin(phi);
-    return {Dd,f,mx,my};}
-  function render(){
-    const {Dd,f,mx,my}=geom();
-    orbit.setAttribute('r',n2(Dd));
-    mg.setAttribute('transform',`translate(${n2(mx)} ${n2(my)})`);
-    mL.setAttribute('x',n2(mx));mL.setAttribute('y',n2(my-MRd-10));
-    // shadow cones (radius in display px at display distance s from the Moon)
-    const Ru=s=>(RMk-s*f*(RS-RMk)/DSUN)/g, Rp=s=>(RMk+s*f*(RS+RMk)/DSUN)/g;
-    const sEnd=720-mx, sApex=RMk*DSUN/(RS-RMk)/f;
-    pen.setAttribute('d',`M${n2(mx)} ${n2(my-MRd)}L720 ${n2(my-Rp(sEnd))}L720 ${n2(my+Rp(sEnd))}L${n2(mx)} ${n2(my+MRd)}Z`);
-    pe1.setAttribute('d',`M${n2(mx)} ${n2(my-MRd)}L720 ${n2(my-Rp(sEnd))}M${n2(mx)} ${n2(my+MRd)}L720 ${n2(my+Rp(sEnd))}`);
-    const ax=Math.min(sApex,sEnd);
-    umb.setAttribute('d',`M${n2(mx)} ${n2(my-MRd)}L${n2(mx+ax)} ${n2(my-Math.max(0,Ru(ax)))}L${n2(mx+ax)} ${n2(my+Math.max(0,Ru(ax)))}L${n2(mx)} ${n2(my+MRd)}Z`);
-    if(sApex<sEnd)ant.setAttribute('d',`M${n2(mx+sApex)} ${n2(my)}L720 ${n2(my+Ru(sEnd))}L720 ${n2(my-Ru(sEnd))}Z`);else ant.setAttribute('d','M0 0');
-    // penumbra on Earth
-    const dy=my-EY;
-    penE.setAttribute('d',`M${n2(mx)} ${n2(my-MRd)}L720 ${n2(my-Rp(sEnd))}L720 ${n2(my+Rp(sEnd))}L${n2(mx)} ${n2(my+MRd)}Z`);
-    if(Math.abs(dy)<ER){const px=EX-Math.sqrt(ER*ER-dy*dy),s=px-mx,ru=Ru(s);
-      spotG.style.display='';spotC.setAttribute('cx',n2(px));spotC.setAttribute('cy',n2(my));spotC.setAttribute('r',n2(Math.max(1.4,Math.abs(ru))));spotC.setAttribute('fill',ru>0?'#000':'none');
-      spotR.setAttribute('cx',n2(px));spotR.setAttribute('cy',n2(my));spotR.setAttribute('r',n2(Math.max(4,Math.abs(ru)+3)));spotR.setAttribute('stroke-dasharray',ru>0?'':'2 2');
-      spotL.style.display='';
-      spotL.textContent=ru>0?`darkest shadow: ${Math.round(2*ru*g)} km wide`:'ring-of-fire zone';}
-    else{spotG.style.display='none';spotL.style.display='none';}
-    // observer
-    const ox=EX-ER*Math.cos(psi), oy=EY-ER*Math.sin(psi);
-    pg.setAttribute('transform',`translate(${n2(ox)} ${n2(oy)}) rotate(${n2(psi/D)})`);
-    pL.setAttribute('x',n2(ox-26));pL.setAttribute('y',n2(oy-Math.sin(psi)*14+(psi>0?-6:16)));
-    // sky as seen by the observer, in real units
-    const d=(ox-mx)*f, sep=(my-oy)*g/d, rS=RS/DSUN, rM=RMk/d, k=SSR/rS;
-    mdisc.setAttribute('cx',SC);mdisc.setAttribute('cy',n2(SC+clamp(sep*k,-400,400)));mdisc.setAttribute('r',n2(rM*k));
-    const cov=overlap(rS,rM,Math.abs(sep))/(Math.PI*rS*rS);
-    const total=Math.abs(sep)+rS<=rM, ring=Math.abs(sep)+rM<=rS;
-    const dark=total?1:smooth(clamp((cov-.75)/.25,0,1))*.8;
-    skyBg.setAttribute('fill',mix('#4f8fd8','#050913',dark));
-    sst.setAttribute('opacity',total?1:0);corona.style.opacity=total?1:0;
-    skyL.textContent=total?'Totality: safe to look, only now':cov>0?`${Math.round(cov*100)}% of the Sun covered`:'A normal sunny day';
-    const pen0=Math.abs(dy)>ER+Rp(EX-mx-ER)+2;
-    if(total)msg.innerHTML='<strong>Total eclipse!</strong> You are inside the darkest part of the Moon\'s shadow. The sky goes dark, stars come out, and the Sun\'s pearly corona glows around the black Moon.';
-    else if(ring)msg.innerHTML='<strong>Ring of fire!</strong> The Moon is too far away to cover the whole Sun, so a bright ring is left around it. This is an annular eclipse. You still need eclipse glasses.';
-    else if(cov>0)msg.innerHTML=`<strong>Partial eclipse:</strong> the Moon covers ${Math.round(cov*100)}% of the Sun where you are standing. You are in the pale outer shadow.${cov<.5?' Without eclipse glasses, you might not even notice.':''}`;
-    else if(pen0)msg.innerHTML='New moon, but the Moon\'s shadow <strong>misses the Earth</strong> completely. No eclipse anywhere.';
-    else msg.innerHTML='The Moon\'s shadow is on the Earth, but <strong>not where you are</strong>. Drag the little person into the shadow.';
+  const fig=$('#fig-now'),svg=$('svg',fig);watch(svg);
+  stars(svg,svg,720,330,80,5);
+  const CX=360,CY=176,R=118;
+  const glow=S('circle',{cx:CX,cy:CY,r:R*1.75,fill:radial(svg,[[0,'#dfe6ff',.16],[.55,'#dfe6ff',.05],[1,'#dfe6ff',0]])},svg);
+  const M=moon(svg,svg,CX,CY,R,{dim:.95});
+  const when=label(svg,CX,28,'','st-a','mid');
+  const nm=$('#now-name'),sub=$('#now-sub');
+  const base=new Date();
+  let off=0,cur=sky(base).E,tw=null;
+  function draw(E){showPhase(M,E);glow.setAttribute('opacity',n2(.25+.75*(1-Math.cos(E*D))/2));}
+  function text(){
+    const E=sky(new Date(base.getTime()+off*864e5)).E,d=new Date(base.getTime()+off*864e5);
+    const w=off===0?'Tonight':off===1?'Tomorrow night':off===-1?'Last night':off>0?'In '+off+' nights':(-off)+' nights ago';
+    when.textContent=w+' · '+d.toLocaleDateString(undefined,{day:'numeric',month:'short'});
+    nm.textContent=moonName(E);
+    const age=Math.round(E/360*SYN)%30,g=growing(E);
+    sub.textContent='Day '+age+' of 29½'+(g?' · '+g:'');
+    $('#now-reset').hidden=off===0;
   }
-  drag(mg,svg,p=>{phi=clamp(Math.atan2(-(p.y-EY),EX-p.x),-0.6,0.6);render();},()=>setPlay(false));
-  drag(pg,svg,p=>{psi=clamp(Math.atan2(-(p.y-EY),EX-p.x),-1.2,1.2);render();},()=>{if(pHint.parentNode)pHint.remove();});
-  seg('so-dist',v=>{Dk=+v;render();});
-  $('#so-align').addEventListener('click',()=>{setPlay(false);const {Dd}=geom();const oy=EY-ER*Math.sin(psi);phi=Math.asin(clamp((EY-oy)/Dd,-1,1));render();});
-  const playB=$('#so-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play';}
-  playB.addEventListener('click',()=>{if(!playing&&Math.abs(phi)>=0.3){phi=-0.3;dir=1;}setPlay(!playing);});
-  addLoop(fig,dt=>{if(!playing)return;
-    const {Dd,f,mx,my}=geom();const oy=EY-ER*Math.sin(psi);const sepR=Math.abs((my-oy)*g/((EX-ER-mx)*f))/(RS/DSUN);
-    const slow=0.12+0.88*smooth(clamp(sepR/1.6,0,1));
-    phi+=dir*dt*0.045*slow;if(phi>0.3){phi=0.3;setPlay(false);}render();});
+  function go(o){
+    off=o;const target=sky(new Date(base.getTime()+off*864e5)).E;
+    const from=cur,delta=wrapA((target-from)*D)/D,t0=performance.now(),dur=reduce?1:420;
+    if(tw)cancelAnimationFrame(tw);
+    const step=t=>{const u=clamp((t-t0)/dur,0,1);cur=from+delta*smooth(u);draw(cur);if(u<1)tw=requestAnimationFrame(step);else cur=target;};
+    tw=requestAnimationFrame(step);text();
+  }
+  $('#now-next').addEventListener('click',()=>go(off+1));
+  $('#now-prev').addEventListener('click',()=>go(off-1));
+  $('#now-reset').addEventListener('click',()=>go(0));
+  draw(cur);text();
+})();
+
+/* ===================== 1 · NO LIGHT OF ITS OWN ===================== */
+(function(){
+  const fig=$('#fig-light'),svg=$('svg',fig);watch(svg);
+  stars(svg,svg,720,360,50,14);
+  const CX=360,CY=180,R=92,RX=286,RY=124;
+  const rays=G(svg);
+  const M=moon(svg,svg,CX,CY,R);
+  const dayL=label(svg,0,0,'Day','st-b','mid'),nightL=label(svg,0,0,'Night','st','mid');
+  const sunG=G(svg,{class:'grab'});
+  sun(svg,sunG,0,0,38,1.8);
+  S('circle',{r:58,fill:'transparent'},sunG);
+  label(sunG,0,60,'Sun','st-b','mid');
+  const hint=S('circle',{r:44,class:'hint-ring'},sunG);
+  let a=Math.PI+0.5;
+  function render(){
+    const sx=CX+RX*Math.cos(a),sy=CY+RY*Math.sin(a);
+    sunG.setAttribute('transform',`translate(${n2(sx)} ${n2(sy)})`);
+    const b=Math.atan2(sy-CY,sx-CX);
+    M.set(b,0);
+    rays.innerHTML='';const nrm=b+Math.PI/2;
+    for(const s of [-.85,-.45,0,.45,.85])S('line',{x1:n2(sx),y1:n2(sy),x2:n2(CX+R*s*Math.cos(nrm)+R*.3*Math.cos(b)),y2:n2(CY+R*s*Math.sin(nrm)+R*.3*Math.sin(b)),class:'ray','stroke-width':1.6,'stroke-opacity':.22},rays);
+    const q=b+.95,L=R+30;
+    dayL.setAttribute('x',n2(CX+L*Math.cos(q)));dayL.setAttribute('y',n2(CY+L*Math.sin(q)+5));
+    nightL.setAttribute('x',n2(CX-L*Math.cos(q)));nightL.setAttribute('y',n2(CY-L*Math.sin(q)+5));
+  }
+  drag(sunG,svg,p=>{a=Math.atan2((p.y-CY)/RY,(p.x-CX)/RX);render();},()=>{if(hint.parentNode)hint.remove();});
   render();
 })();
 
-/* =====================================================================
-   08 LUNAR ECLIPSE
-   ===================================================================== */
+/* ===================== 2 · FROM THE SIDE ===================== */
 (function(){
-  const fig=$('#fig-lunar'), svg=$('svg',fig), sk=$('#lu-sky'); watch(svg);watch(sk);
-  const EX=250,EY=160,ER=56,Dd=190,g=REk/ER,MRd=ER*RMk/REk;
-  const UR=(REk-384400*(RS-REk)/DSUN)/g, PR=(REk+384400*(RS+REk)/DSUN)/g;
-  stars(svg,svg,720,320,50,91);
-    sun(svg,svg,-170,160,205,1.15);
-  T(svg,64,26,'Sun','st-b');T(svg,64,42,'(really much farther away)','st-s');
-  const coneAt=(r0,r1,x)=>r0+(r1-r0)*(x-EX)/Dd;
-  const penP=`M${EX} ${EY-ER}L720 ${n2(EY-coneAt(ER,PR,720))}L720 ${n2(EY+coneAt(ER,PR,720))}L${EX} ${EY+ER}Z`;
-  const umbP=`M${EX} ${EY-ER}L720 ${n2(EY-coneAt(ER,UR,720))}L720 ${n2(EY+coneAt(ER,UR,720))}L${EX} ${EY+ER}Z`;
-  S('path',{d:penP,class:'penumbra'},svg);S('path',{d:umbP,class:'umbra'},svg);
-  S('path',{d:`M${EX} ${EY-ER}L720 ${n2(EY-coneAt(ER,PR,720))}M${EX} ${EY+ER}L720 ${n2(EY+coneAt(ER,PR,720))}`,class:'edge'},svg);
-  T(svg,700,n2(EY-coneAt(ER,UR,700)+16),"Earth's dark shadow",'st',{class:'st end'});
-  T(svg,700,n2(EY-coneAt(ER,PR,700)-8),'pale outer shadow','st-s',{class:'st-s end'});
-  S('circle',{cx:EX,cy:EY,r:Dd,class:'orbit'},svg);
-  const redG=G(svg,{class:'fade'});redG.style.opacity=0;
-  const E=earth(svg,svg,EX,EY,ER,{seed:29});E.set(Math.PI,0);
-  T(svg,EX,EY+ER+22,'Earth','st-b',{class:'st-b mid'});
-  S('circle',{cx:EX,cy:EY,r:ER+3,fill:'none',stroke:'#7fb2ff','stroke-width':3,'stroke-opacity':.35},redG);
-  const rg=linear(svg,[[0,'#ffe9a8'],[.4,'#ffb35c'],[1,'#e2462a']],{x1:0,y1:0,x2:1,y2:0});
-  [-1,1].forEach(sg=>{for(const o of [0,6]){S('path',{d:`M60 ${n2(EY+sg*(ER+4+o))} L${EX} ${n2(EY+sg*(ER+3+o*.3))} Q${EX+70} ${n2(EY+sg*(ER-6))} ${EX+Dd} ${n2(EY+sg*(6+o))}`,fill:'none',stroke:rg.url,'stroke-width':1.8,opacity:.9},redG);}});
-  T(redG,EX+70,EY+ER+46,'Earth\'s air bends a little sunlight into the shadow,','st',{});T(redG,EX+70,EY+ER+62,'and turns it red, like a sunset','st',{});
-  const mg=G(svg,{class:'grab'});
-  const M=moon(svg,mg,0,0,MRd);M.set(Math.PI,0);
-  const mcp=clipCircle(svg,0,0,MRd);
-  const sh=G(mg,{'clip-path':mcp.url});
-  const shP=S('path',{fill:'#000',opacity:.4},sh),shU=S('path',{fill:'#5a1a0c',opacity:.85},sh);
-  S('circle',{r:MRd+12,fill:'transparent'},mg);
-  const hint=S('circle',{r:MRd+5,class:'hint-ring'},mg);
-  const mL=T(svg,0,0,'Moon','st-b',{class:'st-b mid'});
-  // sky
-  const SC=150,SKR=135,VR=66,kk=VR/RMk;
-  const cp=clipCircle(sk,SC,SC,SKR);
-  const inner=G(sk,{'clip-path':cp.url});
-  S('rect',{x:0,y:0,width:300,height:300,fill:'#060a16'},inner);
-  const sst=stars(sk,inner,300,300,70,12);
-  const VM=moon(sk,inner,SC,SC-6,VR);VM.set(0,1);
-  const vcp=clipCircle(sk,0,0,VR);
-  const bl=blur(sk,3.5);
-  const shadow=G(VM.shade,{'clip-path':vcp.url});
-  const sg=G(shadow,{filter:bl});
-  const vP=S('circle',{fill:'#000',opacity:.42},sg), vU=S('circle',{fill:radial(sk,[[0,'#2a0904'],[.85,'#5e1c0c'],[.97,'#8a3416'],[1,'#8a3416']]),opacity:.94},sg);
-  const skyL=T(sk,SC,290,'','st',{class:'st mid'});
-  let phi=0.36,playing=false;
-  const msg=$('#lu-msg');
+  const fig=$('#fig-side'),svg=$('svg',fig);watch(svg);
+  const CX=215,CY=182,OR=126,MR=15,VX=548,VY=180,VR=118;
+  stars(svg,svg,720,360,60,61);
+  sunlight(svg,360);
+  S('circle',{cx:CX,cy:CY,r:OR,class:'orbit'},svg);
+  label(svg,CX-OR,CY+40,'New','st-s','mid');label(svg,CX+OR,CY+40,'Full','st-s','mid');
+  const sight=S('line',{class:'sight'},svg);
+  const E=earth(svg,svg,CX,CY,28,{polar:true,seed:51});E.set(Math.PI,0,0);
+  label(svg,CX,CY+48,'You','st-s','mid');
+  const o=orbitMoon(svg,svg,MR);
+  S('line',{x1:400,y1:40,x2:400,y2:320,stroke:'#1f2a40'},svg);
+  label(svg,VX,26,'What you see','st-s','mid');
+  const VM=moon(svg,svg,VX,VY,VR,{dim:.9});
+  const msg=$('#side-msg');
+  let Ed=55;
   function render(){
-    const mx=EX+Dd*Math.cos(phi),my=EY-Dd*Math.sin(phi);
-    mg.setAttribute('transform',`translate(${n2(mx)} ${n2(my)})`);
-    mL.setAttribute('x',n2(mx));mL.setAttribute('y',n2(my-MRd-10));
-    const lx=x=>x-mx, ly=y=>y-my;
-    const pu=coneAt(ER,PR,mx),uu=coneAt(ER,UR,mx);
-    shP.setAttribute('d',`M${-40} ${n2(ly(EY-pu))}H40V${n2(ly(EY+pu))}H-40Z`);
-    shU.setAttribute('d',`M${-40} ${n2(ly(EY-uu))}H40V${n2(ly(EY+uu))}H-40Z`);
-    const dk=(my-EY)*g;
-    vP.setAttribute('cy',n2(-dk*kk));vP.setAttribute('r',n2(PR*g*kk));
-    vU.setAttribute('cy',n2(-dk*kk));vU.setAttribute('r',n2(UR*g*kk));
-    const covU=overlap(RMk,UR*g,Math.abs(dk))/(Math.PI*RMk*RMk), inP=Math.abs(dk)<PR*g+RMk;
-    sst.setAttribute('opacity',n2(0.45+0.55*covU));
-    skyL.textContent=covU>0.999?'Total: the whole Moon in the dark shadow':covU>0?`${Math.round(covU*100)}% in the dark shadow`:inP?'In the pale outer shadow':'An ordinary full moon';
-    if(covU>0.999)msg.innerHTML='<strong>Total lunar eclipse.</strong> The whole Moon is inside the Earth\'s dark shadow. It doesn\'t vanish: it glows a deep coppery red.';
-    else if(covU>0)msg.innerHTML=`<strong>Partial lunar eclipse:</strong> ${Math.round(covU*100)}% of the Moon is in the Earth's dark shadow. It looks as if a dark bite has been taken out.`;
-    else if(inP)msg.innerHTML='The Moon is in the <strong>pale outer shadow</strong>. It looks only a little dimmer. Most people wouldn\'t notice.';
-    else msg.innerHTML='A full moon in <strong>full sunlight</strong>. No eclipse yet. Drag the Moon into the Earth\'s shadow.';
+    const [x,y,a]=orbitXY(CX,CY,OR,Ed);
+    o.g.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);o.M.set(Math.PI,0);
+    sight.setAttribute('x1',n2(CX+30*Math.cos(a)));sight.setAttribute('y1',n2(CY+30*Math.sin(a)));
+    sight.setAttribute('x2',n2(x-(MR+3)*Math.cos(a)));sight.setAttribute('y2',n2(y-(MR+3)*Math.sin(a)));
+    showPhase(VM,Ed);
+    const g=growing(Ed);msg.innerHTML=`<strong>${moonName(Ed)}</strong>${g?', '+g:''}`;
   }
-  drag(mg,svg,p=>{phi=clamp(Math.atan2(-(p.y-EY),p.x-EX),-0.5,0.5);render();},()=>{setPlay(false);if(hint.parentNode)hint.remove();});
-  const playB=$('#lu-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play';}
-  playB.addEventListener('click',()=>{if(!playing&&phi<=-0.36)phi=0.36;setPlay(!playing);if(hint.parentNode)hint.remove();});
-  $('#lu-red').addEventListener('click',e=>{const on=e.currentTarget.getAttribute('aria-pressed')!=='true';e.currentTarget.setAttribute('aria-pressed',on);redG.style.opacity=on?1:0;});
-  addLoop(fig,dt=>{if(!playing)return;const dk=Math.abs(EY-(EY-Dd*Math.sin(phi)))*g;const slow=0.3+0.7*smooth(clamp((dk-(UR*g-RMk))/(PR*g),0,1));
-    phi-=dt*0.05*slow;if(phi<-0.36){phi=-0.36;setPlay(false);}render();});
+  const pl=playBtn('#side-play','Play a month',v=>{if(v)o.unhint();});
+  orbitDrag(o,svg,CX,CY,e=>{Ed=e;render();},()=>pl.set(false));
+  addLoop(fig,dt=>{if(!pl.on)return;Ed=mod(Ed+dt*360/14,360);render();});
   render();
 })();
 
-/* =====================================================================
-   09 WHY ECLIPSES ARE RARE
-   ===================================================================== */
+/* ===================== 3 · A MONTH ===================== */
 (function(){
-  const fig=$('#fig-rare'), svg=$('svg',fig); watch(svg);
-  const CX=360,CY=165,OR=290,SE=0.4,CE=Math.sqrt(1-SE*SE),MOR=44,YEAR=365.25,SYN=29.5306,T0=6.6,OMEGA=TAU*(37-79)/YEAR;
-  stars(svg,svg,720,320,60,101);
-  // project ecliptic coords (x,y in-plane, z up) to screen
-  const P=(x,y,z)=>[x,-y*SE-z*CE];
-  S('ellipse',{cx:CX,cy:CY,rx:OR,ry:OR*SE,class:'orbit-solid'},svg);
-  const back=G(svg);sun(svg,svg,CX,CY,20,2);const front=G(svg);
-  const eg=G(back);
-  const below=S('path',{fill:'none',stroke:'#6f7a92','stroke-width':1.2,'stroke-dasharray':'2 3'},eg);
-  const plane=S('ellipse',{rx:MOR,ry:MOR*SE,fill:'#7fb2ff','fill-opacity':.06,stroke:'#7fb2ff','stroke-opacity':.25},eg);
-  const E=earth(svg,eg,0,0,9,{seed:2});
-  const above=S('path',{fill:'none',stroke:'#cfd6e4','stroke-width':1.5},eg);
-  const nodes=[S('circle',{r:3,fill:'#f2a04a'},eg),S('circle',{r:3,fill:'#f2a04a'},eg)];
-  const mdot=S('circle',{r:4,fill:'#d6d1c4'},eg);
-  const sunLine=S('line',{stroke:'#ffd27a','stroke-opacity':.35,'stroke-dasharray':'3 3'},svg);
-  const dateL=T(svg,16,28,'','st-b'), evL=T(svg,16,46,'','st');
-  T(svg,704,28,'orange dots: where the','st-s',{class:'st-s end'});T(svg,704,42,"Moon's path crosses ours",'st-s',{class:'st-s end'});
-  let t=0,playing=false,tilt=5.1;
-  const read=$('#ra-read'),msg=$('#ra-msg'),newS=$('#ra-new'),fullS=$('#ra-full');
-  const lamS=t=>TAU*(t-79)/YEAR;
-  const elong=t=>TAU*(t-T0)/SYN;
-  const beta=(t,i)=>i*Math.sin(lamS(t)+elong(t)-OMEGA);
-  function classify(kind,b){b=Math.abs(b);
-    if(kind==='new')return b<0.9?'central':b<1.5?'partial':'';
-    return b<0.45?'total':b<0.95?'partial':b<1.55?'faint':'';}
-  let events=[];
-  function buildStrips(){
-    events=[];
-    for(let k=0;k<14;k++){const tn=T0+k*SYN;if(tn<YEAR)events.push({kind:'new',t:tn});const tf=T0+(k+.5)*SYN;if(tf<YEAR)events.push({kind:'full',t:tf});}
-    newS.innerHTML='';fullS.innerHTML='';
-    let ns=0,nl=0,nf=0;
-    events.forEach(ev=>{
-      ev.b=beta(ev.t,tilt);ev.c=classify(ev.kind,ev.b);
-      const cell=document.createElement('div');cell.className='cell'+(ev.c&&ev.c!=='faint'?' ecl':'');ev.cell=cell;
-      const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','-30 -38 60 86');
-      const k=ev.kind==='new'?20:16;
-      if(ev.kind==='new'){S('circle',{r:n2(0.267*k*1.6),fill:'#ffd27a',opacity:.25},s);S('circle',{r:n2(0.267*k),fill:'#ffe08a'},s);}
-      else{S('circle',{r:n2(1.25*k),fill:'#000',opacity:.6,stroke:'#2a3550'},s);S('circle',{r:n2(0.7*k),fill:'#000',stroke:'#3e4a66'},s);}
-      const off=-ev.b*k, cl=clamp(off,-24,24);
-      const col=ev.kind==='new'?'#3a4258':(Math.abs(ev.b)<0.95?'#a8401c':Math.abs(ev.b)<1.55?'#a39d90':'#d6d1c4');
-      S('circle',{cy:n2(cl),r:n2(0.26*k),fill:col,stroke:ev.kind==='new'?'#9aa6bd':'none','stroke-width':.8},s);
-      if(cl!==off)S('path',{d:off<0?'M-4 -31 L0 -36 L4 -31':'M-4 31 L0 36 L4 31',fill:'none',stroke:'#8e9ab3','stroke-width':1.2},s);
-      cell.appendChild(s);
-      const sp=document.createElement('span');sp.textContent=ev.c==='central'||ev.c==='total'?'eclipse!':ev.c==='partial'?'partial':ev.c==='faint'?'faint':MON[Math.floor(new Date(Date.UTC(2027,0,1)+ev.t*864e5).getUTCMonth())];cell.appendChild(sp);
-      cell.title=doyToDate(ev.t)+': '+(ev.kind==='new'?'new moon':'full moon')+(ev.c?' · '+ev.c+' eclipse':'');
-      (ev.kind==='new'?newS:fullS).appendChild(cell);
-      if(ev.kind==='new'&&(ev.c==='central'||ev.c==='partial'))ns++;
-      if(ev.kind==='full'&&(ev.c==='total'||ev.c==='partial'))nl++;
-      if(ev.c==='faint')nf++;
-    });
-    read.innerHTML=tilt<0.05?`<strong>With flat orbits: ${ns} solar and ${nl} lunar eclipses</strong>, one at every new moon and every full moon.`
-      :`<strong>This year: ${ns} solar ${ns===1?'eclipse':'eclipses'} and ${nl} lunar ${nl===1?'eclipse':'eclipses'}</strong>${nf?`, plus ${nf} faint ${nf===1?'one':'ones'} where the Moon only grazes the pale outer shadow`:''}. They come in two bunches, about six months apart.`;
-  }
+  const box=$('#cal'),msg=$('#cal-msg');
+  const now=new Date(),E0=sky(now).E,age=E0/360*SYN;
+  const start=now.getTime()-age*864e5;
+  const today=Math.round(age)%30;
+  const keys={0:'New',7:'Half',15:'Full',22:'Half'};
+  const nextFull=nextPhase(now,180);
+  const defMsg=`Tonight is day <strong>${today}</strong>. Next full Moon: <strong>${nextFull?fmtDate(nextFull):'soon'}</strong>.`;
+  let sel=null;
+  [['Growing',0,15,''],['Shrinking',15,30,' down']].forEach(([t,a,b,c])=>{
+    const h=document.createElement('div');h.className='cal-h'+c;h.textContent=t;box.appendChild(h);
+    const grid=document.createElement('div');grid.className='cal-grid';box.appendChild(grid);
+    for(let d=a;d<b;d++){
+      const E=d/SYN*360,date=new Date(start+d*864e5);
+      const btn=document.createElement('button');btn.type='button';btn.className='cal-c'+(d===today?' tonight':'');
+      btn.setAttribute('aria-label','Day '+d+', '+fmtDate(date)+', '+moonName(E));
+      const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','-20 -20 40 40');
+      S('circle',{r:15.6,fill:'none',stroke:'#2a344c','stroke-width':1},s);
+      const m=moon(s,s,0,0,15,{dim:.93});showPhase(m,E);
+      btn.appendChild(s);
+      const sp=document.createElement('span');sp.textContent=d===today?'Tonight':(keys[d]||'');btn.appendChild(sp);
+      btn.addEventListener('click',()=>{
+        if(sel)sel.classList.remove('sel');
+        if(sel===btn){sel=null;msg.innerHTML=defMsg;return;}
+        sel=btn;btn.classList.add('sel');
+        msg.innerHTML=`${fmtDate(date)}: <strong>${moonName(E)}</strong>${growing(E)?', '+growing(E):''}.`;
+      });
+      grid.appendChild(btn);
+    }
+  });
+  msg.innerHTML=defMsg;
+})();
+
+/* ===================== 4 · OUT IN THE DAY ===================== */
+(function(){
+  const fig=$('#fig-day'),svg=$('svg',fig);watch(svg);
+  const W=720,GY=262,SX=360,AX=300,AY=196;
+  const grad=linear(svg,[[0,'#000'],[1,'#000']],{x1:0,y1:0,x2:0,y2:1});
+  S('rect',{x:0,y:0,width:W,height:GY+2,fill:grad.url},svg);
+  const st=stars(svg,svg,W,GY,70,31);
+  S('path',{d:`M${SX-AX} ${GY}A${AX} ${AY} 0 0 1 ${SX+AX} ${GY}`,fill:'none',stroke:'#fff','stroke-opacity':.1,'stroke-dasharray':'2 6'},svg);
+  const sunG=G(svg,{class:'grab'});sun(svg,sunG,0,0,17,2.4);S('circle',{r:34,fill:'transparent'},sunG);
+  const sHint=S('circle',{r:22,class:'hint-ring'},sunG);
+  const mg=G(svg,{class:'grab'});const M=moon(svg,mg,0,0,26);S('circle',{r:36,fill:'transparent'},mg);
+  M.night.style.opacity=1;
+  const ground=S('path',{d:`M0 ${GY}Q120 ${GY-12} 240 ${GY-3}T470 ${GY-2}T720 ${GY-9}V340H0Z`},svg);
+  label(svg,26,322,'East','st-s');label(svg,694,322,'West','st-s','end-a');
+  const time=label(svg,24,40,'','st-big');
+  const ph=$('#day-ph'),msg=$('#day-msg');
+  const OPTS=[[0,'New Moon: up with the Sun, so we can\'t see it.'],[90,'Half Moon: up from lunchtime to midnight.'],[180,'Full Moon: rises at sunset, sets at sunrise.'],[270,'Half Moon: up from midnight to lunchtime.']];
+  OPTS.forEach(([E,txt],i)=>{
+    const b=document.createElement('button');b.type='button';b.dataset.v=E;b.setAttribute('aria-pressed',i===1?'true':'false');
+    b.setAttribute('aria-label',moonName(E)+(growing(E)?', '+growing(E):''));
+    const s=document.createElementNS(NS,'svg');s.setAttribute('viewBox','-12 -12 24 24');
+    S('circle',{r:9,fill:'none',stroke:'currentColor','stroke-width':1.2},s);
+    const k=-Math.cos(E*D);if(k>-.99)S('path',{d:litD(9,k),fill:'currentColor',transform:E<180?'':'rotate(180)'},s);
+    b.appendChild(s);ph.appendChild(b);
+  });
+  let Ep=90,h=16;
+  function skyY(y){return clamp(y/GY,0,1);}
   function render(){
-    const ls=lamS(t), ex=Math.cos(ls+Math.PI)*OR, ey=Math.sin(ls+Math.PI)*OR;
-    const [sx,sy]=P(ex,ey,0);const X=CX+sx,Y=CY+sy;
-    (Math.sin(ls+Math.PI)>0?back:front).appendChild(eg);
-    eg.setAttribute('transform',`translate(${n2(X)} ${n2(Y)})`);
-    E.set(Math.atan2(-sy,-sx),0);
-    sunLine.setAttribute('x1',CX);sunLine.setAttribute('y1',CY);sunLine.setAttribute('x2',n2(X));sunLine.setAttribute('y2',n2(Y));
-    const vi=tilt*3*D;
-    let dA='',dB='',pu=null;
-    for(let j=0;j<=72;j++){const u=j/72*TAU;const x0=Math.cos(u),y0=Math.sin(u)*Math.cos(vi),z0=Math.sin(u)*Math.sin(vi);
-      const x=x0*Math.cos(OMEGA)-y0*Math.sin(OMEGA),y=x0*Math.sin(OMEGA)+y0*Math.cos(OMEGA);
-      const [px,py]=P(x*MOR,y*MOR,z0*MOR);const up=z0>=-1e-9;const c=n2(px)+' '+n2(py);
-      if(up){dA+=(pu===true?'L':'M')+c;if(pu===false)dB+='L'+c;}else{dB+=(pu===false?'L':'M')+c;if(pu===true)dA+='L'+c;}pu=up;}
-    above.setAttribute('d',dA);below.setAttribute('d',dB);
-    [0,Math.PI].forEach((u,i)=>{const [px,py]=P(Math.cos(OMEGA+u)*MOR,Math.sin(OMEGA+u)*MOR,0);nodes[i].setAttribute('cx',n2(px));nodes[i].setAttribute('cy',n2(py));});
-    const lm=ls+elong(t), b=Math.sin(lm-OMEGA)*vi;
-    const [mx,my]=P(Math.cos(lm)*MOR*Math.cos(b),Math.sin(lm)*MOR*Math.cos(b),Math.sin(b)*MOR);
-    mdot.setAttribute('cx',n2(mx));mdot.setAttribute('cy',n2(my));
-    dateL.textContent=doyToDate(t);
-    // nearest event
-    let near=null;events.forEach(ev=>{ev.cell.classList.remove('now');if(Math.abs(ev.t-t)<3.5)near=ev;});
-    if(near){near.cell.classList.add('now');
-      const b=Math.abs(near.b), pos=near.b>0?'above':'below';
-      if(near.kind==='new'){evL.textContent=near.c?'New moon, near a crossing point':'New moon';
-        msg.innerHTML=near.c==='central'?'<strong>Solar eclipse!</strong> At this new moon the Moon is right at a crossing point, so it passes straight in front of the Sun.'
-          :near.c==='partial'?'<strong>A partial solar eclipse.</strong> The Moon clips the edge of the Sun, so its pale shadow just touches the Earth.'
-          :`New moon, but the Moon passes <strong>${pos}</strong> the Sun, about ${Math.round(b/0.53)} Moon-widths away. Its shadow misses the Earth.`;}
-      else{evL.textContent=near.c?'Full moon, near a crossing point':'Full moon';
-        msg.innerHTML=near.c==='total'?'<strong>Total lunar eclipse!</strong> The full moon passes right through the middle of the Earth\'s shadow.'
-          :near.c==='partial'?'<strong>A partial lunar eclipse.</strong> Part of the Moon dips into the Earth\'s dark shadow.'
-          :near.c==='faint'?'A faint eclipse: the Moon only grazes the pale outer edge of the Earth\'s shadow.'
-          :`Full moon, but the Moon passes <strong>${pos}</strong> the Earth's shadow. No eclipse.`;}}
-    else evL.textContent='';
+    const Hs=(mod(h,24)-6)/12*Math.PI,sx=SX-AX*Math.cos(Hs),sy=GY-AY*Math.sin(Hs);
+    const Hm=(mod(h-Ep/15,24)-6)/12*Math.PI,mx=SX-AX*Math.cos(Hm),my=GY-AY*Math.sin(Hm);
+    sunG.setAttribute('transform',`translate(${n2(sx)} ${n2(sy)})`);
+    mg.setAttribute('transform',`translate(${n2(mx)} ${n2(my)})`);
+    const alt=60*Math.sin(Hs),t=clamp((alt+10)/22,0,1),w=clamp(1-Math.abs(alt+1)/9,0,1);
+    const top=mix('#050a18','#3f86d6',t),bot=mix(mix('#0a1328','#a9d2f2',t),'#f0915a',w*.9);
+    grad.stops[0].setAttribute('stop-color',top);grad.stops[1].setAttribute('stop-color',bot);
+    st.setAttribute('opacity',n2(clamp((-alt-2)/8,0,1)));
+    ground.setAttribute('fill',mix('#0b140f','#3e6e40',t));
+    /* the Moon's dark part is the colour of the sky behind it */
+    M.night.style.fill=mix(top,bot,skyY(my));
+    M.set(Math.atan2(sy-my,sx-mx),-Math.cos(Ep*D));
+    mg.setAttribute('opacity',n2(lerp(1,.8,t)));
+    time.textContent=fmtHour(h);
   }
-  $('#ra-tilt').addEventListener('input',e=>{tilt=+e.target.value;buildStrips();render();});
-  const playB=$('#ra-play');
-  function setPlay(v){playing=v;playB.textContent=v?'Pause':'Play a year';}
-  playB.addEventListener('click',()=>{if(!playing&&t>=YEAR-1)t=0;setPlay(!playing);});
-  addLoop(fig,dt=>{if(!playing)return;const near=events.some(ev=>Math.abs(ev.t-t)<1.5&&ev.c&&ev.c!=='faint');t+=dt*(near?4:14);if(t>=YEAR){t=YEAR-0.01;setPlay(false);}render();});
-  [newS,fullS].forEach(s=>s.addEventListener('click',e=>{const c=e.target.closest('.cell');if(!c)return;const ev=events.find(x=>x.cell===c);if(ev){setPlay(false);t=ev.t;render();}}));
-  buildStrips();render();
+  ph.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setPressed(ph,b);Ep=+b.dataset.v;msg.textContent=OPTS.find(x=>x[0]===Ep)[1];render();});
+  const pl=playBtn('#day-play','Play a day',v=>{if(v&&sHint.parentNode)sHint.remove();});
+  const hourAt=p=>Math.atan2((GY-p.y)/AY,(SX-p.x)/AX)/Math.PI*12+6;
+  const unhint=()=>{if(sHint.parentNode)sHint.remove();pl.set(false);};
+  drag(sunG,svg,p=>{h=mod(hourAt(p),24);render();},unhint);
+  drag(mg,svg,p=>{h=mod(hourAt(p)+Ep/15,24);render();},unhint);
+  addLoop(fig,dt=>{if(!pl.on)return;h=mod(h+dt*2,24);render();});
+  msg.textContent=OPTS[1][1];
+  render();
+})();
+
+/* ===================== 5 · ONE FACE ===================== */
+(function(){
+  const fig=$('#fig-face'),svg=$('svg',fig);watch(svg);
+  const CX=200,CY=180,OR=122,MR=20;
+  stars(svg,svg,720,360,60,71);
+  sunlight(svg,360);
+  S('circle',{cx:CX,cy:CY,r:OR,class:'orbit'},svg);
+  const E=earth(svg,svg,CX,CY,30,{polar:true,seed:51});E.set(Math.PI,0,0);
+  const o=orbitMoon(svg,svg,MR);
+  const flag=G(o.g);
+  S('line',{x1:MR-2,y1:0,x2:MR+15,y2:0,stroke:'#f2a04a','stroke-width':2.2,'stroke-linecap':'round'},flag);
+  S('circle',{cx:MR+17,cy:0,r:4,class:'you'},flag);
+  // what we see
+  const PX=545,PY=168,P=porthole(svg,PX,PY,128);
+  const VM=moon(svg,P.inner,150,150,112);VM.night.style.display='none';
+  const vflag=G(P.inner);
+  S('line',{x1:0,y1:0,x2:0,y2:-30,stroke:'#3b2a1a','stroke-width':2.4},vflag);
+  S('path',{d:'M0 -30L20 -24L0 -17Z',fill:'#f2a04a'},vflag);
+  label(svg,PX,PY+128+26,'The side facing us','st-s','mid');
+  const msg=$('#face-msg');
+  let Ed=30,spin=true,fixed=0;
+  function render(){
+    const [x,y,a]=orbitXY(CX,CY,OR,Ed);
+    const toEarth=a+Math.PI,dir=spin?toEarth:fixed;
+    o.g.setAttribute('transform',`translate(${n2(x)} ${n2(y)}) rotate(${n2(dir/D)})`);
+    o.M.set(Math.PI-dir,0);
+    const phi=wrapA(dir-toEarth);
+    VM.lon(phi);
+    const c=Math.cos(phi);
+    vflag.style.display=c>0.05?'':'none';
+    vflag.setAttribute('transform',`translate(${n2(150-112*Math.sin(phi))} 150)`);
+    msg.innerHTML=spin?'One turn every trip. We only ever see this side.':(c<-0.5?'<strong>Without the turn, we would see its back.</strong>':'Without the turn, its back would come round to face us.');
+  }
+  seg('face-spin',v=>{spin=v==='1';if(!spin){const a=orbitXY(CX,CY,OR,Ed)[2];fixed=a+Math.PI;}render();});
+  const pl=playBtn('#face-play','Play a month',v=>{if(v)o.unhint();});
+  orbitDrag(o,svg,CX,CY,e=>{Ed=e;render();},()=>pl.set(false));
+  addLoop(fig,dt=>{if(!pl.on)return;Ed=mod(Ed+dt*360/14,360);render();});
+  render();
+})();
+
+/* ===================== 6 · EARTH FROM THE MOON ===================== */
+(function(){
+  const fig=$('#fig-earth'),svg=$('svg',fig);watch(svg);
+  const CX=150,CY=180,OR=100,MR=11;
+  stars(svg,svg,720,360,60,81);
+  sunlight(svg,360,40);
+  S('circle',{cx:CX,cy:CY,r:OR,class:'orbit'},svg);
+  const E=earth(svg,svg,CX,CY,22,{polar:true,seed:51});E.set(Math.PI,0,0);
+  const sight=S('line',{class:'sight'},svg);
+  const o=orbitMoon(svg,svg,MR);
+  const P1=porthole(svg,405,168,98),P2=porthole(svg,612,168,98);
+  const VM=moon(svg,P1.inner,150,150,108);
+  const VE=earth(svg,P2.inner,150,150,108,{seed:9});
+  label(svg,405,168+98+26,'From Earth','st-s','mid');
+  label(svg,612,168+98+26,'From the Moon','st-s','mid');
+  const msg=$('#earth-msg');
+  let Ed=40;
+  function render(){
+    const [x,y,a]=orbitXY(CX,CY,OR,Ed);
+    o.g.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);o.M.set(Math.PI,0);
+    sight.setAttribute('x1',n2(CX+24*Math.cos(a)));sight.setAttribute('y1',n2(CY+24*Math.sin(a)));
+    sight.setAttribute('x2',n2(x-(MR+3)*Math.cos(a)));sight.setAttribute('y2',n2(y-(MR+3)*Math.sin(a)));
+    showPhase(VM,Ed);
+    const fe=(1+Math.cos(Ed*D))/2;                 // how much of Earth the Moon sees lit
+    VM.night.style.opacity=n2(.95-.24*fe);           // earthshine
+    VE.set(mod(Ed,360)<180?Math.PI:0,Math.cos(Ed*D));
+    msg.innerHTML=`We see a <strong>${simpleName(Ed)}</strong> Moon. The Moon sees a <strong>${simpleName(Ed+180)}</strong> Earth.`;
+  }
+  orbitDrag(o,svg,CX,CY,e=>{Ed=e;render();});
+  render();
+})();
+
+/* ===================== 7 · NOT EARTH'S SHADOW ===================== */
+(function(){
+  const fig=$('#fig-shadow'),svg=$('svg',fig);watch(svg);
+  const CX=250,CY=170,ER=32,OR=150,MR=12,PX=598,PY=158,PR=104;
+  stars(svg,svg,720,340,60,91);
+  sunlight(svg,340,70);
+  // Earth's shadow, fading out to the right
+  const fade=linear(svg,[[0,'#000',.85],[.75,'#000',.55],[1,'#000',0]],{gradientUnits:'userSpaceOnUse',x1:CX,y1:0,x2:500,y2:0});
+  const pfade=linear(svg,[[0,'#000',.35],[1,'#000',0]],{gradientUnits:'userSpaceOnUse',x1:CX,y1:0,x2:500,y2:0});
+  S('path',{d:`M${CX} ${CY-ER}L500 ${CY-ER-12}L500 ${CY+ER+12}L${CX} ${CY+ER}Z`,fill:pfade.url},svg);
+  S('path',{d:`M${CX} ${CY-ER}L500 ${CY-ER+12}L500 ${CY+ER-12}L${CX} ${CY+ER}Z`,fill:fade.url},svg);
+  label(svg,CX+ER+14,CY+ER+30,"Earth's shadow",'st-s');
+  S('circle',{cx:CX,cy:CY,r:OR,class:'orbit'},svg);
+  const mshadow=S('path',{fill:'#000',opacity:0},svg);
+  const E=earth(svg,svg,CX,CY,ER,{polar:true,seed:51});E.set(Math.PI,0,0);
+  const o=orbitMoon(svg,svg,MR);
+  const red=S('circle',{r:MR,fill:'#9a2f12',opacity:0,'pointer-events':'none'},o.g);
+  // what you see
+  const P=porthole(svg,PX,PY,PR);
+  const sunV=G(P.inner);sun(svg,sunV,0,0,96,1.5);
+  const corona=S('circle',{r:112,fill:'none',stroke:'#fff7e0','stroke-width':10,opacity:0,filter:blur(svg,6)},sunV);
+  const VM=moon(svg,P.inner,150,150,100);
+  const vred=S('circle',{cx:150,cy:150,r:100,fill:'#a33212',opacity:0},P.inner);
+  label(svg,PX,PY+PR+26,'What you see','st-s','mid');
+  const msg=$('#sh-msg');
+  let Ed=120;
+  function render(){
+    const [x,y,a]=orbitXY(CX,CY,OR,Ed);
+    o.g.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);o.M.set(Math.PI,0);
+    const w=wrapA(Ed*D)/D;                 // -180..180, 0 = new
+    const fromFull=Math.abs(Math.abs(w)-180);
+    // how deep the Moon sits in Earth's shadow (top view)
+    const off=OR*Math.sin(fromFull*D),half=ER-12*(OR/250);
+    const depth=Math.abs(w)>90?clamp((half+MR-off)/(2*MR),0,1):0;
+    red.setAttribute('opacity',n2(depth*.85));
+    showPhase(VM,Ed);
+    vred.setAttribute('opacity',n2(depth*.8));
+    // the Sun behind the Moon, near new Moon
+    const sxv=150-w*16;
+    sunV.setAttribute('transform',`translate(${n2(sxv)} 150)`);
+    sunV.style.display=Math.abs(w)<14?'':'none';
+    const cover=Math.abs(w)<14?clamp(1-Math.abs(w)/6.5,0,1):0;
+    corona.setAttribute('opacity',n2(Math.max(0,cover-.85)/.15));
+    // the Moon's own shadow reaching Earth
+    if(Math.abs(w)<10){const k=1-Math.abs(w)/10;mshadow.setAttribute('d',`M${n2(x)} ${n2(y-MR*.9)}L${CX-ER+2} ${n2(CY-3)}L${CX-ER+2} ${n2(CY+3)}L${n2(x)} ${n2(y+MR*.9)}Z`);mshadow.setAttribute('opacity',n2(.75*k));}
+    else mshadow.setAttribute('opacity',0);
+    if(depth>.5)msg.innerHTML='<strong>Full Moon, in Earth\'s shadow.</strong> It turns red. Most months it slips just past.';
+    else if(Math.abs(w)<6)msg.innerHTML='<strong>New Moon, in front of the Sun.</strong> Sometimes it hides it completely.';
+    else msg.innerHTML=`No shadow on it, and still a <strong>${moonName(Ed).toLowerCase().replace(' moon','')}</strong> Moon.`;
+  }
+  const pl=playBtn('#sh-play','Play a month',v=>{if(v)o.unhint();});
+  orbitDrag(o,svg,CX,CY,e=>{const w=wrapA(e*D)/D;if(Math.abs(w)<2.5)e=0;else if(Math.abs(Math.abs(w)-180)<2.5)e=180;Ed=e;render();},()=>pl.set(false));
+  addLoop(fig,dt=>{if(!pl.on)return;Ed=mod(Ed+dt*360/16,360);render();});
+  render();
+})();
+
+/* ===================== 8 · TRY IT WITH A LAMP ===================== */
+(function(){
+  const fig=$('#fig-lamp'),svg=$('svg',fig);watch(svg);
+  const LX=96,LY=160,CX=420,CY=160,ARM=104,BR=17;
+  stars(svg,svg,720,320,30,101);
+  // lamp, seen from above
+  S('circle',{cx:LX,cy:LY,r:150,fill:radial(svg,[[0,'#ffd27a',.32],[.5,'#ffb347',.08],[1,'#ff9b2f',0]])},svg);
+  S('circle',{cx:LX,cy:LY,r:30,fill:'#f3e6c4',stroke:'#c9b07a','stroke-width':2},svg);
+  S('circle',{cx:LX,cy:LY,r:13,fill:'#fff6d6'},svg);
+  label(svg,LX,LY+56,'Lamp','st-b','mid');
+  S('circle',{cx:CX,cy:CY,r:ARM,class:'orbit'},svg);
+  const ah=arrowHead(svg,nid('ah'));
+  const a0=28*D,a1=-22*D,ar=ARM+22;
+  S('path',{d:`M${n2(CX+ar*Math.cos(a0))} ${n2(CY+ar*Math.sin(a0))}A${ar} ${ar} 0 0 0 ${n2(CX+ar*Math.cos(a1))} ${n2(CY+ar*Math.sin(a1))}`,class:'arrow','marker-end':ah},svg);
+  const kid=G(svg);
+  // arms, shoulders, head (from above), nose points at the ball
+  S('path',{d:`M2 -30Q40 -26 ${ARM-BR-1} -5M2 30Q40 26 ${ARM-BR-1} 5`,stroke:'#e6b58c','stroke-width':8,'stroke-linecap':'round',fill:'none'},kid);
+  S('rect',{x:-13,y:-36,width:26,height:72,rx:13,fill:'#e2863a'},kid);
+  S('circle',{cx:2,cy:0,r:17,fill:'#e6b58c'},kid);
+  S('circle',{cx:-2,cy:0,r:16.5,fill:'#3a2618'},kid);
+  S('ellipse',{cx:20,cy:0,rx:3.5,ry:3,fill:'#d79c72'},kid);
+  const ball=moon(svg,kid,ARM,0,BR);ball.surf.style.display='none';
+  label(svg,CX,CY+ARM+44,'You','st-b','mid');
+  let ang=-30*D;
+  function render(){
+    kid.setAttribute('transform',`translate(${CX} ${CY}) rotate(${n2(ang/D)})`);
+    const bx=CX+ARM*Math.cos(ang),by=CY+ARM*Math.sin(ang);
+    ball.set(Math.atan2(LY-by,LX-bx)-ang,0);
+  }
+  addLoop(fig,dt=>{if(reduce)return;ang-=dt*TAU/18;render();});
+  render();
 })();
 })();
 </script>

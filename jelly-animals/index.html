@@ -4,71 +4,195 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Jelly Animals</title>
-<meta name="description" content="Three animals cast in jelly, each in its own glass. Press a glass to play with it.">
+<meta name="description" content="Three animals cast in jelly, each in its own glass. Tap a glass to go inside.">
 <link rel="canonical" href="https://arunrafi.com/jelly-animals/">
 <meta property="og:title" content="Jelly Animals">
-<meta property="og:description" content="A crocodile, a frog and an octopus cast in jelly, each in its own glass. Press a glass, then pull, feed and poke them.">
+<meta property="og:description" content="A crocodile, a frog and an octopus cast in jelly, each in its own glass. Tap a glass, then pull, feed and poke them.">
 <meta property="og:url" content="https://arunrafi.com/jelly-animals/">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#e2dfda">
 <style>
-  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e;--line:#cfcac2}
+  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
   .mast{position:fixed;top:calc(24px + env(safe-area-inset-top));left:calc(28px + env(safe-area-inset-left));z-index:5;transition:opacity .4s}
-  .mast .home{margin:0 0 10px;font-family:inherit;font-size:14px;letter-spacing:0;text-transform:none}
+  .mast .home{margin:0 0 10px;font-size:14px}
   .mast .home a{color:var(--ink2);text-decoration:none}
   .mast h1{margin:0;font-weight:400;font-style:italic;font-size:26px;line-height:1;letter-spacing:-.01em}
   .mast p{margin:8px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
-  body.focused .mast{opacity:0;pointer-events:none}
-  .slot{position:fixed;overflow:hidden;border-radius:16px;transition:left .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1),height .6s cubic-bezier(.2,.8,.2,1),border-radius .6s,box-shadow .6s;z-index:2;box-shadow:0 0 0 1px rgba(31,29,26,0)}
-  .slot iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
-  .slot .cover{position:absolute;inset:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:18px;gap:4px;-webkit-tap-highlight-color:transparent}
-  .slot .cover b{font-weight:400;font-style:italic;font-size:22px;line-height:1}
-  .slot .cover span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
-  .slot.active{border-radius:0;z-index:3}
-  .slot.active .cover{display:none}
-  body.focused .slot:not(.active){z-index:4;box-shadow:0 0 0 1px var(--line);border-radius:10px}
-  body.focused .slot:not(.active) .cover{padding-bottom:8px}
-  body.focused .slot:not(.active) .cover b{font-size:12px}
-  body.focused .slot:not(.active) .cover span{display:none}
-  .back{position:fixed;z-index:5;top:calc(24px + env(safe-area-inset-top));right:calc(28px + env(safe-area-inset-right));font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:0;background:none;color:var(--ink2);cursor:pointer;display:none}
-  body.focused .back{display:block}
-  @media (max-width:560px){ .mast{top:calc(18px + env(safe-area-inset-top));left:calc(20px + env(safe-area-inset-left))} .mast h1{font-size:22px} .slot .cover b{font-size:18px} }
-  @media (prefers-reduced-motion:reduce){ .slot{transition:none} }
+  .label{position:fixed;z-index:3;transform:translate(-50%,0);text-align:center;pointer-events:none;transition:opacity .3s}
+  .label b{font-weight:400;font-style:italic;font-size:22px;line-height:1;display:block}
+  .label span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3);display:block;margin-top:6px}
+  .label.side{transform:none;text-align:left}
+  .hint{position:fixed;left:0;right:0;bottom:calc(26px + env(safe-area-inset-bottom));text-align:center;font-style:italic;font-size:14px;color:var(--ink3);margin:0;z-index:3;transition:opacity 1.4s}
+  .hint.off{opacity:0}
+  .viewer{position:fixed;inset:0;z-index:10;display:none;opacity:0;transition:opacity .5s;background:var(--bg)}
+  .viewer.on{display:block}
+  .viewer.show{opacity:1}
+  .viewer iframe{width:100%;height:100%;border:0;display:block;background:var(--bg)}
+  .back{position:fixed;z-index:12;top:calc(24px + env(safe-area-inset-top));right:calc(28px + env(safe-area-inset-right));font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:0;background:none;color:var(--ink2);cursor:pointer;display:none;border-radius:999px}
+  .back:hover{color:var(--ink)}
+  body.in .back{display:block}
+  body.in .mast,body.in .label,body.in .hint{opacity:0;pointer-events:none}
+  @media (max-width:560px){ .mast{top:calc(18px + env(safe-area-inset-top));left:calc(20px + env(safe-area-inset-left))} .mast h1{font-size:22px} .label b{font-size:16px} .label span{font-size:9px} .back{right:calc(16px + env(safe-area-inset-right))} }
+  @media (prefers-reduced-motion:reduce){ .viewer,.hint,.label{transition:none} }
 </style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+} }
+</script>
 </head>
 <body>
+<canvas id="c" aria-label="Three glass cylinders. Tap one to open that jelly animal."></canvas>
 <div class="mast"><p class="home"><a href="/">← Home</a></p><h1>Jelly Animals</h1><p>Material Studies · three glasses</p></div>
+<div class="label" id="l0"><b>Crocodile</b><span>No. 069</span></div>
+<div class="label" id="l1"><b>Frog</b><span>No. 070</span></div>
+<div class="label" id="l2"><b>Octopus</b><span>No. 071</span></div>
+<p class="hint" id="hint">Tap a glass to go inside.</p>
 <button class="back" id="back">All three</button>
-<div class="slot" data-i="0"><iframe src="crocodile-jelly.html?shelf" title="Crocodile Jelly"></iframe><div class="cover"><b>Crocodile</b><span>No. 069</span></div></div>
-<div class="slot" data-i="1"><iframe src="frog-jelly.html?shelf" title="Frog Jelly"></iframe><div class="cover"><b>Frog</b><span>No. 070</span></div></div>
-<div class="slot" data-i="2"><iframe src="octopus-jelly.html?shelf" title="Octopus Jelly"></iframe><div class="cover"><b>Octopus</b><span>No. 071</span></div></div>
-<script>
-const slots=[...document.querySelectorAll('.slot')];
-let active=-1;
-function place(el,x,y,w,h){ el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; }
-function layout(){
-  const W=innerWidth, H=innerHeight, phone=W<700;
-  if(active<0){
-    if(phone){ const m=16, top=86, gap=12, h=(H-top-24-2*gap)/3; slots.forEach((s,i)=>place(s,m,top+i*(h+gap),W-2*m,h)); }
-    else { const m=28, top=96, gap=18, w=(W-2*m-2*gap)/3; slots.forEach((s,i)=>place(s,m+i*(w+gap),top,w,H-top-36)); }
-  } else {
-    const cw=phone?72:104, ch=phone?92:132, gap=10, right=phone?16:28, top=phone?18:24;
-    let k=0;
-    slots.forEach((s,i)=>{ if(i===active){ place(s,0,0,W,H); } else { const x=W-right-(k+1)*cw-k*gap; place(s,x,top+(phone?54:56),cw,ch); k++; } });
-  }
+<div class="viewer" id="viewer"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const ANIMALS=[
+  {name:'Crocodile', file:'crocodile-jelly.html', tint:'#62c81e'},
+  {name:'Frog', file:'frog-jelly.html', tint:'#2a5df2'},
+  {name:'Octopus', file:'octopus-jelly.html', tint:'#ff6553'},
+];
+const canvas=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping=THREE.NeutralToneMapping;
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#e2dfda'); scene.fog=new THREE.Fog('#e2dfda',9,22);
+const pmrem=new THREE.PMREMGenerator(renderer); scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture; scene.environmentIntensity=0.6;
+const camera=new THREE.PerspectiveCamera(30,innerWidth/innerHeight,0.1,60);
+scene.add(new THREE.HemisphereLight('#f7f4ee','#b9b2a6',0.9));
+const key=new THREE.DirectionalLight('#fff7ec',2.2); key.position.set(2,5,3); scene.add(key);
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(80,80),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98})); floor.rotation.x=-Math.PI/2; scene.add(floor);
+
+// ---- the engravings: etched silhouettes drawn into a canvas ----
+function etch(draw){
+  const S=1024, cv=document.createElement('canvas'); cv.width=cv.height=S; const g=cv.getContext('2d');
+  g.scale(S/100,S/100); g.fillStyle='#c9d3d9'; g.strokeStyle='#c9d3d9'; g.lineCap='round'; g.lineJoin='round';
+  draw(g);
+  // frost: sandblasted grain inside the shape
+  g.setTransform(1,0,0,1,0,0); g.globalCompositeOperation='source-atop';
+  for(let i=0;i<90000;i++){ g.fillStyle=`rgba(255,255,255,${0.2+Math.random()*0.6})`; g.fillRect(Math.random()*S,Math.random()*S,2,2); }
+  g.globalCompositeOperation='source-over';
+  const t=new THREE.CanvasTexture(cv); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=4; return t;
 }
-function tell(i,type){ const f=slots[i].querySelector('iframe'); if(f.contentWindow) f.contentWindow.postMessage({type},location.origin); }
-function focus(i){
-  active=i; document.body.classList.toggle('focused',i>=0);
-  slots.forEach((s,k)=>{ s.classList.toggle('active',k===i); tell(k,k===i?'jelly-active':'jelly-idle'); });
-  layout();
+const cut=(g,x,y,r)=>{ g.globalCompositeOperation='destination-out'; g.beginPath(); g.arc(x,y,r,0,6.283); g.fill(); g.globalCompositeOperation='source-over'; };
+const drawCroc=(g)=>{
+  g.fill(new Path2D('M4 56 C 14 44 28 41 44 43 L 66 42 C 73 41 79 42 85 46 L 96 51 L 95 54 L 72 55 L 94 59 L 90 63 L 70 62 L 52 62 C 36 64 20 64 4 60 Z'));
+  g.fill(new Path2D('M9 54 l3 -6 l3 6 z M16 51 l3 -6 l3 6 z M23 48 l3 -6 l3 6 z M30 46 l3 -6 l3 6 z M37 45 l3 -6 l3 6 z'));
+  g.fill(new Path2D('M33 63 l-3 10 l7 0 l0 -10 z M56 62 l-3 10 l7 0 l0 -10 z'));
+  g.lineWidth=1.2; g.stroke(new Path2D('M73 55 l3 3 M77 55 l3 3 M81 56 l3 3 M85 56 l3 3 M89 57 l3 3'));
+  cut(g,75,46,2.2);
+};
+const drawFrog=(g)=>{
+  const limb=(p,w)=>{ g.lineWidth=w; g.stroke(new Path2D(p)); };
+  const sides=[1,-1];
+  for(const s of sides){ const m=x=>50+s*(x-50);
+    limb(`M${m(34)} 66 C ${m(16)} 62 ${m(10)} 82 ${m(24)} 90`,7); limb(`M${m(24)} 90 l${s*-8} 4 M${m(24)} 90 l${s*-6} 8 M${m(24)} 90 l0 9`,3.5);
+    limb(`M${m(36)} 46 C ${m(24)} 48 ${m(20)} 60 ${m(26)} 66`,5.5); limb(`M${m(26)} 66 l${s*-7} 3 M${m(26)} 66 l${s*-4} 7 M${m(26)} 66 l${s*2} 7`,3); }
+  g.beginPath(); g.ellipse(50,57,21,25,0,0,6.283); g.fill();
+  g.beginPath(); g.ellipse(50,36,19,14,0,0,6.283); g.fill();
+  g.beginPath(); g.arc(41,29,6.5,0,6.283); g.fill(); g.beginPath(); g.arc(59,29,6.5,0,6.283); g.fill();
+  cut(g,41,29,2.8); cut(g,59,29,2.8);
+  g.lineWidth=1.4; g.stroke(new Path2D('M38 46 Q 50 52 62 46'));
+};
+const drawOcto=(g)=>{
+  const arm=(p)=>{ for(const [w,a] of [[8,1],[5.5,0.75],[3.5,0.5]]){ g.lineWidth=w; g.globalAlpha=1; g.stroke(new Path2D(p)); } };
+  const arms=['M38 56 C 24 62 10 60 8 76','M43 58 C 36 72 22 80 20 92','M48 59 C 46 76 40 88 44 97','M34 54 C 18 50 6 56 4 66'];
+  for(const p of arms){ arm(p); arm(p.replace(/(-?\d+(?:\.\d+)?) (-?\d+(?:\.\d+)?)/g,(m,x,y)=>`${100-(+x)} ${y}`)); }
+  g.beginPath(); g.arc(50,36,24,0,6.283); g.fill();
+  cut(g,42,42,5); cut(g,58,42,5);
+};
+
+// ---- three glasses ----
+const R=1.0, H=3.6, B=0.2;
+const wallMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.1,roughness:0.03,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:1.0,depthWrite:false,side:THREE.FrontSide});
+const baseMat=new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.3,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false});
+const rimMat=new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.5,roughness:0.03,clearcoat:1,envMapIntensity:1.6,depthWrite:false});
+const shadowTex=(()=>{const cv=document.createElement('canvas'); cv.width=cv.height=256; const g=cv.getContext('2d'); const gr=g.createRadialGradient(128,128,20,128,128,128); gr.addColorStop(0,'rgba(60,50,40,0.28)'); gr.addColorStop(1,'rgba(60,50,40,0)'); g.fillStyle=gr; g.fillRect(0,0,256,256); return new THREE.CanvasTexture(cv);})();
+const glasses=[]; const draws=[drawCroc,drawFrog,drawOcto];
+const SPACING=2.95;
+ANIMALS.forEach((a,i)=>{
+  const g=new THREE.Group(); g.position.x=(i-1)*SPACING; scene.add(g);
+  const wall=new THREE.Mesh(new THREE.CylinderGeometry(R,R,H+B,160,1,true),wallMat); wall.position.y=(H-B)/2; wall.renderOrder=20; g.add(wall);
+  const base=new THREE.Mesh(new THREE.CylinderGeometry(R,R,B,160,1),baseMat); base.position.y=-B/2; base.renderOrder=19; g.add(base);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(R,0.014,12,200),rimMat); rim.rotation.x=Math.PI/2; rim.position.y=H; rim.renderOrder=21; g.add(rim);
+  const foot=new THREE.Mesh(new THREE.TorusGeometry(R,0.012,12,200),rimMat); foot.rotation.x=Math.PI/2; foot.position.y=-B+0.01; foot.renderOrder=21; g.add(foot);
+  const sh=new THREE.Mesh(new THREE.PlaneGeometry(3.4,3.4),new THREE.MeshBasicMaterial({map:shadowTex,transparent:true,depthWrite:false})); sh.rotation.x=-Math.PI/2; sh.position.y=-B+0.002; g.add(sh);
+  // the engraving sits in the glass, facing the viewer
+  const etchMat=new THREE.MeshStandardMaterial({map:etch(draws[i]),transparent:true,opacity:1,roughness:1,color:'#ffffff',emissive:'#ffffff',emissiveIntensity:0.06,depthWrite:false,side:THREE.DoubleSide});
+  const dec=new THREE.Mesh(new THREE.CylinderGeometry(R+0.004,R+0.004,1.5,64,1,true,-0.72,1.44),etchMat); dec.position.y=H*0.5; dec.renderOrder=22; g.add(dec);
+  // a hit volume for taps
+  const hit=new THREE.Mesh(new THREE.CylinderGeometry(R,R,H+B,24,1),new THREE.MeshBasicMaterial({visible:false})); hit.position.y=(H-B)/2; g.add(hit);
+  glasses.push({g,hit,dec,etchMat,lift:0,hover:false});
+});
+// on a phone the glasses stand in a cabinet, one above the other, on thin glass shelves
+const shelfMat=new THREE.MeshPhysicalMaterial({color:'#e8eef1',transparent:true,opacity:0.35,roughness:0.05,clearcoat:1,depthWrite:false});
+const shelves=[0,1,2].map(i=>{ const m=new THREE.Mesh(new THREE.BoxGeometry(3.4,0.06,2.6),shelfMat); m.visible=false; m.renderOrder=18; scene.add(m); return m; });
+const STEP=4.6; let portrait=false;
+function arrange(){
+  glasses.forEach((gl,i)=>{ if(portrait){ gl.baseY=(2-i)*STEP; gl.g.position.set(-0.45,gl.baseY,0); shelves[i].visible=true; shelves[i].position.set(-0.45,gl.baseY-B-0.03,0); } else { gl.baseY=0; gl.g.position.set((i-1)*SPACING,0,0); shelves[i].visible=false; } });
+  labels.forEach(l=>l.classList.toggle('side',portrait));
 }
-slots.forEach((s,i)=>s.querySelector('.cover').addEventListener('click',()=>focus(i)));
-document.getElementById('back').addEventListener('click',()=>focus(-1));
-addEventListener('keydown',(e)=>{ if(e.key==='Escape') focus(-1); });
-addEventListener('resize',layout); layout();
+
+// ---- layout, pointer, enter/leave ----
+const labels=[0,1,2].map(i=>document.getElementById('l'+i));
+let hovered=-1; const ray=new THREE.Raycaster(); const ndc=new THREE.Vector2(); let px=0,py=0;
+function resize(){ const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
+  portrait=camera.aspect<0.9; camera.fov=portrait?50:32; camera.updateProjectionMatrix(); arrange();
+  if(portrait){ const vhalf=(2*STEP+H)/2+1.6; const dist=Math.min(vhalf/Math.tan(camera.fov*Math.PI/360),26); camera.position.set(0.2,STEP+H/2+0.4,dist); camera.lookAt(0,STEP+H/2+0.4,0); return; }
+  // far enough back that all three glasses fit the width, with a margin
+  const half=SPACING+R+0.6; const vhalf=(H+1.2)/2; let dist=Math.max(half/(Math.tan(camera.fov*Math.PI/360)*camera.aspect), vhalf/Math.tan(camera.fov*Math.PI/360)); dist=Math.min(Math.max(dist,7),18);
+  camera.position.set(0,0.4+0.24*dist,dist); camera.lookAt(0,1.5,0); }
+function pick(e){ const r=canvas.getBoundingClientRect(); ndc.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ndc,camera);
+  const hits=ray.intersectObjects(glasses.map(x=>x.hit),false); return hits.length?glasses.findIndex(x=>x.hit===hits[0].object):-1; }
+canvas.addEventListener('pointermove',(e)=>{ px=(e.clientX/innerWidth)*2-1; py=(e.clientY/innerHeight)*2-1; if(e.pointerType==='mouse'){ hovered=pick(e); canvas.style.cursor=hovered>=0?'pointer':'default'; } });
+canvas.addEventListener('pointerleave',()=>{hovered=-1;});
+canvas.addEventListener('click',(e)=>{ const i=pick(e); if(i>=0) enter(i); });
+const viewer=document.getElementById('viewer'), back=document.getElementById('back'), hint=document.getElementById('hint');
+let inside=-1;
+function enter(i){
+  inside=i; document.body.classList.add('in'); hint.classList.add('off');
+  viewer.innerHTML=''; const f=document.createElement('iframe'); f.src=ANIMALS[i].file; f.title=ANIMALS[i].name+' Jelly'; viewer.appendChild(f);
+  viewer.classList.add('on'); requestAnimationFrame(()=>viewer.classList.add('show'));
+  history.replaceState(null,'','#'+ANIMALS[i].file.replace('-jelly.html',''));
+}
+function leave(){
+  inside=-1; document.body.classList.remove('in'); viewer.classList.remove('show');
+  setTimeout(()=>{ if(inside<0){ viewer.classList.remove('on'); viewer.innerHTML=''; } },500);
+  history.replaceState(null,'','#');
+}
+back.addEventListener('click',leave);
+addEventListener('keydown',(e)=>{ if(e.key==='Escape'&&inside>=0) leave(); });
+setTimeout(()=>hint.classList.add('off'),7000);
+{ const h=location.hash.replace('#',''); const i=ANIMALS.findIndex(a=>a.file.startsWith(h+'-')); if(h&&i>=0) enter(i); }
+
+addEventListener('resize',resize); resize();
+
+// ---- loop ----
+const _v=new THREE.Vector3(); let t0=performance.now();
+function loop(now){
+  requestAnimationFrame(loop);
+  if(inside>=0) return;           // the live glass has the screen
+  const dt=Math.min(0.05,(now-t0)/1000); t0=now;
+  // a little parallax toward the pointer
+  if(!portrait){ camera.position.x+=((px*0.5)-camera.position.x)*(1-Math.exp(-dt/0.6)); camera.lookAt(0,1.5,0); }
+  glasses.forEach((gl,i)=>{ const want=hovered===i?1:0; gl.lift+=(want-gl.lift)*(1-Math.exp(-dt/0.18)); gl.g.position.y=(gl.baseY||0)+gl.lift*0.06; gl.etchMat.emissiveIntensity=0.06+0.22*gl.lift;
+    if(portrait) _v.set(gl.g.position.x+R+0.3,gl.g.position.y+H*0.5,0).project(camera); else _v.set(gl.g.position.x,-B-0.25,0).project(camera);
+    const x=(_v.x*0.5+0.5)*innerWidth, y=(-_v.y*0.5+0.5)*innerHeight; labels[i].style.left=x+'px'; labels[i].style.top=(y+(portrait?-14:8))+'px'; });
+  renderer.render(scene,camera);
+}
+requestAnimationFrame(loop);
 </script>
 </body>
 </html>

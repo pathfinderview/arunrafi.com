@@ -433,11 +433,11 @@ console.log(`cast in ${(performance.now()-T0).toFixed(0)} ms — ${jellyNets.pos
 
 // ---------- colourways ----------
 const WAYS=[
-  {name:'Moss', hex:'#5f9e30', word:'moss-green', iris:'#d9a83a', fish:'#ff7a3d'},
-  {name:'Jade', hex:'#2aae88', word:'jade', iris:'#c98a2e', fish:'#ffd23f'},
-  {name:'Amber', hex:'#e89a30', word:'amber', iris:'#4fae3c', fish:'#3f8fff'},
-  {name:'Lilac', hex:'#9a74e2', word:'lilac', iris:'#e2b84a', fish:'#5ee0b0'},
-  {name:'Coral', hex:'#ef6458', word:'coral', iris:'#c9d24b', fish:'#7bd3ff'},
+  {name:'Lime', hex:'#62c81e', word:'lime', iris:'#e0a63a', fish:'#ff6a3d'},
+  {name:'Emerald', hex:'#12b56c', word:'emerald', iris:'#e6b43a', fish:'#ffd23f'},
+  {name:'Amber', hex:'#f2a21c', word:'amber', iris:'#3aa84a', fish:'#3f8fff'},
+  {name:'Grape', hex:'#8c55ec', word:'grape', iris:'#f0c24a', fish:'#5ee0b0'},
+  {name:'Coral', hex:'#ff6553', word:'coral', iris:'#cfe04a', fish:'#7bd3ff'},
 ];
 
 // ---------- scene ----------
@@ -459,12 +459,12 @@ const rim=new THREE.DirectionalLight('#dfe8ff',0.6); rim.position.set(-3,2,-2); 
 
 // the table
 // the glass: a wide open cylinder the jelly lives in. Its floor is y=0; a thick base sits below.
-const PED_R=2.3, PED_H=0.24, GL_H=1.5, PED_C=[0,0];
-const glassMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.14,roughness:0.03,metalness:0,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:1.6,depthWrite:false,side:THREE.FrontSide});
+const PED_R=2.3, PED_H=0.24, GL_H=2.8, PED_C=[0,0];
+const glassMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.07,roughness:0.03,metalness:0,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:0.9,depthWrite:false,side:THREE.FrontSide});
 const glassWall=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,GL_H+PED_H,200,1,true),glassMat); glassWall.position.set(PED_C[0],(GL_H-PED_H)/2,PED_C[1]); glassWall.renderOrder=20; scene.add(glassWall);
-const glassBase=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,PED_H,200,1),new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.42,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false}));
+const glassBase=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,PED_H,200,1),new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.22,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false}));
 glassBase.position.set(PED_C[0],-PED_H/2,PED_C[1]); glassBase.receiveShadow=true; glassBase.renderOrder=19; scene.add(glassBase);
-const glassRim=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.014,12,240),new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.55,roughness:0.03,clearcoat:1,envMapIntensity:1.8,depthWrite:false}));
+const glassRim=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.014,12,240),new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.45,roughness:0.03,clearcoat:1,envMapIntensity:1.6,depthWrite:false}));
 glassRim.rotation.x=Math.PI/2; glassRim.position.set(PED_C[0],GL_H,PED_C[1]); glassRim.renderOrder=21; scene.add(glassRim);
 const glassFoot=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.012,12,240),glassRim.material); glassFoot.rotation.x=Math.PI/2; glassFoot.position.set(PED_C[0],-PED_H+0.01,PED_C[1]); glassFoot.renderOrder=21; scene.add(glassFoot);
 const table=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98}));
@@ -492,7 +492,7 @@ vec4 skinEval(vec4 b){
   float pit=smoothstep(0.17,0.09,length(pf))*step(0.4,hash21(floor(pc)))*wHead*smoothstep(0.25,0.4,ang)*(1.0-smoothstep(0.6,0.75,ang));
   return vec4(h,g,band,pit);
 }`;
-const jellyMat=new THREE.MeshPhysicalMaterial({color:'#8fc55e',roughness:0.13,metalness:0,transmission:1,thickness:1,ior:1.38,attenuationColor:new THREE.Color('#5f9e30'),attenuationDistance:0.42,clearcoat:0.35,clearcoatRoughness:0.25,specularIntensity:0.8,envMapIntensity:0.8,side:THREE.FrontSide});
+const jellyMat=new THREE.MeshPhysicalMaterial({color:'#8fc55e',roughness:0.13,metalness:0,transmission:1,thickness:1,ior:1.38,attenuationColor:new THREE.Color('#62c81e'),attenuationDistance:0.5,clearcoat:0.35,clearcoatRoughness:0.25,specularIntensity:0.8,envMapIntensity:0.8,side:THREE.FrontSide});
 jellyMat.onBeforeCompile=(sh)=>{
   sh.uniforms.uBump={value:0.0013};
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute vec4 body; attribute float thick; varying vec4 vBody; varying float vThick;')
@@ -788,7 +788,7 @@ canvas.addEventListener('wheel',(e)=>{ if(grab.active){ grab.twist+=e.deltaY*0.0
 const swEl=document.getElementById('swatches');
 WAYS.forEach((w,i)=>{const b=document.createElement('button'); b.className='sw'; b.style.setProperty('--c',w.hex); b.setAttribute('aria-pressed',i===0?'true':'false'); b.title=w.name; b.innerHTML=`<i></i><span class="sr">${w.name}</span>`; b.addEventListener('click',()=>setWay(i)); swEl.appendChild(b);});
 function setWay(i){ sim.way=i; const w=WAYS[i]; const c=new THREE.Color(w.hex);
-  jellyMat.attenuationColor.copy(c); jellyMat.color.copy(c).lerp(new THREE.Color('#ffffff'),0.45);
+  jellyMat.attenuationColor.copy(c); jellyMat.color.copy(c).lerp(new THREE.Color('#ffffff'),0.5);
   eyeMat.uniforms.uIris.value.set(w.iris); document.documentElement.style.setProperty('--accent',w.hex);
   for(const f of fishes) f.mat.color.set(w.fish);
   [...swEl.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i?'true':'false')); }
@@ -808,7 +808,7 @@ addEventListener('keydown',(e)=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; con
   else if(k>='1'&&k<='5') setWay(+k-1); else if(k==='['){sim.firm=clamp(sim.firm-0.1,0,1);} else if(k===']'){sim.firm=clamp(sim.firm+0.1,0,1);} });
 
 // ---------- resize + loop ----------
-const POSE={land:[3.0,2.3,5.2], port:[4.8,3.0,2.2]}; let poseMode="";
+const POSE={land:[3.1,2.7,5.3], port:[5.0,3.4,2.3]}; let poseMode="";
 function resize(){const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
   // landscape: constant ~46° horizontal view. portrait: look down the snout so the body runs up the screen.
   const port=camera.aspect<1; const mode=port?'port':'land';
@@ -846,7 +846,7 @@ function tick(dt){
   frame++;
   _v1.copy(key.position).normalize().transformDirection(camera.matrixWorldInverse); eyeMat.uniforms.uLight.value.copy(_v1);
   if((frame++%4)===0){ let sx=0,sz=0; for(let n=0;n<3*N;n+=3){ sx+=px[n]; sz+=px[n+2]; } sx/=N; sz/=N;
-    _v2.set(lerp(PED_C[0],sx,0.6),0.08,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
+    _v2.set(lerp(PED_C[0],sx,0.6),0.7,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
   controls.update(); renderer.render(scene,camera);
 }
 overlay.classList.add('off'); setTimeout(()=>{overlay.hidden=true;},1000);

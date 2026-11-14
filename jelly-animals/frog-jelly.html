@@ -6,7 +6,7 @@
 <title>Frog Jelly</title>
 <meta name="description" content="A frog cast in jelly. Soft-body study in three.js.">
 <style>
-  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e;--accent:#7cc242}
+  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e;--accent:#2a5df2}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
   #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
@@ -392,11 +392,11 @@ console.log(`cast in ${(performance.now()-T0).toFixed(0)} ms — ${jellyNets.pos
 
 // ---------- colourways ----------
 const WAYS=[
-  {name:'Lime', hex:'#7cc242', iris:'#d9a83a'},
-  {name:'Mint', hex:'#3fbf9a', iris:'#e0b64a'},
-  {name:'Lemon', hex:'#e8c531', iris:'#4a3a2a'},
-  {name:'Sky', hex:'#3d7be8', iris:'#2a2420'},
-  {name:'Rose', hex:'#ee6a8a', iris:'#c9d24b'},
+  {name:'Cobalt', hex:'#2a5df2', leg:'#2a5df2', iris:'#2a1c12', spots:1},      // blue poison dart
+  {name:'Blue jeans', hex:'#ff4634', leg:'#3b5ce8', iris:'#241a12', spots:0.3}, // strawberry dart, blue legs
+  {name:'Golden', hex:'#ffc61a', leg:'#ffc61a', iris:'#241a12', spots:0},      // golden dart
+  {name:'Mint', hex:'#22c47a', leg:'#22c47a', iris:'#2a1c12', spots:1},        // green-and-black dart
+  {name:'Candy', hex:'#ff4fa0', leg:'#ffd23a', iris:'#2a1c12', spots:0.6},
 ];
 
 // ---------- scene ----------
@@ -416,12 +416,12 @@ scene.add(key, key.target);
 scene.add(new THREE.HemisphereLight('#f7f4ee','#b9b2a6',0.7));
 const rim=new THREE.DirectionalLight('#dfe8ff',0.6); rim.position.set(-3,2,-2); scene.add(rim);
 // the glass: a wide open cylinder the jelly lives in. Its floor is y=0; a thick base sits below.
-const PED_R=1.75, PED_H=0.24, GL_H=1.6, PED_C=[0,0];
-const glassMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.14,roughness:0.03,metalness:0,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:1.6,depthWrite:false,side:THREE.FrontSide});
+const PED_R=1.75, PED_H=0.24, GL_H=2.6, PED_C=[0,0];
+const glassMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.07,roughness:0.03,metalness:0,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:0.9,depthWrite:false,side:THREE.FrontSide});
 const glassWall=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,GL_H+PED_H,200,1,true),glassMat); glassWall.position.set(PED_C[0],(GL_H-PED_H)/2,PED_C[1]); glassWall.renderOrder=20; scene.add(glassWall);
-const glassBase=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,PED_H,200,1),new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.42,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false}));
+const glassBase=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,PED_H,200,1),new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.22,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false}));
 glassBase.position.set(PED_C[0],-PED_H/2,PED_C[1]); glassBase.receiveShadow=true; glassBase.renderOrder=19; scene.add(glassBase);
-const glassRim=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.014,12,240),new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.55,roughness:0.03,clearcoat:1,envMapIntensity:1.8,depthWrite:false}));
+const glassRim=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.014,12,240),new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.45,roughness:0.03,clearcoat:1,envMapIntensity:1.6,depthWrite:false}));
 glassRim.rotation.x=Math.PI/2; glassRim.position.set(PED_C[0],GL_H,PED_C[1]); glassRim.renderOrder=21; scene.add(glassRim);
 const glassFoot=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.012,12,240),glassRim.material); glassFoot.rotation.x=Math.PI/2; glassFoot.position.set(PED_C[0],-PED_H+0.01,PED_C[1]); glassFoot.renderOrder=21; scene.add(glassFoot);
 const table=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98}));
@@ -440,30 +440,34 @@ vec4 skinEval(vec4 b){
   // warts: sparse round bumps along the back
   vec3 v=voro3(q*vec2(14.0,15.0)); float wart=smoothstep(0.4,0.12,v.x)*step(0.6,v.z)*back*(1.0-eyeW);
   // spots: soft darker patches, more toward the back
-  float sp=vnoise(q*vec2(5.5,6.5))*0.7+vnoise(q*vec2(12.0,13.0))*0.3; float spot=0.35*smoothstep(0.56,0.7,sp)*back*(1.0-eyeW)*(1.0-0.6*legW);
+  float sp=vnoise(q*vec2(3.6,4.4)+vec2(2.0,7.0))*0.75+vnoise(q*vec2(9.0,11.0))*0.25; float spot=smoothstep(0.55,0.62,sp)*(1.0-smoothstep(0.55,0.9,ang))*(1.0-eyeW)*(1.0-legW);
   float cheek=clamp((reg-1.0)/0.4,0.0,1.0)*(1.0-step(1.5,reg));
   // fine grain
   float grain=vnoise(q*vec2(70.0,70.0));
   float h=wart*0.9+grain*0.15;
   return vec4(h,cheek,spot,wart);
 }`;
-const jellyMat=new THREE.MeshPhysicalMaterial({color:'#a9d96a',roughness:0.12,metalness:0,transmission:1,thickness:1,ior:1.38,attenuationColor:new THREE.Color('#7cc242'),attenuationDistance:0.4,clearcoat:0.4,clearcoatRoughness:0.22,specularIntensity:0.8,envMapIntensity:0.8,side:THREE.FrontSide});
+const uLegAtt={value:new THREE.Color('#2a5df2')}, uLegDiff={value:new THREE.Color('#8fa8f7')}, uSpots={value:1};
+const jellyMat=new THREE.MeshPhysicalMaterial({color:'#8fa8f7',roughness:0.08,metalness:0,transmission:1,thickness:1,ior:1.4,attenuationColor:new THREE.Color('#2a5df2'),attenuationDistance:0.5,clearcoat:0.6,clearcoatRoughness:0.15,specularIntensity:0.8,envMapIntensity:0.8,side:THREE.FrontSide});
 jellyMat.onBeforeCompile=(sh)=>{
-  sh.uniforms.uBump={value:0.0016};
+  sh.uniforms.uBump={value:0.0016}; sh.uniforms.uLegAtt=uLegAtt; sh.uniforms.uLegDiff=uLegDiff; sh.uniforms.uSpots=uSpots;
   sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute vec4 body; attribute float thick; varying vec4 vBody; varying float vThick;')
     .replace('#include <begin_vertex>','#include <begin_vertex>\nvBody=body; vThick=thick;');
   let tr=THREE.ShaderChunk.transmission_fragment;
   tr=tr.replace('material.transmission = transmission;','material.transmission = transmission * jTrans;')
        .replace('material.thickness = thickness;','material.thickness = thickness * vThick;')
-       .replace('material.attenuationColor = attenuationColor;','material.attenuationColor = attenuationColor * jAtt;');
-  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec4 vBody; varying float vThick; uniform float uBump;\n'+GLSL_NOISE)
+       .replace('material.attenuationColor = attenuationColor;','material.attenuationColor = mix(attenuationColor, uLegAtt, legW) * jAtt;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec4 vBody; varying float vThick; uniform float uBump; uniform vec3 uLegAtt; uniform vec3 uLegDiff; uniform float uSpots;\n'+GLSL_NOISE)
     .replace('#include <color_fragment>',`#include <color_fragment>
       vec4 sk=skinEval(vBody);
-      float jTrans=1.0-0.08*sk.w-0.35*sk.y;
-      float jAtt=1.0-0.32*sk.z-0.1*sk.w;
-      { vec3 bc=diffuseColor.rgb; float lum=dot(bc,vec3(0.3,0.59,0.11)); vec3 deep=max(mix(vec3(lum),bc,1.4),0.0)*0.74;
-        diffuseColor.rgb=mix(bc,deep,sk.z)*(1.0+0.08*sk.w); diffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.0,0.6,0.62),0.45*sk.y); }`)
-    .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(roughnessFactor+0.05*sk.z+0.08*sk.w,0.0,1.0);')
+      float legW=smoothstep(1.6,1.9,vBody.w)*(1.0-smoothstep(2.1,2.4,vBody.w));
+      float spot=sk.z*uSpots;
+      float jTrans=1.0-0.08*sk.w-0.35*sk.y-0.25*spot;
+      float jAtt=(1.0-0.1*sk.w)*(1.0-0.85*spot);
+      diffuseColor.rgb=mix(diffuseColor.rgb,uLegDiff,legW);
+      diffuseColor.rgb*=(1.0+0.08*sk.w)*(1.0-0.9*spot);                       // ink-black dart-frog blotches
+      diffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.0,0.6,0.62),0.45*sk.y);`)
+    .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(roughnessFactor+0.04*sk.z+0.06*sk.w,0.0,1.0);')
     .replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
       { float hh=sk.x; vec3 dpdx=dFdx(-vViewPosition); vec3 dpdy=dFdy(-vViewPosition); float dhx=dFdx(hh)*uBump, dhy=dFdy(hh)*uBump;
         vec3 R1=cross(dpdy,normal); vec3 R2=cross(normal,dpdx); float fDet=dot(dpdx,R1)*faceDirection;
@@ -719,7 +723,8 @@ canvas.addEventListener('wheel',(e)=>{ if(grab.active){ grab.twist+=e.deltaY*0.0
 const swEl=document.getElementById('swatches');
 WAYS.forEach((w,i)=>{const b=document.createElement('button'); b.style.setProperty('--c',w.hex); b.setAttribute('aria-pressed',i===0?'true':'false'); b.title=w.name; b.innerHTML=`<i></i><span class="sr">${w.name}</span>`; b.addEventListener('click',()=>setWay(i)); swEl.appendChild(b);});
 function setWay(i){ sim.way=i; const w=WAYS[i]; const c=new THREE.Color(w.hex);
-  jellyMat.attenuationColor.copy(c); jellyMat.color.copy(c).lerp(new THREE.Color('#ffffff'),0.45);
+  jellyMat.attenuationColor.copy(c); jellyMat.color.copy(c).lerp(new THREE.Color('#ffffff'),0.5);
+  const lc=new THREE.Color(w.leg); uLegAtt.value.copy(lc); uLegDiff.value.copy(lc).lerp(new THREE.Color('#ffffff'),0.5); uSpots.value=w.spots;
   eyeMat.uniforms.uIris.value.set(w.iris); document.documentElement.style.setProperty('--accent',w.hex);
   [...swEl.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i?'true':'false')); }
 setWay(0);
@@ -737,7 +742,7 @@ addEventListener('keydown',(e)=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; con
   else if(k>='1'&&k<='5') setWay(+k-1); else if(k==='['){sim.firm=clamp(sim.firm-0.1,0,1);} else if(k===']'){sim.firm=clamp(sim.firm+0.1,0,1);} });
 
 // ---------- resize + loop ----------
-const POSE={land:[2.7,1.9,3.1], port:[3.4,2.4,1.8]}; let poseMode='';
+const POSE={land:[2.7,1.9,3.1], port:[3.5,2.4,1.8]}; let poseMode='';
 function resize(){const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
   const port=camera.aspect<1; const mode=port?'port':'land';
   let vf=port?56:2*Math.atan(Math.tan(23*Math.PI/180)/camera.aspect)*180/Math.PI;
@@ -769,7 +774,7 @@ function tick(dt){
   updateGeometry();
   _v1.copy(key.position).normalize().transformDirection(camera.matrixWorldInverse); eyeMat.uniforms.uLight.value.copy(_v1);
   if((frame++%4)===0){ let sx=0,sz=0; for(let n=0;n<3*N;n+=3){ sx+=px[n]; sz+=px[n+2]; } sx/=N; sz/=N;
-    _v2.set(lerp(PED_C[0],sx,0.6),0.2,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
+    _v2.set(lerp(PED_C[0],sx,0.6),0.55,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
   controls.update(); renderer.render(scene,camera);
 }
 overlay.classList.add('off'); setTimeout(()=>{overlay.hidden=true;},1000);

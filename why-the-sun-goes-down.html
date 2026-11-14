@@ -46,7 +46,22 @@ h1{font-weight:500;font-size:clamp(2.7rem,7.5vw,4.6rem);line-height:1.02;letter-
 .a{font-size:1.18rem;line-height:1.5;color:var(--soft);max-width:29rem;margin:0 auto}
 figure{margin:30px auto 0;max-width:880px}
 .space{background:var(--space);border:1px solid var(--space-line);border-radius:18px;overflow:hidden}
+.stage{position:relative}
 .stage svg{width:100%;height:auto;display:block;user-select:none;-webkit-user-select:none}
+.expand{position:absolute;top:10px;right:10px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.25);background:rgba(12,19,36,.55);color:#eef2fa;cursor:pointer;display:grid;place-items:center;padding:0;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.expand:hover{background:rgba(12,19,36,.85)}
+.expand svg{width:20px;height:20px;display:block}
+.expand .ic-close{display:none}
+.chap.full{position:fixed;inset:0;z-index:50;margin:0;max-width:none;padding:10px 16px;background:var(--bg);overflow:auto;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.chap.full .n,.chap.full .a,.chap.full .hint{display:none}
+.chap.full h2{font-size:1.1rem;margin:0 0 8px;max-width:none;color:var(--muted);font-family:var(--sans);font-weight:500}
+.chap.full figure{margin:0;width:100%;max-width:none}
+.chap.full .stage svg{width:min(100%,calc(74vh * var(--r,1.8)));margin:0 auto}
+.chap.full .expand .ic-open{display:none}
+.chap.full .expand .ic-close{display:block}
+.chap.full .controls{margin-top:12px}
+.chap.full .msg{margin-top:10px}
+body.lock{overflow:hidden}
 .controls{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;margin:16px 0 0;font:14px/1 var(--sans)}
 .pill{appearance:none;-webkit-appearance:none;border:1px solid var(--rule2);background:transparent;color:var(--ink);border-radius:999px;padding:10px 18px;font:inherit;cursor:pointer;min-height:44px;transition:border-color .15s}
 .pill:hover{border-color:var(--muted)}
@@ -278,6 +293,20 @@ function sky(svg,parent,x,y,w,h,hy,seed){
   const seaLayer=G(g);
   return {layer,seaLayer,set(alt){const c=skyCols(alt);top.stops[0].setAttribute('stop-color',c.t);top.stops[1].setAttribute('stop-color',c.b);sea.stops[0].setAttribute('stop-color',c.st);sea.stops[1].setAttribute('stop-color',c.sb);st.setAttribute('opacity',n2(c.stars));}};
 }
+
+/* expand any picture to fill the screen */
+(function(){
+  const open=document.querySelectorAll('.stage');
+  function close(){const f=$('.chap.full');if(!f)return;f.classList.remove('full');document.body.classList.remove('lock');$('.expand',f).setAttribute('aria-label','Expand');}
+  open.forEach(st=>{
+    const svg=$('svg',st),vb=svg.viewBox.baseVal;svg.style.setProperty('--r',(vb.width/vb.height).toFixed(3));
+    const b=document.createElement('button');b.type='button';b.className='expand';b.setAttribute('aria-label','Expand');
+    b.innerHTML='<svg class="ic-open" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3h5v5M8 17H3v-5M17 3l-6 6M3 17l6-6"/></svg><svg class="ic-close" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>';
+    b.addEventListener('click',()=>{const sec=st.closest('.chap');if(sec.classList.contains('full')){close();return;}close();sec.classList.add('full');document.body.classList.add('lock');b.setAttribute('aria-label','Close');});
+    st.appendChild(b);
+  });
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+})();
 
 /* shared: where you stand (latitude), picked in chapter 4 */
 const state={lat:13*D,onLat:[]};

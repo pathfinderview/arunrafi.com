@@ -124,14 +124,11 @@ footer a:hover{color:var(--ink)}
 <section class="chap" id="c2">
   <div class="n">2</div>
   <h2>Why it feels the other way</h2>
-  <p class="a">The ground, the sea, the air: everything near you turns with you. Only far things seem to move.</p>
-  <figure id="fig-glue"><div class="stage space"><svg viewBox="0 0 720 400" aria-label="The same picture, now glued to you: the ground stays flat and the Sun moves"></svg></div></figure>
-  <p class="msg" id="glue-msg"></p>
-  <div class="controls">
-    <div class="seg" id="glue-cam" role="group" aria-label="Where you look from"><button type="button" data-v="1" aria-pressed="true">From the ground</button><button type="button" data-v="0" aria-pressed="false">From space</button></div>
-    <button class="pill primary" id="glue-play" type="button">Play a day</button>
-  </div>
-  <p class="hint">Drag the Sun.</p>
+  <p class="a">Cut out your piece of the Earth. It swings up in front of the Sun. Standing on it, you see the Sun slide down.</p>
+  <figure id="fig-cut"><div class="stage space"><svg viewBox="0 0 720 400" aria-label="Left: your piece of the Earth swinging up past the Sun. Right: what you see from it"></svg></div></figure>
+  <p class="msg" id="cut-msg"></p>
+  <div class="controls"><button class="pill primary" id="cut-play" type="button">Play a day</button></div>
+  <p class="hint">Drag the ground.</p>
 </section>
 
 <section class="chap" id="c3">
@@ -151,7 +148,7 @@ footer a:hover{color:var(--ink)}
   <figure id="fig-lat"><div class="stage space"><svg viewBox="0 0 720 380" aria-label="Where you stand on the globe, and the angle the Sun comes down at"></svg></div></figure>
   <p class="msg" id="lat-msg"></p>
   <div class="controls">
-    <div class="seg" id="lat-pre" role="group" aria-label="Where you stand"><button type="button" data-v="0">Equator</button><button type="button" data-v="13" aria-pressed="true">Bengaluru</button><button type="button" data-v="29">Delhi</button><button type="button" data-v="51">London</button><button type="button" data-v="90">North Pole</button></div>
+    <div class="seg" id="lat-pre" role="group" aria-label="Where you stand"><button type="button" data-v="-90">South Pole</button><button type="button" data-v="-34">Sydney</button><button type="button" data-v="0">Equator</button><button type="button" data-v="13" aria-pressed="true">Bengaluru</button><button type="button" data-v="29">Delhi</button><button type="button" data-v="51">London</button><button type="button" data-v="90">North Pole</button></div>
     <button class="pill primary" id="lat-play" type="button">Play the sunset</button>
   </div>
   <p class="hint">Drag yourself up the globe.</p>
@@ -180,10 +177,9 @@ footer a:hover{color:var(--ink)}
 </section>
 
 <div class="end">
-  <p>The Sun never went down. You turned away from it.</p>
   <details class="notes">
     <summary>About these pictures</summary>
-    <p>Sizes and distances are squashed so everything fits. Chapters 1 to 3 look down on the North Pole. Chapter 4 shows a day in March or September, when the Sun sets due west. Chapter 5 uses the place you picked in chapter 4, seen from the northern half of the world, facing west; the day of the year starts on today.</p>
+    <p>Sizes and distances are squashed so everything fits. Chapters 1 and 3 look down on the North Pole. Chapter 4 shows a day in March or September, when the Sun sets due west. Chapter 5 uses the place you picked in chapter 4, facing west; the day of the year starts on today.</p>
   </details>
 </div>
 </main>
@@ -313,14 +309,10 @@ function makeSpin(fig,opt){
   const EX=480,EY=200,R=100,SX=110,SY=200,DIST=EX-SX;
   const BETA=Math.acos(R/DIST);           // how far past noon the ground meets the Sun
   const world=G(svg);
-  stars(world,-700,-600,2100,1600,220,opt.seed||11);
+  stars(world,0,0,720,400,160,opt.seed||11);
   const rays=G(world,{stroke:'#ffd27a','stroke-opacity':.11,'stroke-width':1.3});
-  for(let k=-24;k<=24;k++){const y=EY+k*30,dy=y-EY;let x2=1500;if(Math.abs(dy)<R)x2=EX-Math.sqrt(R*R-dy*dy);S('line',{x1:-700,y1:y,x2:n2(x2),y2:y},rays);}
+  for(let k=-7;k<=7;k++){const y=EY+k*30,dy=y-EY;let x2=740;if(Math.abs(dy)<R)x2=EX-Math.sqrt(R*R-dy*dy);S('line',{x1:-20,y1:y,x2:n2(x2),y2:y},rays);}
   sun(svg,world,SX,SY,30,2.2);
-  // the ground, stretched flat, in your own frame (hidden from space)
-  const youG=G(world);
-  const gnd=linear(svg,[[0,'#18283f'],[1,'#070b14']],{x1:0,y1:0,x2:0,y2:1,gradientUnits:'userSpaceOnUse',y2:420});
-  const plane=S('rect',{x:-1600,y:0,width:3200,height:1600,fill:gnd.url,opacity:0},youG);
   // Earth
   const eg=G(world,{transform:`translate(${EX} ${EY})`});
   S('circle',{r:R,class:'ocean'},eg);
@@ -338,39 +330,21 @@ function makeSpin(fig,opt){
   S('circle',{cx:24,cy:-17,r:7.5,fill:'#4b9a5c'},youT);
   S('line',{x1:0,y1:0,x2:0,y2:-15,stroke:'#f2a04a','stroke-width':3.2,'stroke-linecap':'round'},youT);
   S('circle',{cx:0,cy:-20.5,r:4.8,fill:'#f2a04a'},youT);
-  // hit area for dragging
-  const hit=opt.hitAll?svg:S('circle',{cx:EX,cy:EY,r:R+34,fill:'transparent',class:'grab'},svg);
-  if(opt.hitAll)svg.classList.add('pan');
-
-  let phi=opt.phi0*D, m=opt.glued?1:0, target=m, play=false, rhoPrev=0;
+  const hit=S('circle',{cx:EX,cy:EY,r:R+34,fill:'transparent',class:'grab'},svg);
+  let phi=opt.phi0*D,play=false;
   function render(){
     const au=Math.atan2(Math.sin(phi),-Math.cos(phi));
-    let rho=wrapA(-Math.PI/2-au);
-    rho=rhoPrev+wrapA(rho-rhoPrev);rhoPrev=rho;
-    world.setAttribute('transform',`translate(${n2(-120*m)} ${n2(200*m)}) rotate(${n2(rho*m/D)} ${EX} ${EY})`);
     const px=EX-R*Math.cos(phi),py=EY+R*Math.sin(phi);
-    const t=`translate(${n2(px)} ${n2(py)}) rotate(${n2(au/D+90)})`;
-    youG.setAttribute('transform',t);youT.setAttribute('transform',t);
+    youT.setAttribute('transform',`translate(${n2(px)} ${n2(py)}) rotate(${n2(au/D+90)})`);
     land.setAttribute('transform',`rotate(${n2(-phi/D)})`);
-    plane.setAttribute('opacity',n2(m*.97));
     if(msgEl)spinMsg(msgEl,mod(phi/D,360),BETA/D);
   }
   let last=null;
-  drag(hit,svg,p=>{
-    const cx=EX-120*m,cy=EY+200*m;const a=Math.atan2(p.y-cy,p.x-cx);
-    if(last!==null){const da=wrapA(a-last);phi+=target?da:-da;}
-    last=a;render();
-  },()=>{last=null;setPlay(false);},()=>{last=null;});
+  drag(hit,svg,p=>{const a=Math.atan2(p.y-EY,p.x-EX);if(last!==null)phi-=wrapA(a-last);last=a;render();},()=>{last=null;setPlay(false);},()=>{last=null;});
   function setPlay(on){play=on;opt.playBtn.textContent=on?'Pause':'Play a day';}
   opt.playBtn.addEventListener('click',()=>setPlay(!play));
-  addLoop(fig,dt=>{
-    let dirty=false;
-    if(play){phi+=dt*TAU/10;dirty=true;}
-    if(m!==target){m=reduce?target:clamp(m+(target>m?dt:-dt)/.9,0,1);dirty=true;}
-    if(dirty)render();
-  });
+  addLoop(fig,dt=>{if(!play)return;phi+=dt*TAU/10;render();});
   render();
-  return {setCamera(g){target=g;}};
 }
 function spinMsg(el,p,B){
   let s;
@@ -382,10 +356,51 @@ function spinMsg(el,p,B){
   else s='<strong>Morning.</strong> The Sun climbs as your ground tips away from it.';
   if(el.innerHTML!==s)el.innerHTML=s;
 }
-makeSpin($('#fig-spin'),{phi0:28,glued:false,arrow:true,msg:$('#spin-msg'),playBtn:$('#spin-play'),seed:11});
+makeSpin($('#fig-spin'),{phi0:28,arrow:true,msg:$('#spin-msg'),playBtn:$('#spin-play'),seed:11});
+
+/* ===================== 2 · YOUR PIECE OF THE EARTH ===================== */
 (function(){
-  const sp=makeSpin($('#fig-glue'),{phi0:40,glued:true,hitAll:true,msg:$('#glue-msg'),playBtn:$('#glue-play'),seed:11});
-  seg('glue-cam',v=>sp.setCamera(+v));
+  const fig=$('#fig-cut'),svg=$('svg',fig),msgEl=$('#cut-msg'),playBtn=$('#cut-play');
+  const YX=205,YY=215,SX=62,SY=215,R=240,HX=360,HW=360,HY=258,PX=540;
+  // left: the Sun stays put; your piece of the Earth swings round you
+  const left=G(svg,{'clip-path':clipRect(svg,0,0,HX,400)});
+  stars(left,0,0,HX,400,70,61);
+  const rays=G(left,{stroke:'#ffd27a','stroke-opacity':.12,'stroke-width':1.3});
+  for(let k=-7;k<=7;k++){const y=SY+k*28;S('line',{x1:-20,y1:y,x2:HX+20,y2:y},rays);}
+  sun(svg,left,SX,SY,26,2.2);
+  const piece=G(left);
+  const w=50*D,sector=`M0 ${R}L${n2(-R*Math.sin(w))} ${n2(R-R*Math.cos(w))}A${R} ${R} 0 0 1 ${n2(R*Math.sin(w))} ${n2(R-R*Math.cos(w))}Z`;
+  S('path',{d:sector,class:'ocean'},piece);
+  const cpId=nid('cp');S('path',{d:sector},S('clipPath',{id:cpId},defs(svg)));
+  const lp=G(piece,{'clip-path':'url(#'+cpId+')'});
+  const RL=rng(19);for(let i=0;i<7;i++){const a=(-34+i*11+RL()*4)*D,rr=R*(0.86+RL()*0.1);S('path',{d:blob(rr*Math.sin(a),R-rr*Math.cos(a),R*(0.05+RL()*0.05),Math.floor(RL()*1e6)+3,9),class:'land'},lp);}
+  S('path',{d:sector,fill:'none',stroke:'#9fb0c9','stroke-opacity':.45},piece);
+  S('line',{x1:-260,y1:0,x2:260,y2:0,stroke:'#9fb0c9','stroke-opacity':.5,'stroke-width':1.5},piece);
+  S('line',{x1:-60,y1:0,x2:60,y2:0,stroke:'#4b9a5c','stroke-width':5,'stroke-linecap':'round'},piece);
+  S('line',{x1:26,y1:0,x2:26,y2:-13,stroke:'#7a5230','stroke-width':3},piece);
+  S('circle',{cx:26,cy:-20,r:8.5,fill:'#4b9a5c'},piece);
+  S('line',{x1:0,y1:0,x2:0,y2:-18,stroke:'#f2a04a','stroke-width':3.6,'stroke-linecap':'round'},piece);
+  S('circle',{cx:0,cy:-24.5,r:5.5,fill:'#f2a04a'},piece);
+  const hit=S('rect',{x:0,y:0,width:HX,height:400,fill:'transparent',class:'grab'},svg);
+  // right: what you see, standing on it
+  const sk=sky(svg,G(svg,{'clip-path':clipRect(svg,HX,0,HW,400)}),HX,0,HW,400,HY,63);
+  const su=sun(svg,sk.layer,0,0,26,2.4);
+  S('line',{x1:HX,y1:0,x2:HX,y2:400,stroke:'#0c1324','stroke-width':2},svg);
+  let phi=40,play=false;
+  function render(){
+    piece.setAttribute('transform',`translate(${YX} ${YY}) rotate(${n2(phi-90)})`);
+    const p=mod(phi,360),alt=90-Math.abs(p>180?p-360:p);
+    const y=HY-alt*2.1;
+    su.setAttribute('transform',`translate(${PX} ${n2(y)})`);
+    sk.set(alt);
+    spinMsg(msgEl,p,90);
+  }
+  let last=null;
+  drag(hit,svg,p=>{const a=Math.atan2(p.y-YY,p.x-YX);if(last!==null)phi+=wrapA(a-last)/D;last=a;render();},()=>{last=null;setPlay(false);},()=>{last=null;});
+  function setPlay(on){play=on;playBtn.textContent=on?'Pause':'Play a day';}
+  playBtn.addEventListener('click',()=>setPlay(!play));
+  addLoop(fig,dt=>{if(!play)return;phi+=dt*36;render();});
+  render();
 })();
 
 /* ===================== 3 · SPIN, NOT LAP ===================== */
@@ -454,29 +469,29 @@ makeSpin($('#fig-spin'),{phi0:28,glued:false,arrow:true,msg:$('#spin-msg'),playB
   S('circle',{cx:PX,cy:HY,r:3,fill:'#ffffff','fill-opacity':.7},sk.seaLayer);
   let lat=state.lat,name='Bengaluru',s=1,playing=false;
   function render(){
-    const L=lat,cl=Math.cos(L),sl=Math.sin(L);
+    const L=lat,sg=L<0?-1:1,AL=Math.abs(L),cl=Math.cos(L),sl=Math.sin(L);
     const yx=GX+GR*cl,yy=GY-GR*sl;
     you.setAttribute('cx',n2(yx));you.setAttribute('cy',n2(yy));
     gGround.setAttribute('x1',n2(yx-74*sl));gGround.setAttribute('y1',n2(yy-74*cl));gGround.setAttribute('x2',n2(yx+74*sl));gGround.setAttribute('y2',n2(yy+74*cl));
-    gAxis.setAttribute('x1',n2(yx));gAxis.setAttribute('y1',n2(yy));gAxis.setAttribute('x2',n2(yx));gAxis.setAttribute('y2',n2(yy-120));
-    gArc.setAttribute('d',L<1*D?'':arcD(yx,yy,30,Math.atan2(-cl,-sl),-Math.PI/2));
-    // on the sea: the axis points north (right) at your latitude; the Sun's path is square to it
-    const a=Math.PI/2-L;
-    hAxis.setAttribute('x1',PX);hAxis.setAttribute('y1',HY);hAxis.setAttribute('x2',n2(PX+170*cl));hAxis.setAttribute('y2',n2(HY-170*sl));
-    hPath.setAttribute('x1',n2(PX-260*Math.cos(a)));hPath.setAttribute('y1',n2(HY-260*Math.sin(a)));hPath.setAttribute('x2',PX);hPath.setAttribute('y2',HY);
-    hArc.setAttribute('d',a<1*D?'':arcD(PX,HY,40,-Math.PI,-Math.PI+a));
+    gAxis.setAttribute('x1',n2(yx));gAxis.setAttribute('y1',n2(yy));gAxis.setAttribute('x2',n2(yx));gAxis.setAttribute('y2',n2(yy-120*sg));
+    gArc.setAttribute('d',AL<1*D?'':arcD(yx,yy,30,Math.atan2(-sg*cl,-sg*sl),-sg*Math.PI/2));
+    // on the sea, facing west: the nearer pole sits at your latitude, north to the right or south to the left; the Sun's path is square to it
+    const a=Math.PI/2-AL;
+    hAxis.setAttribute('x1',PX);hAxis.setAttribute('y1',HY);hAxis.setAttribute('x2',n2(PX+170*sg*cl));hAxis.setAttribute('y2',n2(HY-170*Math.sin(AL)));
+    hPath.setAttribute('x1',n2(PX-260*sg*Math.cos(a)));hPath.setAttribute('y1',n2(HY-260*Math.sin(a)));hPath.setAttribute('x2',PX);hPath.setAttribute('y2',HY);
+    hArc.setAttribute('d',a<1*D?'':sg>0?arcD(PX,HY,40,-Math.PI,-Math.PI+a):arcD(PX,HY,40,0,-a));
     const d=s*120-20;
-    const x=PX-d*Math.cos(a),y=HY-d*Math.sin(a);
+    const x=PX-d*sg*Math.cos(a),y=HY-d*Math.sin(a);
     su.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);
     sk.set((HY-y)/4);
-    const Ld=Math.round(L/D),A=90-Ld;
-    const where=Ld===0?'The equator.':(name?name+', ':'')+Ld+'° north.';
+    const Ld=Math.round(AL/D),A=90-Ld;
+    const where=Ld===0?'The equator.':(name?name+', ':'')+Ld+'° '+(sg>0?'north.':'south.');
     const q=A>=88?'Straight down.':A>=70?'Almost straight down.':A>=45?'A slant.':A>=20?'A long, slow slide.':A>0?'It barely dips. It slides along the sea.':'It never dips. It circles you along the sea.';
     const m=`<strong>${where}</strong> The Sun meets the sea at ${A}°. ${q}`;
     if(msgEl.innerHTML!==m)msgEl.innerHTML=m;
   }
   function setLat(v,nm){lat=v;name=nm||'';state.lat=v;state.onLat.forEach(f=>f());render();}
-  drag(hit,svg,p=>{const v=clamp(Math.atan2(GY-p.y,p.x-GX),0,Math.PI/2);setPressed(pre,null);setLat(v,'');},()=>{playing=false;s=1;playBtn.textContent='Play the sunset';});
+  drag(hit,svg,p=>{const v=clamp(Math.atan2(GY-p.y,p.x-GX),-Math.PI/2,Math.PI/2);setPressed(pre,null);setLat(v,'');},()=>{playing=false;s=1;playBtn.textContent='Play the sunset';});
   pre.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;setPressed(pre,b);s=1;playing=false;playBtn.textContent='Play the sunset';setLat(+b.dataset.v*D,b.textContent);});
   playBtn.addEventListener('click',()=>{s=1;playing=true;playBtn.textContent='Play again';});
   addLoop(fig,dt=>{if(!playing)return;s=Math.max(0,s-dt/6);if(s<=0)playing=false;render();});
@@ -495,13 +510,13 @@ makeSpin($('#fig-spin'),{phi0:28,glued:false,arrow:true,msg:$('#spin-msg'),playB
   S('circle',{cx:WX,cy:HY,r:3,fill:'#ffffff','fill-opacity':.7},sk.seaLayer);
   let doy=todayDoy(),speed=0;range.value=doy;
   const decl=d=>TILT*Math.sin(TAU*(d-80)/365);
-  function geo(d){const L=clamp(state.lat,0,60*D),dl=decl(d);const az=Math.asin(Math.sin(dl)/Math.cos(L));const ang=Math.acos(clamp(Math.sin(L)/Math.cos(dl),-1,1));const H0=Math.acos(clamp(-Math.tan(L)*Math.tan(dl),-1,1));return {x:WX+az/D*7,az,ang,hours:2*H0/D/15};}
-  function setLine(el,g,len){el.setAttribute('x1',n2(g.x-len*Math.cos(g.ang)));el.setAttribute('y1',n2(HY-len*Math.sin(g.ang)));el.setAttribute('x2',n2(g.x));el.setAttribute('y2',HY);}
+  function geo(d){const L=clamp(state.lat,-60*D,60*D),sg=L<0?-1:1,dl=decl(d);const az=Math.asin(Math.sin(dl)/Math.cos(L));const ang=Math.acos(clamp(Math.sin(Math.abs(L))/Math.cos(dl),-1,1));const H0=Math.acos(clamp(-Math.tan(L)*Math.tan(dl),-1,1));return {x:WX+az/D*7,az,ang,sg,hours:2*H0/D/15};}
+  function setLine(el,g,len){el.setAttribute('x1',n2(g.x-len*g.sg*Math.cos(g.ang)));el.setAttribute('y1',n2(HY-len*Math.sin(g.ang)));el.setAttribute('x2',n2(g.x));el.setAttribute('y2',HY);}
   function render(){
     const g=geo(doy),gj=geo(172),gd=geo(355);
     setLine(ghost[0],gj,230);setLine(ghost[1],gd,230);setLine(path,g,230);
     marks[0].setAttribute('cx',n2(gj.x));marks[1].setAttribute('cx',n2(gd.x));
-    const dd=96;const x=g.x-dd*Math.cos(g.ang),y=HY-dd*Math.sin(g.ang);
+    const dd=96;const x=g.x-dd*g.sg*Math.cos(g.ang),y=HY-dd*Math.sin(g.ang);
     su.setAttribute('transform',`translate(${n2(x)} ${n2(y)})`);
     sk.set((HY-y)/4);
     const az=Math.round(g.az/D);

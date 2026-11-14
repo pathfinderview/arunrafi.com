@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Jelly Animals</title>
+<meta name="description" content="Three animals cast in jelly, each in its own glass. Press a glass to play with it.">
+<link rel="canonical" href="https://arunrafi.com/jelly-animals/">
+<meta property="og:title" content="Jelly Animals">
+<meta property="og:description" content="A crocodile, a frog and an octopus cast in jelly, each in its own glass. Press a glass, then pull, feed and poke them.">
+<meta property="og:url" content="https://arunrafi.com/jelly-animals/">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#e2dfda">
+<style>
+  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e;--line:#cfcac2}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+  .mast{position:fixed;top:calc(24px + env(safe-area-inset-top));left:calc(28px + env(safe-area-inset-left));z-index:5;transition:opacity .4s}
+  .mast .home{margin:0 0 10px;font-family:inherit;font-size:14px;letter-spacing:0;text-transform:none}
+  .mast .home a{color:var(--ink2);text-decoration:none}
+  .mast h1{margin:0;font-weight:400;font-style:italic;font-size:26px;line-height:1;letter-spacing:-.01em}
+  .mast p{margin:8px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+  body.focused .mast{opacity:0;pointer-events:none}
+  .slot{position:fixed;overflow:hidden;border-radius:16px;transition:left .6s cubic-bezier(.2,.8,.2,1),top .6s cubic-bezier(.2,.8,.2,1),width .6s cubic-bezier(.2,.8,.2,1),height .6s cubic-bezier(.2,.8,.2,1),border-radius .6s,box-shadow .6s;z-index:2;box-shadow:0 0 0 1px rgba(31,29,26,0)}
+  .slot iframe{display:block;width:100%;height:100%;border:0;background:var(--bg)}
+  .slot .cover{position:absolute;inset:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:18px;gap:4px;-webkit-tap-highlight-color:transparent}
+  .slot .cover b{font-weight:400;font-style:italic;font-size:22px;line-height:1}
+  .slot .cover span{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+  .slot.active{border-radius:0;z-index:3}
+  .slot.active .cover{display:none}
+  body.focused .slot:not(.active){z-index:4;box-shadow:0 0 0 1px var(--line);border-radius:10px}
+  body.focused .slot:not(.active) .cover{padding-bottom:8px}
+  body.focused .slot:not(.active) .cover b{font-size:12px}
+  body.focused .slot:not(.active) .cover span{display:none}
+  .back{position:fixed;z-index:5;top:calc(24px + env(safe-area-inset-top));right:calc(28px + env(safe-area-inset-right));font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:0;background:none;color:var(--ink2);cursor:pointer;display:none}
+  body.focused .back{display:block}
+  @media (max-width:560px){ .mast{top:calc(18px + env(safe-area-inset-top));left:calc(20px + env(safe-area-inset-left))} .mast h1{font-size:22px} .slot .cover b{font-size:18px} }
+  @media (prefers-reduced-motion:reduce){ .slot{transition:none} }
+</style>
+</head>
+<body>
+<div class="mast"><p class="home"><a href="/">← Home</a></p><h1>Jelly Animals</h1><p>Material Studies · three glasses</p></div>
+<button class="back" id="back">All three</button>
+<div class="slot" data-i="0"><iframe src="crocodile-jelly.html?shelf" title="Crocodile Jelly"></iframe><div class="cover"><b>Crocodile</b><span>No. 069</span></div></div>
+<div class="slot" data-i="1"><iframe src="frog-jelly.html?shelf" title="Frog Jelly"></iframe><div class="cover"><b>Frog</b><span>No. 070</span></div></div>
+<div class="slot" data-i="2"><iframe src="octopus-jelly.html?shelf" title="Octopus Jelly"></iframe><div class="cover"><b>Octopus</b><span>No. 071</span></div></div>
+<script>
+const slots=[...document.querySelectorAll('.slot')];
+let active=-1;
+function place(el,x,y,w,h){ el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; }
+function layout(){
+  const W=innerWidth, H=innerHeight, phone=W<700;
+  if(active<0){
+    if(phone){ const m=16, top=86, gap=12, h=(H-top-24-2*gap)/3; slots.forEach((s,i)=>place(s,m,top+i*(h+gap),W-2*m,h)); }
+    else { const m=28, top=96, gap=18, w=(W-2*m-2*gap)/3; slots.forEach((s,i)=>place(s,m+i*(w+gap),top,w,H-top-36)); }
+  } else {
+    const cw=phone?72:104, ch=phone?92:132, gap=10, right=phone?16:28, top=phone?18:24;
+    let k=0;
+    slots.forEach((s,i)=>{ if(i===active){ place(s,0,0,W,H); } else { const x=W-right-(k+1)*cw-k*gap; place(s,x,top+(phone?54:56),cw,ch); k++; } });
+  }
+}
+function tell(i,type){ const f=slots[i].querySelector('iframe'); if(f.contentWindow) f.contentWindow.postMessage({type},location.origin); }
+function focus(i){
+  active=i; document.body.classList.toggle('focused',i>=0);
+  slots.forEach((s,k)=>{ s.classList.toggle('active',k===i); tell(k,k===i?'jelly-active':'jelly-idle'); });
+  layout();
+}
+slots.forEach((s,i)=>s.querySelector('.cover').addEventListener('click',()=>focus(i)));
+document.getElementById('back').addEventListener('click',()=>focus(-1));
+addEventListener('keydown',(e)=>{ if(e.key==='Escape') focus(-1); });
+addEventListener('resize',layout); layout();
+</script>
+</body>
+</html>

@@ -33,6 +33,9 @@ DESCRIPTIONS = {
     'the-middle-fades.html': 'An interactive illustration of how information in the middle of a long context can get overlooked.',
 }
 
+FOLDER_TOOLS = ['90s-diwali', 'jelly-animals']
+
+
 def plain(value):
     return ' '.join(html.unescape(re.sub(r'<[^>]+>', ' ', value)).split())
 
@@ -127,6 +130,10 @@ def enrich():
             continue
         element = ET.SubElement(tree, 'url')
         ET.SubElement(element, 'loc').text = BASE + ('/' if path.name == 'index.html' else '/' + path.name)
+    for folder in FOLDER_TOOLS:  # tools that live in their own folder
+        if (ROOT / folder / 'index.html').exists():
+            element = ET.SubElement(tree, 'url')
+            ET.SubElement(element, 'loc').text = BASE + '/' + folder + '/'
     ET.indent(tree)
     ET.ElementTree(tree).write(ROOT / 'sitemap.xml', encoding='utf-8', xml_declaration=True)
     (ROOT / 'robots.txt').write_text('User-agent: *\nAllow: /\n\nSitemap: ' + BASE + '/sitemap.xml\n')

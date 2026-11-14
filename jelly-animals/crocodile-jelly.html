@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Crocodile Jelly</title>
+<meta name="description" content="A life-size crocodile cast in jelly. Soft-body study in three.js.">
+<style>
+  :root{--bg:#e2dfda;--ink:#1f1d1a;--ink2:#6a645d;--ink3:#9b958e;--accent:#5f9e30}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none}
+  #c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+  .ui{position:fixed;z-index:2;pointer-events:none}
+  .ui > *{pointer-events:auto}
+  .title{top:calc(24px + env(safe-area-inset-top));left:calc(28px + env(safe-area-inset-left))}
+  .title h1{margin:0;font-weight:400;font-style:italic;font-size:26px;line-height:1;letter-spacing:-.01em}
+  .title p{margin:8px 0 0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink3)}
+  .bar{left:calc(20px + env(safe-area-inset-left));right:calc(20px + env(safe-area-inset-right));bottom:calc(16px + env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+  .sw{display:flex;gap:2px;padding-left:4px}
+  .sw button{width:36px;height:44px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:center}
+  .sw button i{width:12px;height:12px;border-radius:50%;background:var(--c);display:block;box-shadow:inset 0 -2px 3px rgba(0,0,0,.2),inset 0 2px 3px rgba(255,255,255,.45);transition:transform .25s,outline-color .25s;outline:1px solid transparent;outline-offset:3px}
+  .sw button[aria-pressed="true"] i{transform:scale(1.35);outline-color:var(--ink)}
+  .acts{display:flex;gap:2px;align-items:center}
+  .acts button{font:inherit;font-size:14px;min-height:44px;padding:0 14px;border:0;background:none;color:var(--ink2);cursor:pointer;border-radius:999px;letter-spacing:.01em;transition:color .2s}
+  .acts button:hover{color:var(--ink)}
+  .acts button.primary{border:1px solid var(--ink);color:var(--ink);padding:0 22px;margin-left:8px;background:rgba(255,255,255,.25)}
+  .acts button.primary:active{background:var(--ink);color:#fff}
+  .hint{left:0;right:0;bottom:calc(78px + env(safe-area-inset-bottom));text-align:center;font-style:italic;font-size:14px;color:var(--ink3);margin:0;transition:opacity 1.4s}
+  .hint.off{opacity:0}
+  .overlay{position:fixed;inset:0;z-index:3;display:grid;place-items:center;background:var(--bg);font-style:italic;font-size:17px;color:var(--ink2);text-align:center;padding:24px;transition:opacity .9s}
+  .overlay.off{opacity:0;pointer-events:none}
+  .overlay[hidden]{display:none}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .idle .ui,.idle .hint{display:none}
+  @media (max-width:560px){
+    .title{top:calc(18px + env(safe-area-inset-top));left:calc(20px + env(safe-area-inset-left))}
+    .title h1{font-size:22px}
+    .bar{left:calc(10px + env(safe-area-inset-left));right:calc(10px + env(safe-area-inset-right));bottom:calc(10px + env(safe-area-inset-bottom))}
+    .acts button{padding:0 10px;font-size:13px}
+    .acts button.primary{padding:0 16px}
+    .hint{bottom:calc(124px + env(safe-area-inset-bottom));font-size:13px;padding:0 24px}
+  }
+  @media (prefers-reduced-motion:reduce){ .sw button i,.acts button,.hint,.overlay{transition:none} }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c" aria-label="Interactive jelly crocodile"></canvas>
+<div class="ui title"><h1>Crocodile Jelly</h1><p>No. 069</p></div>
+<p class="ui hint" id="hint">Drag the jelly to pull it. Feed it and it snaps.</p>
+<div class="ui bar">
+  <div class="sw" id="swatches"></div>
+  <div class="acts">
+    <button id="bReset">Reset</button>
+    <button id="bThrash">Thrash</button>
+    <button id="bSnap">Snap</button>
+    <button id="bFeed" class="primary">Feed</button>
+  </div>
+</div>
+<div class="overlay" id="overlay">Casting the jelly…</div>
+
+<script type="module">
+// ---------------------------------------------------------------------------
+// Crocodile Jelly — No. 069, Material Studies
+// ---------------------------------------------------------------------------
+const overlay = document.getElementById('overlay');
+const testCanvas = document.createElement('canvas');
+if (!testCanvas.getContext('webgl2')) {
+  overlay.textContent = 'This study needs WebGL 2. Your browser or device does not offer it, so the crocodile cannot be cast here.';
+  throw new Error('WebGL2 unavailable');
+}
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = matchMedia('(pointer: coarse)').matches || innerWidth < 760;
+
+// ---------- maths helpers ----------
+const clamp=(v,a,b)=>v<a?a:v>b?b:v, lerp=(a,b,t)=>a+(b-a)*t;
+const sstep=(a,b,x)=>{const t=clamp((x-a)/(b-a),0,1);return t*t*(3-2*t);};
+const smin=(a,b,k)=>{const h=clamp(0.5+0.5*(b-a)/k,0,1);return lerp(b,a,h)-k*h*(1-h);};
+function mulberry(seed){return function(){seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+const rnd = mulberry(69);
+
+// ---------- the crocodile as a signed distance field (rest pose, body coords) ----------
+// profile keys: [x, half-width, half-height, superellipse exponent]
+const PROFILE=[[-1.63,0.006,0.008,2.2],[-1.45,0.035,0.065,2.4],[-1.15,0.075,0.125,2.6],[-0.85,0.125,0.185,2.8],
+ [-0.58,0.215,0.19,3.0],[-0.3,0.3,0.17,3.2],[0.1,0.31,0.17,3.2],[0.45,0.265,0.16,3.0],[0.63,0.19,0.14,2.8],
+ [0.8,0.21,0.135,3.0],[1.0,0.21,0.12,3.2],[1.15,0.165,0.09,3.2],[1.4,0.115,0.07,3.0],[1.52,0.1,0.065,2.8],
+ [1.6,0.072,0.05,2.3],[1.645,0.006,0.006,2.0]];
+const _pr=[0,0,0];
+function profile(x,o){
+  if(x<=PROFILE[0][0]){const a=PROFILE[0];o[0]=a[1];o[1]=a[2];o[2]=a[3];return o;}
+  for(let i=0;i<PROFILE.length-1;i++){const a=PROFILE[i],b=PROFILE[i+1];
+    if(x<=b[0]){const t=sstep(a[0],b[0],x);o[0]=lerp(a[1],b[1],t);o[1]=lerp(a[2],b[2],t);o[2]=lerp(a[3],b[3],t);return o;}}
+  const a=PROFILE[PROFILE.length-1];o[0]=a[1];o[1]=a[2];o[2]=a[3];return o;
+}
+const zc = x => 0.06*Math.sin(x*1.25+0.5);              // gently curving spine (z offset)
+const XM=0.84, YM0=0.09;                                   // corner of the mouth
+const mouthY = x => YM0-0.05*(x-XM);                       // mouth line (tilts down toward the nose)
+const JAW=17*Math.PI/180, JC=Math.cos(JAW), JS=Math.sin(JAW);
+const rotOpen=(x,y)=>[XM+JC*(x-XM)-JS*(y-YM0), YM0+JS*(x-XM)+JC*(y-YM0)];   // closed -> open head frame
+const rotClosed=(x,y)=>[XM+JC*(x-XM)+JS*(y-YM0), YM0-JS*(x-XM)+JC*(y-YM0)]; // open -> closed
+
+function sdSwept(x,y,z){
+  if(x<-1.64||x>1.655) return Math.max(-1.64-x,x-1.655)+0.01;
+  profile(x,_pr); const w=_pr[0],h=_pr[1],n=_pr[2];
+  const dy=Math.abs((y-h*0.9)/h), dz=Math.abs((z-zc(x))/w);
+  const r=Math.pow(Math.pow(dy,n)+Math.pow(dz,n),1/n);
+  return (r-1)*Math.min(w,h);
+}
+function topY(x,zr){ profile(x,_pr); const h=_pr[1],n=_pr[2]; return h*0.9+h*Math.pow(Math.max(0,1-Math.pow(Math.abs(zr),n)),1/n); }
+function zHalf(x,y){ profile(x,_pr); const w=_pr[0],h=_pr[1],n=_pr[2]; const u=Math.abs((y-h*0.9)/h); return w*Math.pow(Math.max(0,1-Math.pow(u,n)),1/n); }
+function sdCapT(px,py,pz,ax,ay,az,bx,by,bz,ra,rb){
+  const pax=px-ax,pay=py-ay,paz=pz-az,bax=bx-ax,bay=by-ay,baz=bz-az;
+  const h=clamp((pax*bax+pay*bay+paz*baz)/(bax*bax+bay*bay+baz*baz),0,1);
+  const dx=pax-bax*h,dy=pay-bay*h,dz=paz-baz*h;
+  return Math.sqrt(dx*dx+dy*dy+dz*dz)-(ra+(rb-ra)*h);
+}
+function sdEll(px,py,pz,rx,ry,rz){
+  const k0=Math.sqrt((px/rx)**2+(py/ry)**2+(pz/rz)**2);
+  const k1=Math.sqrt((px/(rx*rx))**2+(py/(ry*ry))**2+(pz/(rz*rz))**2);
+  if(k1<1e-9) return -Math.min(rx,ry,rz);
+  return k0*(k0-1)/k1;
+}
+function sdTriIso(px,py,qx,qy){
+  px=Math.abs(px);
+  const t1=clamp((px*qx+py*qy)/(qx*qx+qy*qy),0,1); const ax=px-qx*t1, ay=py-qy*t1;
+  const t2=clamp(px/qx,0,1); const bx=px-qx*t2, by=py-qy;
+  const s=-Math.sign(qy);
+  const dx=Math.min(ax*ax+ay*ay,bx*bx+by*by), dy=Math.min(s*(px*qy-py*qx),s*(py-qy));
+  return -Math.sqrt(dx)*Math.sign(dy);
+}
+const LEGS={front:{xb:0.42,toes:5},hind:{xb:-0.42,toes:4}};
+function sdLegs(x,y,z){
+  const L=x<0?LEGS.hind:LEGS.front; const xb=L.xb; profile(xb,_pr); const w=_pr[0]; const zb=zc(xb);
+  const s=(z-zb)<0?-1:1; const z0=zb+s*w*0.7;
+  let d=sdCapT(x,y,z, xb,0.115,z0, xb-0.07,0.105,z0+s*0.16, 0.072,0.058);
+  d=smin(d,sdCapT(x,y,z, xb-0.07,0.105,z0+s*0.16, xb+0.01,0.045,z0+s*0.27, 0.058,0.045),0.02);
+  const Fx=xb+0.06,Fy=0.02,Fz=z0+s*0.3;
+  d=smin(d,sdEll(x-Fx,y-Fy,z-Fz,0.065,0.03,0.055),0.03);
+  const base=Math.atan2(s*0.6,1), n=L.toes;
+  for(let i=0;i<n;i++){const a=base+(-0.75+1.5*i/(n-1)); const cx=Math.cos(a),cz=Math.sin(a);
+    d=smin(d,sdCapT(x,y,z, Fx+cx*0.03,0.02,Fz+cz*0.03, Fx+cx*0.115,0.013,Fz+cz*0.115, 0.018,0.011),0.012);}
+  return d;
+}
+function sdCrest(x,y,z){
+  if(x<-1.56||x>-0.52) return 1;
+  const sp=0.068; const i=Math.round((x+1.56)/sp); const xi=-1.56+i*sp; if(xi>-0.55) return 1;
+  profile(xi,_pr); const wi=_pr[0],hi=_pr[1]; const topi=hi*1.9-0.012; const ph=0.03+0.4*hi;
+  const merge=sstep(-1.32,-1.05,xi); const zoff=0.5*wi*merge;
+  const dzr=Math.abs(Math.abs(z-zc(xi))-zoff)-0.011;
+  const d2=sdTriIso(x-xi,(topi+ph)-y,0.026,ph);
+  const ax=Math.max(d2,0),az=Math.max(dzr,0);
+  return Math.min(Math.max(d2,dzr),0)+Math.sqrt(ax*ax+az*az);
+}
+function sdScutes(x,y,z){
+  if(x<-0.98||x>0.72||y<0.05) return 1;
+  const sp=0.092; const i=Math.round((x+0.98)/sp); const xi=-0.98+i*sp;
+  profile(xi,_pr); const wi=_pr[0];
+  const zr=(z-zc(xi))/wi; const rs=0.3; const ri=clamp(Math.round(zr/rs),-2,2);
+  const yt=topY(xi,ri*rs); const sc=0.7+0.3*sstep(-0.9,-0.3,xi);
+  let d=sdEll(x-xi,y-(yt-0.006),z-(zc(xi)+ri*rs*wi),0.034*sc,0.021*sc,0.021*sc);
+  // bigger pair on the nape
+  const nx=0.66; const ynt=topY(nx,0.33);
+  d=Math.min(d,sdEll(x-nx,y-(ynt-0.008),Math.abs(z-zc(nx))-0.33*0.19,0.05,0.03,0.03));
+  return d;
+}
+const EYE_X=0.93, EYE_Z=0.115, EYE_BUMP_Y=topY(0.93,0.115/0.21)-0.008;
+function sdHeadClosed(x,y,z){
+  let d=sdSwept(x,y,z);
+  const bz=Math.abs(z-zc(EYE_X))-EYE_Z;
+  const bd=Math.sqrt((x-EYE_X)**2+(y-EYE_BUMP_Y)**2+bz*bz)-0.04;
+  return smin(d,bd,0.02);
+}
+function sdCroc(x,y,z){
+  const ds=sdSwept(x,y,z);
+  let d=Math.max(ds,x-(XM+0.03));                                     // body, cut at the hinge
+  d=Math.min(d,Math.max(ds,y-mouthY(x),(XM-0.05)-x));                 // lower jaw: solid bar below the mouth line
+  d=smin(d,sdEll(x-1.17,y-(mouthY(1.17)-0.012),z-zc(1.17),0.3,0.03,0.1),0.02); // tongue pad
+  const rc=rotClosed(x,y);                                            // upper head, swung up 17°
+  let du=Math.max(sdHeadClosed(rc[0],rc[1],z),mouthY(rc[0])-rc[1],XM-rc[0]);
+  du=Math.max(du,-sdEll(rc[0]-1.22,rc[1]-(mouthY(1.22)-0.016),z-zc(1.22),0.3,0.036,0.1)); // palate hollow
+  d=smin(d,du,0.03);
+  d=smin(d,sdLegs(x,y,z),0.045);
+  d=smin(d,sdCrest(x,y,z),0.012);
+  d=smin(d,sdScutes(x,y,z),0.015);
+  return Math.max(d,-y);                                              // belly pressed into the table
+}
+function sdCream(x,y,z){
+  const inset=0.018; const ds=sdSwept(x,y,z)+inset;
+  profile(x,_pr); const h=_pr[1];
+  const line=h*0.9*0.8+0.016*Math.abs(Math.sin(x*26.0));              // scalloped line low on the flank
+  let d=Math.max(ds,y-line,x-(XM+0.02));
+  d=Math.min(d,Math.max(ds,y-(mouthY(x)-0.008),(XM-0.05)-x));        // the whole lower jaw is cream
+  d=Math.min(d,Math.max(sdLegs(x,y,z)+inset,y-0.06));
+  { const rc=rotClosed(x,y);                                          // cream skull inside the upper head, above the palate
+    let du=Math.max(sdSwept(rc[0],rc[1],z)+0.022,(mouthY(rc[0])+0.02)-rc[1],(XM+0.04)-rc[0],rc[0]-1.52);
+    du=Math.max(du,-sdEll(rc[0]-1.22,rc[1]-(mouthY(1.22)-0.016),z-zc(1.22),0.33,0.062,0.125));
+    d=Math.min(d,du); }
+  return Math.max(d,-y+0.004);
+}
+function isMouth(x,y){
+  if(x<XM+0.01) return false; if(y<mouthY(x)-0.012) return false;
+  const rc=rotClosed(x,y); return rc[1]<=mouthY(rc[0])+0.012;
+}
+
+// ---------- grids ----------
+const HS = isMobile?0.0175:0.014;     // surface-nets sample spacing
+const HL = HS*5;                      // lattice spacing
+const OX=-1.75, OY=0, OZ=-0.77;
+const NCX=Math.round(3.5/HL), NCY=Math.ceil(0.62/HL), NCZ=Math.round(1.54/HL);
+const NX=NCX*5+1, NY=NCY*5+1+2, NZ=NCZ*5+1;   // fine grid; two sample rows below the table
+const fy = j => OY+(j-2)*HS;
+
+function sampleField(sdf){
+  const F=new Float32Array(NX*NY*NZ);
+  const cn=new Float32Array((NCX+1)*(NCY+1)*(NCZ+1));
+  for(let i=0;i<=NCX;i++)for(let j=0;j<=NCY;j++)for(let k=0;k<=NCZ;k++)
+    cn[(i*(NCY+1)+j)*(NCZ+1)+k]=sdf(OX+i*HL,OY+j*HL,OZ+k*HL);
+  const skip=new Float32Array(NCX*NCY*NCZ); // 0 = evaluate, else the fill value
+  for(let i=0;i<NCX;i++)for(let j=0;j<NCY;j++)for(let k=0;k<NCZ;k++){
+    let m=1e9,s=0;
+    for(let c=0;c<8;c++){const v=cn[((i+(c&1))*(NCY+1)+(j+((c>>1)&1)))*(NCZ+1)+(k+(c>>2))]; m=Math.min(m,Math.abs(v)); s=v;}
+    skip[(i*NCY+j)*NCZ+k]= m>0.3 ? Math.sign(s)*0.3 : 0;
+  }
+  let inside=0;
+  for(let i=0;i<NX;i++){const ci=Math.min(NCX-1,(i/5)|0); const x=OX+i*HS;
+    for(let j=0;j<NY;j++){const y=fy(j);
+      for(let k=0;k<NZ;k++){const idx=(i*NY+j)*NZ+k;
+        if(j<2){F[idx]=HS;continue;}
+        const cj=Math.min(NCY-1,((j-2)/5)|0), ck=Math.min(NCZ-1,(k/5)|0);
+        const sv=skip[(ci*NCY+cj)*NCZ+ck];
+        const d= sv!==0 ? sv : sdf(x,y,OZ+k*HS);
+        F[idx]=d; if(d<0) inside++;
+      }}}
+  return {F,inside};
+}
+
+// ---------- surface nets ----------
+function surfaceNets(F){
+  const cellV=new Int32Array((NX-1)*(NY-1)*(NZ-1)).fill(-1);
+  const cid=(i,j,k)=>(i*(NY-1)+j)*(NZ-1)+k;
+  const fid=(i,j,k)=>(i*NY+j)*NZ+k;
+  const pos=[]; const EDGES=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+  const cv=new Float32Array(8);
+  for(let i=0;i<NX-1;i++)for(let j=0;j<NY-1;j++)for(let k=0;k<NZ-1;k++){
+    let mask=0;
+    for(let c=0;c<8;c++){const v=F[fid(i+(c&1),j+((c>>1)&1),k+(c>>2))]; cv[c]=v; if(v<0) mask|=1<<c;}
+    if(mask===0||mask===255) continue;
+    let sx=0,sy=0,sz=0,cnt=0;
+    for(let e=0;e<12;e++){const a=EDGES[e][0],b=EDGES[e][1]; const da=cv[a],db=cv[b];
+      if((da<0)===(db<0)) continue;
+      const t=da/(da-db);
+      const ax=a&1,ay=(a>>1)&1,az=a>>2, bx=b&1,by=(b>>1)&1,bz=b>>2;
+      sx+=ax+(bx-ax)*t; sy+=ay+(by-ay)*t; sz+=az+(bz-az)*t; cnt++;}
+    cellV[cid(i,j,k)]=pos.length/3;
+    pos.push(OX+(i+sx/cnt)*HS, fy(j)+sy/cnt*HS, OZ+(k+sz/cnt)*HS);
+  }
+  const idx=[];
+  const quad=(a,b,c,d,flip)=>{ if(a<0||b<0||c<0||d<0) return; if(flip){idx.push(a,c,b,a,d,c);} else {idx.push(a,b,c,a,c,d);} };
+  for(let i=0;i<NX-1;i++)for(let j=0;j<NY-1;j++)for(let k=0;k<NZ-1;k++){
+    const d0=F[fid(i,j,k)]; const in0=d0<0;
+    if(i>0&&j>0&&k>0){ /* nothing */ }
+    // x edge
+    if(j>0&&k>0){const d1=F[fid(i+1,j,k)]; if((d1<0)!==in0) quad(cellV[cid(i,j-1,k-1)],cellV[cid(i,j,k-1)],cellV[cid(i,j,k)],cellV[cid(i,j-1,k)],!in0);}
+    // y edge
+    if(i>0&&k>0){const d1=F[fid(i,j+1,k)]; if((d1<0)!==in0) quad(cellV[cid(i-1,j,k-1)],cellV[cid(i-1,j,k)],cellV[cid(i,j,k)],cellV[cid(i,j,k-1)],!in0);}
+    // z edge
+    if(i>0&&j>0){const d1=F[fid(i,j,k+1)]; if((d1<0)!==in0) quad(cellV[cid(i-1,j-1,k)],cellV[cid(i,j-1,k)],cellV[cid(i,j,k)],cellV[cid(i-1,j,k)],!in0);}
+  }
+  return {pos:new Float32Array(pos), idx:new Uint32Array(idx)};
+}
+
+// ---------- build everything ----------
+const T0=performance.now();
+const crocField=sampleField(sdCroc);
+const creamField=sampleField(sdCream);
+const jellyNets=surfaceNets(crocField.F);
+const creamNets=surfaceNets(creamField.F);
+const restVolume=crocField.inside*HS*HS*HS;
+
+// body coordinates for the skin shader: (x along, arc round section, angle/pi, region)
+function bodyAttr(px,py,pz){
+  let x=px,y=py; let reg=0;
+  if(x>XM-0.05){const rc=rotClosed(px,py); if(rc[1]>mouthY(rc[0])){x=rc[0];y=rc[1];}}
+  profile(x,_pr); const w=_pr[0],h=_pr[1];
+  const dy=y-h*0.9, dz=pz-zc(x); const ang=Math.atan2(dz,dy); const rEff=(w+h)*0.5;
+  if(x>0.78) reg=1;
+  const dl=sdLegs(px,py,pz), dsw=sdSwept(px,py,pz);
+  if(dl<0.012&&dsw>0.005) reg=2;
+  else if(sdCrest(px,py,pz)<0.01||sdScutes(px,py,pz)<0.01) reg=3;
+  return [x,ang*rEff,ang/Math.PI,reg];
+}
+
+// lattice bookkeeping
+const nodeId=new Int32Array((NCX+1)*(NCY+1)*(NCZ+1)).fill(-1);
+const cellMark=new Uint8Array(NCX*NCY*NCZ);
+const cellFrac=new Float32Array(NCX*NCY*NCZ);
+{ // fraction of each lattice cell inside the jelly
+  const F=crocField.F;
+  for(let i=0;i<NX-1;i++){const ci=(i/5)|0; for(let j=2;j<NY-1;j++){const cj=((j-2)/5)|0; for(let k=0;k<NZ-1;k++){const ck=(k/5)|0;
+    if(F[(i*NY+j)*NZ+k]<0) cellFrac[(ci*NCY+cj)*NCZ+ck]+=1/125; }}}
+}
+const nid=(i,j,k)=>(i*(NCY+1)+j)*(NCZ+1)+k;
+function cellOf(x,y,z){ return [clamp(((x-OX)/HL)|0,0,NCX-1), clamp(((y-OY)/HL)|0,0,NCY-1), clamp(((z-OZ)/HL)|0,0,NCZ-1)]; }
+function markCell(x,y,z){ const c=cellOf(x,y,z); cellMark[(c[0]*NCY+c[1])*NCZ+c[2]]=1; }
+for(let i=0;i<jellyNets.pos.length;i+=3) markCell(jellyNets.pos[i],jellyNets.pos[i+1],jellyNets.pos[i+2]);
+for(let i=0;i<creamNets.pos.length;i+=3) markCell(creamNets.pos[i],creamNets.pos[i+1],creamNets.pos[i+2]);
+for(let c=0;c<cellFrac.length;c++) if(cellFrac[c]>0) cellMark[c]=1;
+
+// anchor points (teeth, eyes, bubbles, stomach, spine, mouth) — all marked before nodes are made
+const anchors=[]; // [x,y,z]
+const addAnchor=(x,y,z)=>{anchors.push([x,y,z]); markCell(x,y,z); return anchors.length-1;};
+const teeth=[]; // {base:idx, tip:idx, big}
+for(let side=-1;side<=1;side+=2){
+  for(let i=0;i<13;i++){
+    const big=i%4===0;
+    // lower row
+    let xi=0.92+i*0.05; let zi=zc(xi)+side*(zHalf(xi,mouthY(xi))-0.013);
+    teeth.push({base:addAnchor(xi,mouthY(xi)-0.004,zi), tip:addAnchor(xi,mouthY(xi)+0.026,zi), big});
+    // upper row, staggered, swung open with the head
+    xi=0.945+i*0.05; zi=zc(xi)+side*(zHalf(xi,mouthY(xi))-0.013);
+    const b=rotOpen(xi,mouthY(xi)+0.004), t=rotOpen(xi,mouthY(xi)-0.026);
+    teeth.push({base:addAnchor(b[0],b[1],zi), tip:addAnchor(t[0],t[1],zi), big});
+  }
+}
+const eyes=[];
+for(let side=-1;side<=1;side+=2){
+  const cx=EYE_X, cy=EYE_BUMP_Y+0.017, cz=zc(EYE_X)+side*(EYE_Z+0.013);
+  const f=new THREE.Vector3(0.22,0.4,side).normalize(), u=new THREE.Vector3(0,1,0);
+  const c=rotOpen(cx,cy), cf=rotOpen(cx+f.x*0.03,cy+f.y*0.03), cu=rotOpen(cx+u.x*0.03,cy+u.y*0.03);
+  eyes.push({c:addAnchor(c[0],c[1],cz), f:addAnchor(cf[0],cf[1],cz+f.z*0.03), u:addAnchor(cu[0],cu[1],cz)});
+}
+const bubbles=[];
+while(bubbles.length<22){
+  const x=-1.1+rnd()*1.8, y=0.04+rnd()*0.3, z=-0.3+rnd()*0.6;
+  if(sdCroc(x,y,z)<-0.035&&x<0.75&&sdLegs(x,y,z)>0.02) bubbles.push({a:addAnchor(x,y,z), r:0.008+rnd()*0.012});
+}
+const stomach=[]; for(let i=0;i<6;i++){const x=-0.38+i*0.13; stomach.push({a:addAnchor(x,0.085,zc(x)), f:addAnchor(x+0.04,0.085,zc(x+0.04)), used:false});}
+const spinePts=[]; for(let x=-1.6;x<=1.6001;x+=0.1){profile(x,_pr); spinePts.push(addAnchor(x,_pr[1]*0.9,zc(x)));}
+const aPivot=addAnchor(XM,YM0,zc(XM));
+const aLowerTip=addAnchor(1.56,mouthY(1.56)-0.025,zc(1.56));
+const _ut=rotOpen(1.56,mouthY(1.56)+0.025); const aUpperTip=addAnchor(_ut[0],_ut[1],zc(1.56));
+const aMouthC=addAnchor(1.2,mouthY(1.2)+0.045,zc(1.2)), aMouthF=addAnchor(1.5,mouthY(1.5)+0.045,zc(1.5));
+const aThroat=addAnchor(0.72,0.1,zc(0.72)), aHead=addAnchor(1.0,0.1,zc(1.0));
+const restClosedGape=Math.atan2(0.025,1.56-XM)*2;
+
+// nodes
+let N=0; const nodeIJK=[];
+for(let i=0;i<NCX;i++)for(let j=0;j<NCY;j++)for(let k=0;k<NCZ;k++){
+  if(!cellMark[(i*NCY+j)*NCZ+k]) continue;
+  for(let c=0;c<8;c++){const id=nid(i+(c&1),j+((c>>1)&1),k+(c>>2)); if(nodeId[id]<0){nodeId[id]=N++; nodeIJK.push(i+(c&1),j+((c>>1)&1),k+(c>>2));}}
+}
+const r0=new Float32Array(3*N), rr=new Float32Array(3*N), px=new Float32Array(3*N), pp=new Float32Array(3*N), pv=new Float32Array(3*N);
+const stiff=new Float32Array(N), jw=new Float32Array(N), nbr=new Int32Array(27*N);
+const gsum=new Float32Array(3*N), gcnt=new Uint16Array(N);
+for(let n=0;n<N;n++){
+  const i=nodeIJK[3*n],j=nodeIJK[3*n+1],k=nodeIJK[3*n+2];
+  const x=OX+i*HL,y=OY+j*HL,z=OZ+k*HL; r0[3*n]=x;r0[3*n+1]=y;r0[3*n+2]=z;
+  // regional firmness
+  profile(x,_pr);
+  let f=1.0;
+  if(x>0.76) f=1.7;
+  else if(sdLegs(x,y,z)<0.03&&sdSwept(x,y,z)>0.0) f=1.6;
+  else if(x<-0.55&&y>_pr[1]*1.9-0.02) f=1.5;
+  stiff[n]=f;
+  // jaw weight: 0 on the lower jaw, 1 on the upper head, blended across the gap
+  let w=0;
+  if(x>XM-0.08&&y>mouthY(x)){const rc=rotClosed(x,y); const up=rc[1]-mouthY(rc[0]);
+    if(up>=0) w=1; else {const lo=y-mouthY(x); w=lo/(lo-up);} w*=sstep(XM-0.08,XM+0.03,x);}
+  jw[n]=w;
+  let q=0;
+  for(let di=-1;di<=1;di++)for(let dj=-1;dj<=1;dj++)for(let dk=-1;dk<=1;dk++){
+    const ii=i+di,jj=j+dj,kk=k+dk; let id=-1;
+    if(ii>=0&&jj>=0&&kk>=0&&ii<=NCX&&jj<=NCY&&kk<=NCZ) id=nodeId[nid(ii,jj,kk)];
+    nbr[27*n+q++]=id;}
+}
+px.set(r0); rr.set(r0);
+// clusters: 27-neighbourhoods centred on even-parity nodes, plus any node left uncovered
+const cover=new Uint8Array(N); const clusterCenters=[];
+for(let n=0;n<N;n++){const i=nodeIJK[3*n],j=nodeIJK[3*n+1],k=nodeIJK[3*n+2]; if(((i+j+k)&1)===0){clusterCenters.push(n); for(let q=0;q<27;q++){const m=nbr[27*n+q]; if(m>=0) cover[m]=1;}}}
+for(let n=0;n<N;n++) if(!cover[n]){clusterCenters.push(n); for(let q=0;q<27;q++){const m=nbr[27*n+q]; if(m>=0) cover[m]=1;}}
+const C=clusterCenters.length; const co=new Int32Array(C+1); const cmTmp=[];
+for(let c=0;c<C;c++){co[c]=cmTmp.length; const n=clusterCenters[c]; for(let q=0;q<27;q++){const m=nbr[27*n+q]; if(m>=0) cmTmp.push(m);}} co[C]=cmTmp.length;
+const cm=new Int32Array(cmTmp); const M=cm.length; const cq=new Float32Array(3*M); const cquat=new Float32Array(4*C); for(let c=0;c<C;c++) cquat[4*c+3]=1;
+// interior cells for the live volume
+const volCells=[]; for(let i=0;i<NCX;i++)for(let j=0;j<NCY;j++)for(let k=0;k<NCZ;k++){const fr=cellFrac[(i*NCY+j)*NCZ+k]; if(fr>0){const ids=[]; for(let c=0;c<8;c++) ids.push(nodeId[nid(i+(c&1),j+((c>>1)&1),k+(c>>2))]); volCells.push({fr,ids});}}
+
+// embeddings (trilinear in the lattice cell)
+class Embedding{
+  constructor(count){this.n=count;this.ids=new Int32Array(8*count);this.w=new Float32Array(8*count);this.out=new Float32Array(3*count);}
+  set(i,x,y,z){const c=cellOf(x,y,z); const u=clamp((x-OX)/HL-c[0],0,1), v=clamp((y-OY)/HL-c[1],0,1), w=clamp((z-OZ)/HL-c[2],0,1);
+    for(let k=0;k<8;k++){const bx=k&1,by=(k>>1)&1,bz=k>>2; this.ids[8*i+k]=nodeId[nid(c[0]+bx,c[1]+by,c[2]+bz)]; this.w[8*i+k]=(bx?u:1-u)*(by?v:1-v)*(bz?w:1-w);}}
+  eval(){const ids=this.ids,w=this.w,o=this.out; for(let i=0;i<this.n;i++){let x=0,y=0,z=0; const b=8*i; for(let k=0;k<8;k++){const n=3*ids[b+k],ww=w[b+k]; x+=px[n]*ww;y+=px[n+1]*ww;z+=px[n+2]*ww;} o[3*i]=x;o[3*i+1]=y;o[3*i+2]=z;} return o;}
+  get(i,v){v.set(this.out[3*i],this.out[3*i+1],this.out[3*i+2]); return v;}
+}
+function embedMesh(nets){const e=new Embedding(nets.pos.length/3); for(let i=0;i<e.n;i++) e.set(i,nets.pos[3*i],nets.pos[3*i+1],nets.pos[3*i+2]); return e;}
+const jellyEmb=embedMesh(jellyNets), creamEmb=embedMesh(creamNets);
+const anchorEmb=new Embedding(anchors.length); anchors.forEach((a,i)=>anchorEmb.set(i,a[0],a[1],a[2]));
+
+// geometry: jelly split into clear skin and the pink mouth
+function makeGeo(nets, withBody){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(nets.pos.slice(),3));
+  g.setIndex(new THREE.BufferAttribute(nets.idx,1));
+  if(withBody){const b=new Float32Array(4*nets.pos.length/3); for(let i=0;i<nets.pos.length/3;i++){const a=bodyAttr(nets.pos[3*i],nets.pos[3*i+1],nets.pos[3*i+2]); b.set(a,4*i);} g.setAttribute('body',new THREE.BufferAttribute(b,4));}
+  g.computeVertexNormals();
+  return g;
+}
+const jellyFull=makeGeo(jellyNets,true);
+const creamGeo=makeGeo(creamNets,true);
+{ // per-vertex thickness: march inward along the rest normal
+  const nrm=jellyFull.getAttribute('normal').array, p=jellyNets.pos, nV=p.length/3; const th=new Float32Array(nV);
+  for(let i=0;i<nV;i++){let t=0.03; const x=p[3*i],y=p[3*i+1],z=p[3*i+2],nx=nrm[3*i],ny=nrm[3*i+1],nz=nrm[3*i+2];
+    while(t<0.55){ if(sdCroc(x-nx*t,y-ny*t,z-nz*t)>0) break; t+=0.03; } th[i]=Math.max(0.03,t);}
+  jellyFull.setAttribute('thick',new THREE.BufferAttribute(th,1));
+}
+const mouthFlag=new Uint8Array(jellyNets.pos.length/3); for(let i=0;i<mouthFlag.length;i++) mouthFlag[i]=isMouth(jellyNets.pos[3*i],jellyNets.pos[3*i+1])?1:0;
+const skinIdx=[], mouthIdx=[];
+for(let t=0;t<jellyNets.idx.length;t+=3){const a=jellyNets.idx[t],b=jellyNets.idx[t+1],c=jellyNets.idx[t+2]; const m=mouthFlag[a]+mouthFlag[b]+mouthFlag[c]; (m>=2?mouthIdx:skinIdx).push(a,b,c);}
+const skinGeo=new THREE.BufferGeometry(); skinGeo.setAttribute('position',jellyFull.getAttribute('position')); skinGeo.setAttribute('normal',jellyFull.getAttribute('normal')); skinGeo.setAttribute('body',jellyFull.getAttribute('body')); skinGeo.setAttribute('thick',jellyFull.getAttribute('thick')); skinGeo.setIndex(new THREE.BufferAttribute(new Uint32Array(skinIdx),1));
+const mouthGeo=new THREE.BufferGeometry(); mouthGeo.setAttribute('position',jellyFull.getAttribute('position')); mouthGeo.setAttribute('normal',jellyFull.getAttribute('normal')); mouthGeo.setIndex(new THREE.BufferAttribute(new Uint32Array(mouthIdx),1));
+console.log(`cast in ${(performance.now()-T0).toFixed(0)} ms — ${jellyNets.pos.length/3} jelly verts, ${creamNets.pos.length/3} cream verts, ${N} nodes, ${C} clusters`);
+
+// ---------- colourways ----------
+const WAYS=[
+  {name:'Moss', hex:'#5f9e30', word:'moss-green', iris:'#d9a83a', fish:'#ff7a3d'},
+  {name:'Jade', hex:'#2aae88', word:'jade', iris:'#c98a2e', fish:'#ffd23f'},
+  {name:'Amber', hex:'#e89a30', word:'amber', iris:'#4fae3c', fish:'#3f8fff'},
+  {name:'Lilac', hex:'#9a74e2', word:'lilac', iris:'#e2b84a', fish:'#5ee0b0'},
+  {name:'Coral', hex:'#ef6458', word:'coral', iris:'#c9d24b', fish:'#7bd3ff'},
+];
+
+// ---------- scene ----------
+const canvas=document.getElementById('c'), stage=document.body;
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio,isMobile?2:2));
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.toneMapping=THREE.NeutralToneMapping; renderer.toneMappingExposure=1.0;
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#e2dfda'); scene.fog=new THREE.Fog('#e2dfda',7,20);
+const pmrem=new THREE.PMREMGenerator(renderer); scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture; scene.environmentIntensity=0.55;
+const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,0.1,60); camera.position.set(2.1,1.75,3.7);
+const controls=new OrbitControls(camera,canvas); controls.target.set(0.1,0.08,0); controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=false; controls.minDistance=1.2; controls.maxDistance=12; controls.maxPolarAngle=Math.PI*0.49; controls.update();
+
+const key=new THREE.DirectionalLight('#fff7ec',3.5); key.position.set(1.8,3.4,2.2); key.castShadow=true;
+key.shadow.mapSize.set(2048,2048); key.shadow.camera.left=-2.4; key.shadow.camera.right=2.4; key.shadow.camera.top=1.8; key.shadow.camera.bottom=-1.8; key.shadow.camera.near=0.5; key.shadow.camera.far=10; key.shadow.bias=-0.0004; key.shadow.normalBias=0.02; key.shadow.intensity=0.55; key.shadow.radius=4;
+scene.add(key, key.target);
+scene.add(new THREE.HemisphereLight('#f7f4ee','#b9b2a6',0.7));
+const rim=new THREE.DirectionalLight('#dfe8ff',0.6); rim.position.set(-3,2,-2); scene.add(rim);
+
+// the table
+// the glass: a wide open cylinder the jelly lives in. Its floor is y=0; a thick base sits below.
+const PED_R=2.3, PED_H=0.24, GL_H=1.5, PED_C=[0,0];
+const glassMat=new THREE.MeshPhysicalMaterial({color:'#f4f8fa',transparent:true,opacity:0.14,roughness:0.03,metalness:0,clearcoat:1,clearcoatRoughness:0.02,envMapIntensity:1.6,depthWrite:false,side:THREE.FrontSide});
+const glassWall=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,GL_H+PED_H,200,1,true),glassMat); glassWall.position.set(PED_C[0],(GL_H-PED_H)/2,PED_C[1]); glassWall.renderOrder=20; scene.add(glassWall);
+const glassBase=new THREE.Mesh(new THREE.CylinderGeometry(PED_R,PED_R,PED_H,200,1),new THREE.MeshPhysicalMaterial({color:'#dde6ea',transparent:true,opacity:0.42,roughness:0.04,clearcoat:1,clearcoatRoughness:0.03,envMapIntensity:1.2,depthWrite:false}));
+glassBase.position.set(PED_C[0],-PED_H/2,PED_C[1]); glassBase.receiveShadow=true; glassBase.renderOrder=19; scene.add(glassBase);
+const glassRim=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.014,12,240),new THREE.MeshPhysicalMaterial({color:'#ffffff',transparent:true,opacity:0.55,roughness:0.03,clearcoat:1,envMapIntensity:1.8,depthWrite:false}));
+glassRim.rotation.x=Math.PI/2; glassRim.position.set(PED_C[0],GL_H,PED_C[1]); glassRim.renderOrder=21; scene.add(glassRim);
+const glassFoot=new THREE.Mesh(new THREE.TorusGeometry(PED_R,0.012,12,240),glassRim.material); glassFoot.rotation.x=Math.PI/2; glassFoot.position.set(PED_C[0],-PED_H+0.01,PED_C[1]); glassFoot.renderOrder=21; scene.add(glassFoot);
+const table=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98}));
+table.rotation.x=-Math.PI/2; table.position.y=-PED_H; table.receiveShadow=true; scene.add(table);
+
+// ---- jelly material (hand-written additions to the physical shader) ----
+const GLSL_NOISE=`
+float hash21(vec2 p){ vec3 p3=fract(vec3(p.xyx)*0.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }
+float vnoise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y); }
+vec2 voro(vec2 p){ vec2 i=floor(p), f=fract(p); float d1=8.0,d2=8.0; for(int y=-1;y<=1;y++) for(int x=-1;x<=1;x++){ vec2 g=vec2(float(x),float(y)); vec2 o=vec2(hash21(i+g),hash21(i+g+vec2(7.3,1.9))); vec2 r=g+o-f; float d=dot(r,r); if(d<d1){d2=d1;d1=d;} else if(d<d2){d2=d;} } return vec2(sqrt(d1),sqrt(d2)); }
+vec4 skinEval(vec4 b){
+  vec2 q=b.xy; float ang=abs(b.z); float reg=b.w;
+  float wHead=smoothstep(0.6,0.9,reg)*(1.0-smoothstep(1.1,1.4,reg));
+  float legW=smoothstep(1.6,1.9,reg)*(1.0-smoothstep(2.1,2.4,reg));
+  vec2 cs=vec2(0.085,0.05)*mix(1.0,0.6,legW);
+  vec2 c=q/cs; c.y+=0.5*mod(floor(c.x),2.0); vec2 f=abs(fract(c)-0.5); float m=max(f.x,f.y);
+  float hp=smoothstep(0.5,0.3,m)*(1.0-1.2*dot(f,f));
+  float gp=smoothstep(0.4,0.49,m);
+  vec2 v=voro(q*vec2(24.0,28.0)); float e=v.y-v.x; float hh=smoothstep(0.0,0.1,e); float gh=1.0-hh;
+  float h=mix(hp,0.6*hh,wHead); float g=mix(gp,0.7*gh,wHead);
+  float bodyW=(1.0-wHead)*(1.0-legW);
+  float bx=q.x*13.6+1.6*vnoise(vec2(q.x*7.0,q.y*9.0))+0.9*vnoise(vec2(q.x*20.0,q.y*25.0));
+  float band=smoothstep(0.15,0.55,sin(bx))*(1.0-smoothstep(0.35,0.78,ang))*bodyW*(1.0-smoothstep(0.65,0.8,q.x));
+  vec2 pc=q*vec2(38.0,38.0); vec2 pf=fract(pc)-0.5;
+  float pit=smoothstep(0.17,0.09,length(pf))*step(0.4,hash21(floor(pc)))*wHead*smoothstep(0.25,0.4,ang)*(1.0-smoothstep(0.6,0.75,ang));
+  return vec4(h,g,band,pit);
+}`;
+const jellyMat=new THREE.MeshPhysicalMaterial({color:'#8fc55e',roughness:0.13,metalness:0,transmission:1,thickness:1,ior:1.38,attenuationColor:new THREE.Color('#5f9e30'),attenuationDistance:0.42,clearcoat:0.35,clearcoatRoughness:0.25,specularIntensity:0.8,envMapIntensity:0.8,side:THREE.FrontSide});
+jellyMat.onBeforeCompile=(sh)=>{
+  sh.uniforms.uBump={value:0.0013};
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute vec4 body; attribute float thick; varying vec4 vBody; varying float vThick;')
+    .replace('#include <begin_vertex>','#include <begin_vertex>\nvBody=body; vThick=thick;');
+  let tr=THREE.ShaderChunk.transmission_fragment;
+  const ok=[tr.includes('material.transmission = transmission;'),tr.includes('material.thickness = thickness;'),tr.includes('material.attenuationColor = attenuationColor;')];
+  if(!ok.every(Boolean)) console.warn('transmission chunk changed', ok);
+  tr=tr.replace('material.transmission = transmission;','material.transmission = transmission * jTrans;')
+       .replace('material.thickness = thickness;','material.thickness = thickness * vThick;')
+       .replace('material.attenuationColor = attenuationColor;','material.attenuationColor = attenuationColor * jAtt;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec4 vBody; varying float vThick; uniform float uBump;\n'+GLSL_NOISE)
+    .replace('#include <color_fragment>',`#include <color_fragment>
+      vec4 sk=skinEval(vBody);
+      float jTrans=1.0-0.05*sk.y-0.12*sk.w;
+      float jAtt=1.0-0.42*sk.z-0.05*sk.y-0.25*sk.w;
+      { vec3 bc=diffuseColor.rgb; float lum=dot(bc,vec3(0.3,0.59,0.11)); vec3 deep=max(mix(vec3(lum),bc,1.4),0.0)*0.74;
+        diffuseColor.rgb=mix(bc,deep,sk.z)*(1.0-0.08*sk.y-0.22*sk.w); }`)
+    .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor=clamp(roughnessFactor+0.1*sk.y+0.04*sk.z,0.0,1.0);')
+    .replace('#include <normal_fragment_maps>',`#include <normal_fragment_maps>
+      { float hh=sk.x; vec3 dpdx=dFdx(-vViewPosition); vec3 dpdy=dFdy(-vViewPosition); float dhx=dFdx(hh)*uBump, dhy=dFdy(hh)*uBump;
+        vec3 R1=cross(dpdy,normal); vec3 R2=cross(normal,dpdx); float fDet=dot(dpdx,R1)*faceDirection;
+        vec3 vGrad=sign(fDet)*(dhx*R1+dhy*R2); normal=normalize(abs(fDet)*normal-vGrad); }`)
+    .replace('#include <transmission_fragment>',tr);
+};
+const creamMat=new THREE.MeshStandardMaterial({color:'#f6edd6',roughness:0.55,metalness:0});
+creamMat.onBeforeCompile=(sh)=>{
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute vec4 body; varying vec4 vBody;').replace('#include <begin_vertex>','#include <begin_vertex>\nvBody=body;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec4 vBody;')
+    .replace('#include <color_fragment>',`#include <color_fragment>
+      { vec2 c=vBody.xy/vec2(0.075,0.075); vec2 f=abs(fract(c)-0.5); float m=max(f.x,f.y); float plate=smoothstep(0.5,0.43,m);
+        float belly=smoothstep(0.5,0.7,abs(vBody.z)); diffuseColor.rgb*=mix(1.0,mix(0.84,1.0,plate),belly); }`);
+};
+const mouthMat=new THREE.MeshPhysicalMaterial({color:'#e07a8c',roughness:0.42,clearcoat:0.7,clearcoatRoughness:0.3,sheen:0.6,sheenColor:new THREE.Color('#ffb6c1'),sheenRoughness:0.6});
+const jelly=new THREE.Mesh(skinGeo,jellyMat); jelly.castShadow=true; jelly.frustumCulled=false; scene.add(jelly);
+const mouth=new THREE.Mesh(mouthGeo,mouthMat); mouth.castShadow=true; mouth.frustumCulled=false; scene.add(mouth);
+const cream=new THREE.Mesh(creamGeo,creamMat); cream.castShadow=true; cream.frustumCulled=false; scene.add(cream);
+
+// teeth: ivory sugar cones, clearer toward the tip
+const toothGeo=new THREE.ConeGeometry(1,1,14,1); toothGeo.translate(0,0.5,0);
+toothGeo.setAttribute('tip',new THREE.BufferAttribute(new Float32Array(toothGeo.getAttribute('uv').array.filter((_,i)=>i%2===1)),1));
+const toothMat=new THREE.MeshPhysicalMaterial({color:'#f6efdc',roughness:0.22,clearcoat:0.8,clearcoatRoughness:0.2,sheen:0.3,sheenColor:new THREE.Color('#fff4d6')});
+toothMat.onBeforeCompile=(sh)=>{
+  sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nattribute float tip; varying float vTip;').replace('#include <begin_vertex>','#include <begin_vertex>\nvTip=tip;');
+  sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying float vTip;')
+    .replace('#include <color_fragment>','#include <color_fragment>\ndiffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.0,0.98,0.93),vTip*0.6);')
+    .replace('#include <roughnessmap_fragment>','#include <roughnessmap_fragment>\nroughnessFactor*=mix(1.0,0.4,vTip);');
+};
+const teethMesh=new THREE.InstancedMesh(toothGeo,toothMat,teeth.length); teethMesh.castShadow=true; teethMesh.frustumCulled=false; scene.add(teethMesh);
+
+// eyes: glossy beads that are all iris
+const eyeMat=new THREE.ShaderMaterial({
+  uniforms:{uIris:{value:new THREE.Color('#d9a83a')},uLight:{value:new THREE.Vector3(0,1,0)}},
+  vertexShader:`varying vec3 vP; varying vec3 vN; varying vec3 vV; void main(){ vP=position; vN=normalize(normalMatrix*normal); vec4 mv=modelViewMatrix*vec4(position,1.0); vV=-mv.xyz; gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`uniform vec3 uIris; uniform vec3 uLight; varying vec3 vP; varying vec3 vN; varying vec3 vV;
+  float hash21(vec2 p){ vec3 p3=fract(vec3(p.xyx)*0.1031); p3+=dot(p3,p3.yzx+33.33); return fract((p3.x+p3.y)*p3.z); }
+  float vnoise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f); return mix(mix(hash21(i),hash21(i+vec2(1,0)),f.x),mix(hash21(i+vec2(0,1)),hash21(i+vec2(1,1)),f.x),f.y); }
+  void main(){
+    vec3 n=normalize(vP); float f=n.z;
+    float fl=vnoise(n.xy*28.0+n.z*4.0)*0.6+vnoise(n.xy*70.0)*0.4;
+    vec3 iris=mix(uIris*0.5,uIris*1.35,fl);
+    iris=mix(iris,uIris*0.22,smoothstep(0.7,0.15,f));
+    float slit=step((n.x*n.x)/(0.05*0.05)+(n.y*n.y)/(0.62*0.62),1.0)*smoothstep(0.3,0.45,f);
+    vec3 col=mix(iris,vec3(0.015),slit);
+    vec3 N=normalize(vN); vec3 L=normalize(uLight); vec3 V=normalize(vV);
+    float diff=0.35+0.65*max(dot(N,L),0.0); vec3 H=normalize(L+V); float spec=pow(max(dot(N,H),0.0),140.0);
+    float fres=pow(1.0-max(dot(N,V),0.0),3.0);
+    gl_FragColor=vec4(col*diff+spec*0.9+fres*0.12,1.0);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }`});
+const eyeMeshes=eyes.map(()=>{const m=new THREE.Mesh(new THREE.SphereGeometry(0.031,32,24),eyeMat); m.castShadow=true; scene.add(m); return m;});
+
+// bubbles and stomach
+const bubbleMesh=new THREE.InstancedMesh(new THREE.SphereGeometry(1,16,12),new THREE.MeshStandardMaterial({color:'#ffffff',roughness:0.05,metalness:0.6,envMapIntensity:1.3}),bubbles.length); bubbleMesh.frustumCulled=false; scene.add(bubbleMesh);
+
+// lattice wireframe
+const meshLines=(()=>{const idx=[]; for(let n=0;n<N;n++){const b=27*n; for(const q of [14,16,22]){const m=nbr[b+q]; if(m>=0) idx.push(n,m);}}
+  const g=new THREE.BufferGeometry(); g.setAttribute('position',new THREE.BufferAttribute(px,3)); g.setIndex(idx);
+  const l=new THREE.LineSegments(g,new THREE.LineBasicMaterial({color:'#1f1d1a',transparent:true,opacity:0.35})); l.visible=false; l.frustumCulled=false; scene.add(l); return l;})();
+
+// ---------- fish ----------
+const fishGeo=(()=>{const body=new THREE.SphereGeometry(1,24,16); body.scale(0.075,0.036,0.026);
+  const tail=new THREE.ConeGeometry(0.03,0.06,4); tail.rotateZ(-Math.PI/2); tail.scale(1,1,0.25); tail.translate(-0.095,0,0);
+  const g=BufferGeometryUtils.mergeGeometries([body,tail]); g.computeVertexNormals(); return g;})();
+const fishEyeGeo=new THREE.SphereGeometry(0.006,8,6); const fishEyeMat=new THREE.MeshStandardMaterial({color:'#1a1512',roughness:0.3});
+const fishes=[]; let swallowed=0; const GF=3.6;
+const _v1=new THREE.Vector3(),_v2=new THREE.Vector3(),_v3=new THREE.Vector3(),_q=new THREE.Quaternion(),_m=new THREE.Matrix4(),_X=new THREE.Vector3(1,0,0),_Y=new THREE.Vector3(0,1,0);
+class Fish{
+  constructor(color){
+    this.mat=new THREE.MeshPhysicalMaterial({color,roughness:0.28,clearcoat:1,clearcoatRoughness:0.15,sheen:0.4,sheenColor:new THREE.Color('#ffffff')});
+    this.mesh=new THREE.Mesh(fishGeo,this.mat); this.mesh.castShadow=true;
+    for(const s of [-1,1]){const e=new THREE.Mesh(fishEyeGeo,fishEyeMat); e.position.set(0.045,0.012,s*0.024); this.mesh.add(e);}
+    this.p=new THREE.Vector3(); this.v=new THREE.Vector3(); this.r=0.042; this.state='wait'; this.t=0; this.delay=0; this.quat=new THREE.Quaternion(); this.flat=null; this.mouthTime=0; this.slot=-1; this.path=null;
+    scene.add(this.mesh); this.mesh.visible=false;
+  }
+}
+
+// ---------- simulation state ----------
+const sim={firm:0.5,damp:0.35,timeScale:1,paused:false,t:0,theta:12,thetaTarget:12,snap:null,thrashT:-10,lungeT:-10,turn:0,turnTarget:0,sway:!reduceMotion};
+const G=9.81/1.35; const SUB=isMobile?4:6; const FRIC=0.55;
+const psi=new Float32Array(NCX+1), cxs=new Float32Array(NCX+1), czs=new Float32Array(NCX+1);
+const colX0=Math.round((0-OX)/HL);
+
+function updateRest(t){
+  // bend of the spine: lazy sway + turn toward the pointer + thrash
+  const tt=t-sim.thrashT; const thr= tt>0 ? 0.6*Math.exp(-tt/0.9) : 0;
+  for(let i=0;i<=NCX;i++){const x=OX+i*HL; let p=0;
+    if(sim.sway){ p+=0.11*Math.sin(2*Math.PI*x/1.5-2*Math.PI*t/4.5)*(1-sstep(-1.4,0.4,x)); p+=0.02*Math.sin(t*0.8)*sstep(0.3,1,x); }
+    p+=sim.turn*sstep(0.1,0.9,x);
+    if(thr>0) p+=thr*Math.sin(2*Math.PI*x/1.1-2*Math.PI*2.2*tt);
+    psi[i]=p;}
+  cxs[colX0]=OX+colX0*HL; czs[colX0]=0;
+  for(let i=colX0+1;i<=NCX;i++){const pm=0.5*(psi[i-1]+psi[i]); cxs[i]=cxs[i-1]+HL*Math.cos(pm); czs[i]=czs[i-1]+HL*Math.sin(pm);}
+  for(let i=colX0-1;i>=0;i--){const pm=0.5*(psi[i+1]+psi[i]); cxs[i]=cxs[i+1]-HL*Math.cos(pm); czs[i]=czs[i+1]-HL*Math.sin(pm);}
+  const lt=t-sim.lungeT; const lunge= (lt>0&&lt<0.4) ? 0.13*Math.sin(Math.PI*lt/0.4) : 0;
+  const dth=(sim.theta*Math.PI/180)-JAW;
+  for(let n=0;n<N;n++){
+    let x=r0[3*n],y=r0[3*n+1]; const z=r0[3*n+2];
+    const w=jw[n];
+    if(w>0){const a=dth*w, c=Math.cos(a), s=Math.sin(a); const dx=x-XM, dy=y-YM0; x=XM+c*dx-s*dy; y=YM0+s*dx+c*dy;}
+    if(lunge!==0) x+=lunge*sstep(0.3,1.0,r0[3*n]);
+    let fi=(x-OX)/HL; fi=clamp(fi,0,NCX-0.0001); const i=fi|0, f=fi-i;
+    const ps=psi[i]+(psi[i+1]-psi[i])*f, cx=cxs[i]+(cxs[i+1]-cxs[i])*f, cz=czs[i]+(czs[i+1]-czs[i])*f;
+    const nx=-Math.sin(ps), nz=Math.cos(ps);
+    rr[3*n]=cx+z*nx; rr[3*n+1]=y; rr[3*n+2]=cz+z*nz;
+  }
+  // per-cluster rest offsets
+  for(let c=0;c<C;c++){const a=co[c],b=co[c+1]; let sx=0,sy=0,sz=0; for(let m=a;m<b;m++){const n=3*cm[m]; sx+=rr[n];sy+=rr[n+1];sz+=rr[n+2];} const inv=1/(b-a); sx*=inv;sy*=inv;sz*=inv;
+    for(let m=a;m<b;m++){const n=3*cm[m]; cq[3*m]=rr[n]-sx; cq[3*m+1]=rr[n+1]-sy; cq[3*m+2]=rr[n+2]-sz;}}
+}
+const grab={active:false,nodes:[],off:[],target:new THREE.Vector3(),twist:0,plane:new THREE.Plane(),id:-1,second:-1,secondX:0};
+function substep(dt){
+  const base=0.08+0.6*sim.firm;
+  for(let n=0;n<3*N;n+=3){ pv[n+1]-=G*dt; pp[n]=px[n];pp[n+1]=px[n+1];pp[n+2]=px[n+2]; px[n]+=pv[n]*dt; px[n+1]+=pv[n+1]*dt; px[n+2]+=pv[n+2]*dt; }
+  if(grab.active){const c=Math.cos(grab.twist),s=Math.sin(grab.twist);
+    for(let i=0;i<grab.nodes.length;i++){const n=3*grab.nodes[i]; const ox=grab.off[3*i],oy=grab.off[3*i+1],oz=grab.off[3*i+2];
+      const tx=grab.target.x+c*ox+s*oz, ty=grab.target.y+oy, tz=grab.target.z-s*ox+c*oz;
+      px[n]+=0.35*(tx-px[n]); px[n+1]+=0.35*(ty-px[n+1]); px[n+2]+=0.35*(tz-px[n+2]);}}
+  gsum.fill(0); gcnt.fill(0);
+  for(let c=0;c<C;c++){
+    const a=co[c],b=co[c+1]; let sx=0,sy=0,sz=0;
+    for(let m=a;m<b;m++){const n=3*cm[m]; sx+=px[n];sy+=px[n+1];sz+=px[n+2];}
+    const inv=1/(b-a); sx*=inv;sy*=inv;sz*=inv;
+    let a00=0,a01=0,a02=0,a10=0,a11=0,a12=0,a20=0,a21=0,a22=0;
+    for(let m=a;m<b;m++){const n=3*cm[m]; const p0=px[n]-sx,p1=px[n+1]-sy,p2=px[n+2]-sz; const q0=cq[3*m],q1=cq[3*m+1],q2=cq[3*m+2];
+      a00+=p0*q0;a01+=p0*q1;a02+=p0*q2; a10+=p1*q0;a11+=p1*q1;a12+=p1*q2; a20+=p2*q0;a21+=p2*q1;a22+=p2*q2;}
+    // extract rotation (Müller 2016), warm-started
+    let qx=cquat[4*c],qy=cquat[4*c+1],qz=cquat[4*c+2],qw=cquat[4*c+3];
+    let r00,r01,r02,r10,r11,r12,r20,r21,r22;
+    for(let it=0;it<3;it++){
+      const xx=qx*qx,yy=qy*qy,zz=qz*qz,xy=qx*qy,xz=qx*qz,yz=qy*qz,wx=qw*qx,wy=qw*qy,wz=qw*qz;
+      r00=1-2*(yy+zz);r01=2*(xy-wz);r02=2*(xz+wy); r10=2*(xy+wz);r11=1-2*(xx+zz);r12=2*(yz-wx); r20=2*(xz-wy);r21=2*(yz+wx);r22=1-2*(xx+yy);
+      // omega = sum cross(Rk, Ak) / |sum dot(Rk, Ak)|
+      const ox=(r10*a20-r20*a10)+(r11*a21-r21*a11)+(r12*a22-r22*a12);
+      const oy=(r20*a00-r00*a20)+(r21*a01-r01*a21)+(r22*a02-r02*a22);
+      const oz=(r00*a10-r10*a00)+(r01*a11-r11*a01)+(r02*a12-r12*a02);
+      const den=Math.abs(r00*a00+r10*a10+r20*a20+r01*a01+r11*a11+r21*a21+r02*a02+r12*a12+r22*a22)+1e-9;
+      const wx2=ox/den,wy2=oy/den,wz2=oz/den; const w=Math.sqrt(wx2*wx2+wy2*wy2+wz2*wz2);
+      if(w<1e-7) break;
+      const half=w*0.5, s=Math.sin(half)/w, cc=Math.cos(half); const dx=wx2*s,dy=wy2*s,dz=wz2*s;
+      const nx=cc*qx+dx*qw+dy*qz-dz*qy, ny=cc*qy-dx*qz+dy*qw+dz*qx, nz=cc*qz+dx*qy-dy*qx+dz*qw, nw=cc*qw-dx*qx-dy*qy-dz*qz;
+      const l=1/Math.sqrt(nx*nx+ny*ny+nz*nz+nw*nw); qx=nx*l;qy=ny*l;qz=nz*l;qw=nw*l;
+    }
+    cquat[4*c]=qx;cquat[4*c+1]=qy;cquat[4*c+2]=qz;cquat[4*c+3]=qw;
+    { const xx=qx*qx,yy=qy*qy,zz=qz*qz,xy=qx*qy,xz=qx*qz,yz=qy*qz,wx=qw*qx,wy=qw*qy,wz=qw*qz;
+      r00=1-2*(yy+zz);r01=2*(xy-wz);r02=2*(xz+wy); r10=2*(xy+wz);r11=1-2*(xx+zz);r12=2*(yz-wx); r20=2*(xz-wy);r21=2*(yz+wx);r22=1-2*(xx+yy); }
+    for(let m=a;m<b;m++){const n=cm[m]; const q0=cq[3*m],q1=cq[3*m+1],q2=cq[3*m+2];
+      gsum[3*n]+=r00*q0+r01*q1+r02*q2+sx; gsum[3*n+1]+=r10*q0+r11*q1+r12*q2+sy; gsum[3*n+2]+=r20*q0+r21*q1+r22*q2+sz; gcnt[n]++;}
+  }
+  for(let n=0;n<N;n++){const k=gcnt[n]; if(!k) continue; const al=Math.min(0.97,base*stiff[n]); const inv=1/k; const i=3*n;
+    px[i]+=al*(gsum[i]*inv-px[i]); px[i+1]+=al*(gsum[i+1]*inv-px[i+1]); px[i+2]+=al*(gsum[i+2]*inv-px[i+2]);}
+  for(let n=0;n<3*N;n+=3){ if(px[n+1]<0){ px[n+1]=0; px[n]+=(pp[n]-px[n])*FRIC; px[n+2]+=(pp[n+2]-px[n+2])*FRIC; } }
+  { const R0=PED_R-0.5, RW=PED_R-0.05; for(let n=0;n<3*N;n+=3){ const dx=px[n]-PED_C[0], dz=px[n+2]-PED_C[1]; const r=Math.sqrt(dx*dx+dz*dz); if(r>R0){ const f=Math.min(0.5,(r-R0)*3*dt)/r; px[n]-=dx*f; px[n+2]-=dz*f; } if(r>RW){ px[n]=PED_C[0]+dx*RW/r; px[n+2]=PED_C[1]+dz*RW/r; } } }
+  const idt=1/dt; for(let n=0;n<3*N;n++) pv[n]=(px[n]-pp[n])*idt;
+}
+function dampInternal(){
+  const d=sim.damp*0.8; if(d<=0) return;
+  for(let n=0;n<N;n++){let sx=0,sy=0,sz=0,k=0; const b=27*n; for(let q=0;q<27;q++){const m=nbr[b+q]; if(m<0) continue; sx+=pv[3*m];sy+=pv[3*m+1];sz+=pv[3*m+2];k++;}
+    const inv=1/k; pv[3*n]+=d*(sx*inv-pv[3*n]); pv[3*n+1]+=d*(sy*inv-pv[3*n+1]); pv[3*n+2]+=d*(sz*inv-pv[3*n+2]);}
+  for(let n=0;n<3*N;n++) pv[n]*=0.995;
+}
+
+// jaw controller
+function updateJaw(dt){
+  const t=sim.t; let target, tau=0.3;
+  if(sim.snap){const s=sim.snap; const e=t-s.t0;
+    if(e<0.28){target=40;tau=0.07;} else if(e<0.36){target=0;tau=0.015;} else if(e<0.9){target=0;tau=0.1;} else {sim.snap=null; target=sim.sway?12:12;}
+    if(e>=0.28&&!s.slammed){s.slammed=true; sim.lungeT=t; swallowFromMouth();}
+  } else {
+    let food=false; for(const f of fishes){ if(f.state==='fly'||f.state==='wait'){ anchorEmb.get(aMouthC,_v1); if(f.p.distanceTo(_v1)<1.1) food=true; } }
+    target= food ? 32 : (sim.sway ? 9+4*Math.sin(2*Math.PI*t/5.5) : 12);
+  }
+  sim.theta+=(target-sim.theta)*(1-Math.exp(-dt/tau));
+}
+function triggerSnap(){ if(!sim.snap) sim.snap={t0:sim.t,slammed:false}; }
+function triggerThrash(){ sim.thrashT=sim.t; }
+
+// fish helpers
+function fishInMouth(f){ anchorEmb.get(aMouthC,_v1); anchorEmb.get(aMouthF,_v2); _v2.sub(_v1).normalize(); _v3.copy(f.p).sub(_v1); const along=_v3.dot(_v2); _v3.addScaledVector(_v2,-along); return Math.abs(along)<0.33&&_v3.length()<0.11; }
+function swallowFromMouth(){
+  for(const f of fishes){ if((f.state==='fly'||f.state==='table'||f.state==='jelly')&&fishInMouth(f)){
+    const slot=stomach.find(s=>!s.used); if(!slot) continue; slot.used=true; f.slot=stomach.indexOf(slot); f.state='swallow'; f.t=0;
+    anchorEmb.get(aThroat,_v1); anchorEmb.get(slot.a,_v2); f.path=[f.p.clone(),_v1.clone(),_v2.clone()]; swallowed++; }}
+}
+const surfaceNodes=[]; for(let n=0;n<N;n++){const d=sdCroc(r0[3*n],r0[3*n+1],r0[3*n+2]); if(d>-0.06&&d<0.03) surfaceNodes.push(n);}
+function feed(){
+  const way=WAYS[sim.way]; anchorEmb.get(aMouthC,_v1);
+  for(let i=0;i<4;i++){const f=new Fish(way.fish); f.state='wait'; f.delay=i*0.22;
+    f.p.set(_v1.x+1.35+rnd()*0.35, 0.07+rnd()*0.05, _v1.z+(rnd()-0.5)*0.5);
+    f.target=new THREE.Vector3(_v1.x+(rnd()-0.5)*0.1, _v1.y+0.02, _v1.z+(rnd()-0.5)*0.08);
+    fishes.push(f);}
+}
+function stepFish(dt){
+  for(const f of fishes){
+    if(f.state==='wait'){ f.delay-=dt; if(f.delay<=0){ f.state='fly'; f.mesh.visible=true; const T=0.5; anchorEmb.get(aMouthC,_v1); f.target.set(_v1.x+(rnd()-0.5)*0.08,_v1.y+0.02,_v1.z+(rnd()-0.5)*0.04); f.v.copy(f.target).sub(f.p).multiplyScalar(1/T); f.v.y+=0.5*GF*T; } continue; }
+    if(f.state==='swallow'){ f.t+=dt/0.7; const u=Math.min(1,f.t); const a=f.path[0],b=f.path[1],c=f.path[2]; f.p.set(0,0,0).addScaledVector(a,(1-u)*(1-u)).addScaledVector(b,2*u*(1-u)).addScaledVector(c,u*u); f.mesh.position.copy(f.p); f.mesh.scale.setScalar(1-0.2*u); if(u>=1) f.state='stomach'; continue; }
+    if(f.state==='stomach'){ const s=stomach[f.slot]; anchorEmb.get(s.a,_v1); anchorEmb.get(s.f,_v2); _v2.sub(_v1).normalize(); f.mesh.position.copy(_v1); f.quat.setFromUnitVectors(_X,_v2); f.mesh.quaternion.copy(f.quat); f.mesh.scale.setScalar(0.8); continue; }
+    // flying / resting rigid body
+    f.v.y-=GF*dt; f.p.addScaledVector(f.v,dt);
+    // table
+    if(f.p.y<f.r){ f.p.y=f.r; if(f.v.y<0) f.v.y*=-0.25; f.v.x*=0.85; f.v.z*=0.85; if(f.v.length()<0.08&&f.state!=='table'){ f.state='table'; f.flat=new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.sign(rnd()-0.5)*Math.PI/2,-Math.atan2(f.v.z||0.001,f.v.x||1),0,'YXZ')); } }
+    // jelly
+    let touched=false; const R=f.r+0.02;
+    for(const n of surfaceNodes){const i=3*n; const dx=f.p.x-px[i],dy=f.p.y-px[i+1],dz=f.p.z-px[i+2]; const d2=dx*dx+dy*dy+dz*dz; if(d2<R*R&&d2>1e-8){const d=Math.sqrt(d2); const nx=dx/d,ny=dy/d,nz=dz/d; const pen=R-d;
+      f.p.x+=nx*pen; f.p.y+=ny*pen; f.p.z+=nz*pen; const vn=f.v.x*nx+f.v.y*ny+f.v.z*nz; if(vn<0){ f.v.x-=1.25*vn*nx; f.v.y-=1.25*vn*ny; f.v.z-=1.25*vn*nz; f.v.multiplyScalar(0.9); }
+      px[i]-=nx*pen*0.35; px[i+1]-=ny*pen*0.35; px[i+2]-=nz*pen*0.35; pv[i]+=f.v.x*0.25; pv[i+1]+=f.v.y*0.25; pv[i+2]+=f.v.z*0.25; touched=true;}}
+    if(touched&&f.state==='fly'&&f.v.length()<0.5) f.state='jelly';
+    if(f.state!=='stomach'&&fishInMouth(f)){ f.mouthTime+=dt; if(f.v.length()<0.6||f.mouthTime>0.5) triggerSnap(); } else f.mouthTime=0;
+    // orientation
+    if(f.state==='fly'||f.state==='jelly'){ if(f.v.length()>0.2){ _v1.copy(f.v).normalize(); f.quat.setFromUnitVectors(_X,_v1); } }
+    else if(f.flat){ f.quat.slerp(f.flat,1-Math.exp(-dt/0.12)); f.p.y=Math.min(f.p.y,0.03+0.0); if(f.p.y<0.027) f.p.y=0.027; }
+    f.mesh.position.copy(f.p); f.mesh.quaternion.copy(f.quat);
+  }
+}
+
+// ---------- per-frame geometry update ----------
+const skinPos=jellyFull.getAttribute('position'), creamPosA=creamGeo.getAttribute('position');
+const _rot=new THREE.Matrix4(), _p0=new THREE.Vector3(), _p1=new THREE.Vector3(), _p2=new THREE.Vector3(), _ax=new THREE.Vector3();
+function updateGeometry(){
+  skinPos.array.set(jellyEmb.eval()); skinPos.needsUpdate=true; jellyFull.computeVertexNormals(); jellyFull.getAttribute('normal').needsUpdate=true;
+  creamPosA.array.set(creamEmb.eval()); creamPosA.needsUpdate=true; creamGeo.computeVertexNormals();
+  anchorEmb.eval();
+  // teeth
+  for(let i=0;i<teeth.length;i++){const t=teeth[i]; anchorEmb.get(t.base,_p0); anchorEmb.get(t.tip,_p1); _ax.copy(_p1).sub(_p0).normalize(); _q.setFromUnitVectors(_Y,_ax);
+    const r=t.big?0.012:0.0085, h=t.big?0.05:0.035; _m.compose(_p0,_q,_v1.set(r,h,r)); teethMesh.setMatrixAt(i,_m);}
+  teethMesh.instanceMatrix.needsUpdate=true;
+  // eyes
+  for(let i=0;i<eyes.length;i++){const e=eyes[i]; anchorEmb.get(e.c,_p0); anchorEmb.get(e.f,_p1); anchorEmb.get(e.u,_p2);
+    const z=_p1.sub(_p0).normalize(); const y=_p2.sub(_p0); y.addScaledVector(z,-y.dot(z)).normalize(); const x=_v1.crossVectors(y,z).normalize();
+    _rot.makeBasis(x,y,z); eyeMeshes[i].quaternion.setFromRotationMatrix(_rot); eyeMeshes[i].position.copy(_p0);}
+  for(let i=0;i<bubbles.length;i++){anchorEmb.get(bubbles[i].a,_p0); _m.compose(_p0,_q.identity(),_v1.setScalar(bubbles[i].r)); bubbleMesh.setMatrixAt(i,_m);}
+  bubbleMesh.instanceMatrix.needsUpdate=true;
+  if(meshLines.visible) meshLines.geometry.getAttribute('position').needsUpdate=true;
+}
+function readouts(){
+  let vol=0; for(const c of volCells){const id=c.ids; const e=[0,0,0,0,0,0,0,0,0];
+    const E=(a,b,k)=>{e[k]+=px[3*id[b]]-px[3*id[a]]; e[k+1]+=px[3*id[b]+1]-px[3*id[a]+1]; e[k+2]+=px[3*id[b]+2]-px[3*id[a]+2];};
+    E(0,1,0);E(2,3,0);E(4,5,0);E(6,7,0); E(0,2,3);E(1,3,3);E(4,6,3);E(5,7,3); E(0,4,6);E(1,5,6);E(2,6,6);E(3,7,6);
+    const det=(e[0]*(e[4]*e[8]-e[5]*e[7])-e[1]*(e[3]*e[8]-e[5]*e[6])+e[2]*(e[3]*e[7]-e[4]*e[6]))/64;
+    vol+=Math.abs(det)*c.fr;}
+  const mass=vol*Math.pow(1.35,3)*1300;
+  let len=0; for(let i=1;i<spinePts.length;i++){anchorEmb.get(spinePts[i-1],_p0); anchorEmb.get(spinePts[i],_p1); len+=_p0.distanceTo(_p1);}
+  anchorEmb.get(aPivot,_p0); anchorEmb.get(aLowerTip,_p1).sub(_p0); anchorEmb.get(aUpperTip,_p2).sub(_p0);
+  const gape=Math.max(0,(_p1.angleTo(_p2)-restClosedGape))*180/Math.PI;
+  return {mass, length:len*1.35, gape};
+}
+
+// ---------- interaction ----------
+const ray=new THREE.Raycaster(); const ndc=new THREE.Vector2(); const tablePlane=new THREE.Plane(new THREE.Vector3(0,1,0),-0.1);
+function toNDC(e){const r=canvas.getBoundingClientRect(); ndc.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);}
+function pointHeadAt(e){ toNDC(e); ray.setFromCamera(ndc,camera); if(ray.ray.intersectPlane(tablePlane,_v1)){ anchorEmb.get(aHead,_v2); sim.turnTarget=clamp(Math.atan2(_v1.z-_v2.z,_v1.x-_v2.x),-0.5,0.5); } }
+canvas.addEventListener('pointerdown',(e)=>{
+  if(grab.active&&e.pointerId!==grab.id){ grab.second=e.pointerId; grab.secondX=e.clientX; e.stopImmediatePropagation(); return; }
+  toNDC(e); ray.setFromCamera(ndc,camera);
+  jellyFull.computeBoundingSphere(); skinGeo.boundingSphere=jellyFull.boundingSphere; mouthGeo.boundingSphere=jellyFull.boundingSphere;
+  const hits=ray.intersectObjects([jelly,mouth],false);
+  if(!hits.length) return;
+  const hp=hits[0].point; grab.active=true; grab.id=e.pointerId; grab.twist=0; grab.nodes.length=0; grab.off.length=0;
+  for(let n=0;n<N;n++){const dx=px[3*n]-hp.x,dy=px[3*n+1]-hp.y,dz=px[3*n+2]-hp.z; if(dx*dx+dy*dy+dz*dz<0.14*0.14){grab.nodes.push(n); grab.off.push(dx,dy,dz);}}
+  grab.target.copy(hp); camera.getWorldDirection(_v1); grab.plane.setFromNormalAndCoplanarPoint(_v1,hp);
+  controls.enabled=false; canvas.setPointerCapture(e.pointerId); e.stopImmediatePropagation(); e.preventDefault();
+},{capture:true});
+canvas.addEventListener('pointermove',(e)=>{
+  if(grab.active&&e.pointerId===grab.second){ grab.twist+=(e.clientX-grab.secondX)*0.012; grab.secondX=e.clientX; return; }
+  if(grab.active&&e.pointerId===grab.id){ toNDC(e); ray.setFromCamera(ndc,camera); if(ray.ray.intersectPlane(grab.plane,_v1)){ const dx=_v1.x-PED_C[0], dz=_v1.z-PED_C[1]; const r=Math.hypot(dx,dz), rm=PED_R-0.15; if(r>rm){ _v1.x=PED_C[0]+dx*rm/r; _v1.z=PED_C[1]+dz*rm/r; } _v1.y=clamp(_v1.y,0.02,1.6); grab.target.copy(_v1); } return; }
+  if(e.pointerType==='mouse'||!grab.active) pointHeadAt(e);
+});
+const release=(e)=>{ if(e.pointerId===grab.second){grab.second=-1;return;} if(grab.active&&e.pointerId===grab.id){ grab.active=false; controls.enabled=true; try{canvas.releasePointerCapture(e.pointerId);}catch(_){} } };
+canvas.addEventListener('pointerup',release); canvas.addEventListener('pointercancel',release);
+canvas.addEventListener('wheel',(e)=>{ if(grab.active){ grab.twist+=e.deltaY*0.004; e.preventDefault(); } },{passive:false});
+
+// ---------- UI ----------
+const swEl=document.getElementById('swatches');
+WAYS.forEach((w,i)=>{const b=document.createElement('button'); b.className='sw'; b.style.setProperty('--c',w.hex); b.setAttribute('aria-pressed',i===0?'true':'false'); b.title=w.name; b.innerHTML=`<i></i><span class="sr">${w.name}</span>`; b.addEventListener('click',()=>setWay(i)); swEl.appendChild(b);});
+function setWay(i){ sim.way=i; const w=WAYS[i]; const c=new THREE.Color(w.hex);
+  jellyMat.attenuationColor.copy(c); jellyMat.color.copy(c).lerp(new THREE.Color('#ffffff'),0.45);
+  eyeMat.uniforms.uIris.value.set(w.iris); document.documentElement.style.setProperty('--accent',w.hex);
+  for(const f of fishes) f.mat.color.set(w.fish);
+  [...swEl.children].forEach((b,j)=>b.setAttribute('aria-pressed',j===i?'true':'false')); }
+setWay(0);
+document.getElementById('bFeed').addEventListener('click',feed);
+document.getElementById('bSnap').addEventListener('click',triggerSnap);
+document.getElementById('bThrash').addEventListener('click',triggerThrash);
+function resetAll(){ px.set(rr); pv.fill(0); for(let c=0;c<C;c++){cquat[4*c]=0;cquat[4*c+1]=0;cquat[4*c+2]=0;cquat[4*c+3]=1;} for(const f of fishes) scene.remove(f.mesh); fishes.length=0; stomach.forEach(s=>s.used=false); swallowed=0; sim.snap=null; sim.thrashT=-10; sim.lungeT=-10; }
+document.getElementById('bReset').addEventListener('click',resetAll);
+const hint=document.getElementById('hint'); const hideHint=()=>hint.classList.add('off');
+setTimeout(hideHint,7000); canvas.addEventListener('pointerdown',hideHint,{once:true,capture:true});
+function togglePause(){ sim.paused=!sim.paused; }
+function toggleMesh(){ meshLines.visible=!meshLines.visible; jelly.visible=cream.visible=mouth.visible=!meshLines.visible; }
+addEventListener('keydown',(e)=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; const k=e.key.toLowerCase();
+  if(k==='f') feed(); else if(k==='s') triggerSnap(); else if(k==='t') triggerThrash(); else if(k==='r') resetAll();
+  else if(k===' '){togglePause(); e.preventDefault();} else if(k==='m') toggleMesh(); else if(k==='q') sim.timeScale=sim.timeScale===1?0.25:1;
+  else if(k>='1'&&k<='5') setWay(+k-1); else if(k==='['){sim.firm=clamp(sim.firm-0.1,0,1);} else if(k===']'){sim.firm=clamp(sim.firm+0.1,0,1);} });
+
+// ---------- resize + loop ----------
+const POSE={land:[3.0,2.3,5.2], port:[4.8,3.0,2.2]}; let poseMode="";
+function resize(){const w=innerWidth,h=innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h;
+  // landscape: constant ~46° horizontal view. portrait: look down the snout so the body runs up the screen.
+  const port=camera.aspect<1; const mode=port?'port':'land';
+  let vf=port?56:2*Math.atan(Math.tan(23*Math.PI/180)/camera.aspect)*180/Math.PI;
+  camera.fov=clamp(vf,24,60); camera.updateProjectionMatrix();
+  if(mode!==poseMode){ poseMode=mode; const P=POSE[mode]; camera.position.set(P[0],P[1],P[2]).add(controls.target); controls.update(); }
+}
+addEventListener('resize',resize); resize();
+// shelf mode: the Jelly Animals page shows this glass small and idle until it is picked
+const shelfMode=new URLSearchParams(location.search).has('shelf'); let idle=false, idleN=0;
+function setIdle(v){ idle=v; document.body.classList.toggle('idle',v); renderer.setPixelRatio(v?1:Math.min(devicePixelRatio,2)); controls.enabled=!v; resize(); }
+addEventListener('message',(e)=>{ if(e.origin!==location.origin||!e.data||typeof e.data!=='object') return; if(e.data.type==='jelly-active') setIdle(false); else if(e.data.type==='jelly-idle') setIdle(true); });
+if(shelfMode) setIdle(true);
+let last=performance.now(), acc=0, frame=0, fpsT=0, fpsN=0;
+const H=1/60;
+function loop(now){
+  requestAnimationFrame(loop);
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  tick(dt);
+}
+function tick(dt){
+  if(idle){ idleN=(idleN+1)%3; if(idleN) return; }
+  fpsN++; fpsT+=dt; if(fpsT>1){sim.fps=Math.round(fpsN/fpsT); fpsT=0; fpsN=0;}
+  if(!sim.paused){
+    acc+=dt; let steps=0;
+    while(acc>=H&&steps<3){ acc-=H; steps++; const h=H*sim.timeScale;
+      sim.t+=h; sim.turn+=(sim.turnTarget-sim.turn)*(1-Math.exp(-h/0.5));
+      updateJaw(h); updateRest(sim.t);
+      const sdt=h/SUB; for(let s=0;s<SUB;s++) substep(sdt);
+      dampInternal(); stepFish(h);
+    }
+    if(acc>=H) acc=0;
+  }
+  updateGeometry();
+  frame++;
+  _v1.copy(key.position).normalize().transformDirection(camera.matrixWorldInverse); eyeMat.uniforms.uLight.value.copy(_v1);
+  if((frame++%4)===0){ let sx=0,sz=0; for(let n=0;n<3*N;n+=3){ sx+=px[n]; sz+=px[n+2]; } sx/=N; sz/=N;
+    _v2.set(lerp(PED_C[0],sx,0.6),0.08,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
+  controls.update(); renderer.render(scene,camera);
+}
+overlay.classList.add('off'); setTimeout(()=>{overlay.hidden=true;},1000);
+window.__croc={camera,controls,sim,feed,triggerSnap,triggerThrash,THREE,jellyMat,setWay,fishes,anchorEmb,aMouthC,aMouthF,fishInMouth,tick};
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Why the sea rises twice a day — Arun Rafi</title>
+<script>
+(function(){var t=null;try{t=localStorage.getItem('theme')}catch(e){}
+if(!t){t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'}
+document.documentElement.setAttribute('data-theme',t)})();
+</script>
+<style>
+:root{
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",P052,"Book Antiqua",Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --bg:#f7f3ea; --ink:#1c1916; --soft:#4f483f; --muted:#8a8175; --rule:#e4dccb; --rule2:#d4c9b4;
+  --amber:#c8680f; --link:#0f5fb2; --focus:#0f5fb2;
+  --panel:rgba(247,243,234,.94);
+  --space:#070b16;
+}
+html[data-theme="dark"]{
+  --bg:#0e0d0b; --ink:#ede6d9; --soft:#c3b9a8; --muted:#8c8374; --rule:#25221d; --rule2:#38332b;
+  --amber:#f2a04a; --link:#7fb2ff; --focus:#7fb2ff;
+  --panel:rgba(14,13,11,.88);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--space);color:var(--ink);font:17px/1.5 var(--serif);-webkit-font-smoothing:antialiased;overflow:hidden;display:flex;flex-direction:column;height:100dvh}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.topbar{flex:0 0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;font:14px/1 var(--sans);color:var(--muted);background:var(--bg);border-bottom:1px solid var(--rule)}
+.topbar a{color:var(--muted);white-space:nowrap}
+.topbar a:hover{color:var(--ink);text-decoration:none}
+.topbar h1{font:500 15px/1.2 var(--sans);color:var(--soft);margin:0;flex:1;text-align:center;letter-spacing:-.01em}
+.theme-toggle{background:transparent;color:var(--muted);border:1px solid var(--rule2);border-radius:999px;padding:7px 12px;font:13px/1 var(--sans);cursor:pointer;min-height:36px;white-space:nowrap}
+.theme-toggle:hover{color:var(--ink)}
+.stage{position:relative;flex:1;min-height:0;background:var(--space)}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;outline:none}
+.labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.lbl{position:absolute;transform:translate(-50%,-50%);font:600 11px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;color:#d6deef;background:rgba(7,11,22,.6);padding:6px 9px;border-radius:999px;white-space:nowrap;opacity:0;transition:opacity .4s}
+.lbl.on{opacity:1}
+.lbl.beach{color:#ffd9a8}
+.hint{position:absolute;top:10px;left:12px;font:12px/1.3 var(--sans);color:#8893ab;margin:0;pointer-events:none;transition:opacity .8s}
+.hint.off{opacity:0}
+.panel{position:absolute;left:16px;bottom:16px;width:min(420px,calc(100% - 32px));background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--rule2);border-radius:18px;padding:16px 18px 12px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
+.ph{display:flex;gap:10px;align-items:center}
+.n{flex:0 0 auto;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;border:1px solid var(--amber);color:var(--amber);font:600 12px/1 var(--sans);font-variant-numeric:tabular-nums}
+.panel h2{font-weight:500;font-size:1.4rem;line-height:1.12;margin:0;letter-spacing:-.012em}
+.a{font-size:1.02rem;line-height:1.45;color:var(--soft);margin:9px 0 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0 0;font:14px/1 var(--sans)}
+.controls:empty{display:none}
+.pill{appearance:none;-webkit-appearance:none;border:1px solid var(--rule2);background:transparent;color:var(--ink);border-radius:999px;padding:10px 16px;font:14px/1 var(--sans);cursor:pointer;min-height:44px;transition:border-color .15s}
+.pill:hover{border-color:var(--muted)}
+.pill.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.pill.primary:hover{opacity:.88}
+.pill:disabled{opacity:.45;cursor:default}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--rule2);border-radius:24px;padding:3px;gap:2px}
+.seg button{appearance:none;border:0;background:transparent;color:var(--soft);border-radius:999px;padding:8px 13px;font:14px/1 var(--sans);cursor:pointer;min-height:38px;min-width:44px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+input[type=range]{width:100%;height:44px;margin:0;accent-color:var(--amber);cursor:pointer}
+.msg{font:14px/1.45 var(--sans);color:var(--soft);margin:10px 0 0}
+.msg:empty{display:none}
+.msg strong{color:var(--ink);font-weight:600}
+.key{font:12px/1.4 var(--sans);color:var(--muted);margin:10px 0 0;display:flex;flex-wrap:wrap;gap:4px 14px}
+.key:empty{display:none}
+.key i{display:inline-block;width:18px;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.gauge{display:none;align-items:center;gap:10px;margin:12px 0 0;font:13px/1 var(--sans);color:var(--muted)}
+.gauge.on{display:flex}
+.gauge b{color:var(--ink);font-weight:600;min-width:6.5em;text-align:right;font-variant-numeric:tabular-nums}
+.bar{flex:1;height:8px;border-radius:999px;background:var(--rule);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:#3f9bff;border-radius:999px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 0;padding-top:10px;border-top:1px solid var(--rule)}
+.nav .pill{padding:8px 14px;min-height:40px}
+.dots{display:flex;gap:0}
+.dots button{appearance:none;background:none;border:0;cursor:pointer;width:22px;height:44px;display:grid;place-items:center;padding:0}
+.dots button i{width:7px;height:7px;border-radius:50%;background:var(--rule2);display:block;transition:transform .2s,background .2s}
+.dots button[aria-current="step"] i{background:var(--amber);transform:scale(1.5)}
+.notes{position:absolute;top:10px;right:12px;font:12px/1.55 var(--sans);color:#b7bfd2;max-width:min(320px,calc(100% - 24px));z-index:2}
+.notes summary{cursor:pointer;list-style:none;background:rgba(7,11,22,.65);border:1px solid #2a3350;border-radius:999px;padding:9px 13px;display:inline-block;float:right;color:#d6deef;min-height:36px}
+.notes summary::-webkit-details-marker{display:none}
+.notes[open] div{background:rgba(7,11,22,.92);border:1px solid #2a3350;border-radius:12px;padding:12px 14px;margin-top:44px;clear:both}
+.notes p{margin:0 0 8px}
+.notes p:last-child{margin:0}
+.nojs{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#b7bfd2;font:15px/1.5 var(--sans);padding:20px}
+@media (max-width:760px){
+  .topbar{padding:10px 12px}
+  .topbar h1{display:none}
+  .panel{left:8px;bottom:8px;width:calc(100% - 16px);padding:12px 14px 8px;border-radius:14px}
+  .panel h2{font-size:1.18rem}
+  .a{font-size:.96rem;margin-top:6px}
+  .controls{margin-top:10px}
+  .pill{padding:9px 13px}
+  .nav{margin-top:8px}
+  .hint{top:8px}
+}
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="The Moon stretches the Earth. One 3D model you can turn, in seven steps: from the pull to the two bulges to spring tides.">
+<link rel="canonical" href="https://arunrafi.com/tides.html">
+<meta property="og:title" content="Why the sea rises twice a day — Arun Rafi">
+<meta property="og:description" content="The Moon stretches the Earth. One 3D model you can turn, in seven steps: from the pull to the two bulges to spring tides.">
+<meta property="og:url" content="https://arunrafi.com/tides.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Arun Rafi">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Why the sea rises twice a day — Arun Rafi">
+<meta name="twitter:description" content="The Moon stretches the Earth. One 3D model you can turn, in seven steps: from the pull to the two bulges to spring tides.">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div class="topbar"><a href="/tools.html">← Arun Rafi · Tools</a><h1>Why the sea rises twice a day</h1><button class="theme-toggle" type="button" id="theme">Theme</button></div>
+
+<main class="stage" id="stage">
+  <canvas id="c" aria-label="A 3D model of the Earth, its oceans and the Moon that you can turn"></canvas>
+  <div class="labels" id="labels"></div>
+  <p class="hint" id="hint">Drag to turn · pinch or scroll to zoom</p>
+  <p class="nojs" id="nojs">Loading the model…</p>
+
+  <details class="notes">
+    <summary>About this model</summary>
+    <div>
+      <p>The Moon is drawn ten times too close, and the bulges are drawn thousands of times too tall. On the open sea the real bulge is under a metre. Coasts and bays funnel it into the tides you see on a beach.</p>
+      <p>Earth's axis is drawn upright, and the Moon orbits over the equator. The arrows show the pull on each piece of the Earth. The beach is Marina Beach, Chennai.</p>
+    </div>
+  </details>
+
+  <section class="panel" id="panel" aria-live="polite">
+    <div class="ph"><span class="n" id="n">0</span><h2 id="h2">Twice a day</h2></div>
+    <p class="a" id="a"></p>
+    <div class="controls" id="controls"></div>
+    <p class="key" id="key"></p>
+    <p class="msg" id="msg"></p>
+    <div class="gauge" id="gauge"><span id="gl">Sea at your beach</span><span class="bar"><i id="gb"></i></span><b id="gt"></b></div>
+    <nav class="nav" aria-label="Steps"><button class="pill" id="prev" type="button">← Back</button><div class="dots" id="dots"></div><button class="pill primary" id="next" type="button">Next →</button></nav>
+  </section>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+
+/* ---------- theme ---------- */
+const themeBtn=document.getElementById('theme');
+function themeLabel(){themeBtn.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀ Light':'☾ Dark';}
+themeLabel();
+themeBtn.addEventListener('click',()=>{const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',t);try{localStorage.setItem('theme',t)}catch(e){}themeLabel();});
+
+/* ---------- constants ---------- */
+const TAU=Math.PI*2;
+const D=6;              // Moon distance in Earth radii (real: 60)
+const RMOON=0.27;       // Moon radius in Earth radii (real)
+const BASE=1.02;        // sea level with no Moon
+const AMP=0.26;         // height of the Moon's bulge (wildly exaggerated)
+const SUNFRAC=0.46;     // the Sun's stretch, as a fraction of the Moon's (real)
+const LUNAR_DAY=24.84;  // hours between the Moon being overhead twice
+const SYNODIC=29.53;    // days from new Moon to new Moon
+const SUNDIR=new THREE.Vector3(0,0,1);
+const ORIGIN=new THREE.Vector3();
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const smooth=u=>u*u*(3-2*u), clamp=(x,a,b)=>x<a?a:x>b?b:x, lerp=(a,b,t)=>a+(b-a)*t;
+const $=s=>document.querySelector(s);
+
+const state={chapter:0,t:0,moonBase:0,ampM:AMP,ampS:0,playing:false,
+  arrows:{mode:'off',t:0,zoom:0,resAlpha:1}};
+
+/* ---------- renderer ---------- */
+const stage=$('#stage'), canvas=$('#c'), panel=$('#panel');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
+renderer.setClearColor(0x070b16,1);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(42,1,0.1,500);
+camera.position.set(3,3,8);
+const controls=new OrbitControls(camera,canvas);
+controls.enablePan=false;controls.enableDamping=true;controls.dampingFactor=.09;
+controls.minDistance=2.2;controls.maxDistance=60;controls.rotateSpeed=.6;controls.zoomSpeed=.8;
+
+/* ---------- light ---------- */
+scene.add(new THREE.AmbientLight(0x8d9bc0,1.5));
+const sunLight=new THREE.DirectionalLight(0xfff3dc,3.2);
+sunLight.position.copy(SUNDIR).multiplyScalar(80);
+scene.add(sunLight);
+
+/* ---------- stars ---------- */
+{
+  const n=2200,pos=new Float32Array(n*3);
+  for(let i=0;i<n;i++){const u=Math.random()*2-1,ph=Math.random()*TAU,r=Math.sqrt(1-u*u),R=220+Math.random()*40;
+    pos[i*3]=R*r*Math.cos(ph);pos[i*3+1]=R*u;pos[i*3+2]=R*r*Math.sin(ph);}
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:0x9aa6c4,size:1.6,sizeAttenuation:false,transparent:true,opacity:.75})));
+}
+
+/* ---------- textures ---------- */
+const loader=new THREE.TextureLoader();
+function tex(url){const t=loader.load(url);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=4;return t;}
+const earthTex=tex('/assets/tides/earth_atmos_2048.jpg');
+const moonTex=tex('/assets/tides/moon_1024.jpg');
+
+/* ---------- Earth, with your beach ---------- */
+const earthGroup=new THREE.Group();scene.add(earthGroup);
+const earth=new THREE.Mesh(new THREE.SphereGeometry(1,96,64),new THREE.MeshPhongMaterial({map:earthTex,shininess:6,specular:0x1a1a1a,transparent:true,opacity:1}));
+earthGroup.add(earth);
+/* in the arrow steps the Earth goes see-through, so the pull on its centre and far side can be seen */
+function ghostEarth(on){const from=earth.material.opacity,to=on?0.42:1;
+  tween('ghost',700,u=>{const o=lerp(from,to,u);earth.material.opacity=o;earth.material.depthWrite=o>0.95;});}
+function latlon(lat,lon,r){const la=lat*Math.PI/180,ph=(lon+180)*Math.PI/180;
+  return new THREE.Vector3(-Math.cos(ph)*Math.cos(la),Math.sin(la),Math.sin(ph)*Math.cos(la)).multiplyScalar(r);}
+const pinLocal=latlon(13.08,80.27,1);
+const pin=new THREE.Group();
+{
+  const m=new THREE.MeshBasicMaterial({color:0xffb347});
+  const post=new THREE.Mesh(new THREE.CylinderGeometry(0.013,0.013,0.5,10),m);post.position.y=0.25;
+  const knob=new THREE.Mesh(new THREE.SphereGeometry(0.05,16,12),m);knob.position.y=0.5;
+  pin.add(post,knob);
+  pin.position.copy(pinLocal).multiplyScalar(0.985);
+  pin.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),pinLocal.clone().normalize());
+  earthGroup.add(pin);
+}
+const pinAz=Math.atan2(-pinLocal.z,pinLocal.x);
+const theta0=-pinAz; // at t=0 the beach is right under the Moon: high tide
+
+/* ---------- the sea: a glass shell that stretches ---------- */
+const wGeo=new THREE.SphereGeometry(1,128,72);
+const wPos=wGeo.attributes.position;
+const wBase=Float32Array.from(wPos.array);
+const wMat=new THREE.ShaderMaterial({
+  uniforms:{sunDir:{value:SUNDIR},col:{value:new THREE.Color(0x3b8df2)}},
+  vertexShader:`varying vec3 vN;varying vec3 vW;varying float vT;
+    void main(){vN=normalize(mat3(modelMatrix)*normal);vec4 w=modelMatrix*vec4(position,1.0);vW=w.xyz;vT=length(position)-1.02;gl_Position=projectionMatrix*viewMatrix*w;}`,
+  fragmentShader:`uniform vec3 sunDir;uniform vec3 col;varying vec3 vN;varying vec3 vW;varying float vT;
+    void main(){vec3 N=normalize(vN);vec3 V=normalize(cameraPosition-vW);
+      float fres=pow(1.0-max(dot(N,V),0.0),2.0);
+      float thick=clamp(vT/0.26,0.0,1.0);
+      float diff=0.5+0.5*max(dot(N,sunDir),0.0);
+      vec3 R=reflect(-sunDir,N);float spec=pow(max(dot(R,V),0.0),70.0);
+      vec3 c=col*diff*(0.9+0.4*thick)+vec3(1.0)*spec*0.9+vec3(0.6,0.88,1.0)*fres*0.75;
+      float a=0.14+0.5*thick+0.55*fres;
+      gl_FragColor=vec4(c,min(a,0.96));}`,
+  transparent:true,depthWrite:false});
+const water=new THREE.Mesh(wGeo,wMat);water.renderOrder=1;scene.add(water);
+
+const md=new THREE.Vector3(1,0,0); // direction to the Moon
+function radiusAt(x,y,z){const cm=x*md.x+y*md.y+z*md.z;return BASE+state.ampM*cm*cm+state.ampS*z*z;}
+
+/* the sea line, seen edge on, and the line it would follow with no Moon */
+const seaMat=new THREE.MeshBasicMaterial({color:0xa6ecff});
+const seaLine=new THREE.Mesh(new THREE.BufferGeometry(),seaMat);seaLine.renderOrder=2;scene.add(seaLine);
+const refRing=new THREE.Mesh(new THREE.TorusGeometry(BASE+0.004,0.007,6,160),new THREE.MeshBasicMaterial({color:0x7f8cad}));
+refRing.rotation.x=Math.PI/2;refRing.renderOrder=2;scene.add(refRing);
+const SEA_N=160;const seaPts=[];for(let k=0;k<SEA_N;k++)seaPts.push(new THREE.Vector3());
+let seaMin=BASE,seaMax=BASE;
+function updateShape(){
+  const a=wPos.array;
+  for(let i=0;i<a.length;i+=3){const x=wBase[i],y=wBase[i+1],z=wBase[i+2];const r=radiusAt(x,y,z);a[i]=x*r;a[i+1]=y*r;a[i+2]=z*r;}
+  wPos.needsUpdate=true;wGeo.computeVertexNormals();
+  seaMin=9;seaMax=0;
+  for(let k=0;k<SEA_N;k++){const p=k/SEA_N*TAU,x=Math.cos(p),z=-Math.sin(p);const r=radiusAt(x,0,z);seaPts[k].set(x*r,0,z*r);if(r<seaMin)seaMin=r;if(r>seaMax)seaMax=r;}
+  const g=new THREE.TubeGeometry(new THREE.CatmullRomCurve3(seaPts,true),SEA_N,0.016,8,true);
+  seaLine.geometry.dispose();seaLine.geometry=g;
+}
+
+/* ---------- Moon and its path ---------- */
+const moon=new THREE.Mesh(new THREE.SphereGeometry(RMOON,48,32),new THREE.MeshPhongMaterial({map:moonTex,shininess:2}));
+scene.add(moon);
+{
+  const pts=[];for(let k=0;k<=160;k++){const p=k/160*TAU;pts.push(new THREE.Vector3(D*Math.cos(p),0,-D*Math.sin(p)));}
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const l=new THREE.Line(g,new THREE.LineDashedMaterial({color:0x3b4766,dashSize:.3,gapSize:.22}));l.computeLineDistances();scene.add(l);
+}
+function moonAngle(){return state.moonBase+state.t/(24*SYNODIC)*TAU;}
+
+/* ---------- the Sun, far away ---------- */
+const sunGlow=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');
+  const g=x.createRadialGradient(128,128,0,128,128,128);g.addColorStop(0,'rgba(255,250,230,1)');g.addColorStop(.18,'rgba(255,225,150,.95)');g.addColorStop(.45,'rgba(255,190,90,.35)');g.addColorStop(1,'rgba(255,170,60,0)');
+  x.fillStyle=g;x.fillRect(0,0,256,256);
+  const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true,depthWrite:false}));
+  s.scale.set(4.5,4.5,1);s.position.set(0,0,11.5);scene.add(s);return s;})();
+const rays=new THREE.Group();scene.add(rays);
+{
+  const m=new THREE.LineBasicMaterial({color:0xffd27a,transparent:true,opacity:.45});
+  for(let i=-3;i<=3;i++){const x=i*1.25;if(Math.abs(x)<1.15)continue;
+    const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,0,9.6),new THREE.Vector3(x,0,-2.6)]);rays.add(new THREE.Line(g,m));}
+  for(let i=-1;i<=1;i+=2){const x=i*0.55;const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,0,9.6),new THREE.Vector3(x,0,1.35)]);rays.add(new THREE.Line(g,m));}
+}
+rays.visible=false;
+
+/* ---------- arrows ---------- */
+const COL_PULL=new THREE.Color(0xf2a04a), COL_LEFT=new THREE.Color(0x5ee3ff), COL_FALL=new THREE.Color(0xc9d0e0);
+function makeArrow(color,thin){
+  const g=new THREE.Group();
+  const sr=thin?0.011:0.034,hr=thin?0.045:0.095,hl=thin?0.11:0.21;
+  const mat=new THREE.MeshLambertMaterial({color,emissive:color,emissiveIntensity:.55,transparent:true});
+  const sg=new THREE.CylinderGeometry(sr,sr,1,14);sg.rotateX(Math.PI/2);
+  const hg=new THREE.ConeGeometry(hr,hl,18);hg.rotateX(Math.PI/2);
+  const shaft=new THREE.Mesh(sg,mat),head=new THREE.Mesh(hg,mat);
+  shaft.renderOrder=head.renderOrder=3;
+  g.add(shaft,head);
+  const tip=new THREE.Vector3();
+  g.userData.set=(from,vec)=>{const L=vec.length();if(L<0.012){g.visible=false;return;}g.visible=true;
+    const h=Math.min(hl,L*0.55);shaft.scale.set(1,1,Math.max(L-h,0.001));shaft.position.z=(L-h)/2;head.scale.set(1,1,h/hl);head.position.z=L-h/2;
+    g.position.copy(from);tip.copy(from).add(vec);g.lookAt(tip);};
+  g.userData.alpha=a=>{mat.opacity=a;g.visible=g.visible&&a>0.02;};
+  return g;
+}
+const PTS=[];for(let k=0;k<8;k++){const p=k*TAU/8;PTS.push(new THREE.Vector3(Math.cos(p),0,-Math.sin(p)));}
+PTS.push(new THREE.Vector3(0,1,0),new THREE.Vector3(0,-1,0));
+const arrowRoot=new THREE.Group();scene.add(arrowRoot);
+const arrows=PTS.map(()=>{const o={raw:makeArrow(COL_PULL,false),ghost:makeArrow(COL_FALL,true),res:makeArrow(COL_LEFT,false)};
+  arrowRoot.add(o.raw,o.ghost,o.res);return o;});
+const centreArrow=makeArrow(COL_FALL,false);arrowRoot.add(centreArrow);
+arrowRoot.visible=false;
+
+const SUNPOS=SUNDIR.clone().multiplyScalar(389*D), MSUN=2.7e7; // real ratios: 389x further, 27 million x heavier
+const _d=new THREE.Vector3();
+function force(p,body){
+  if(body==='sun'){_d.copy(SUNPOS).sub(p);const r=_d.length();return _d.multiplyScalar(MSUN/(r*r*r)).clone();}
+  _d.copy(moon.position).sub(p);const r=_d.length();return _d.multiplyScalar(1/(r*r*r)).clone();
+}
+const K_ZOOM=74;
+const _tip=new THREE.Vector3(),_v=new THREE.Vector3();
+function updateArrows(){
+  const A=state.arrows;
+  if(A.mode==='off'){arrowRoot.visible=false;return;}
+  arrowRoot.visible=true;
+  const Fc=force(ORIGIN,A.mode);const kRaw=1/Fc.length();
+  let kz=K_ZOOM;
+  if(A.mode==='sun'){ // calibrate: the Sun's leftover is 0.46 of the Moon's, as in reality
+    const near=md.clone();const mDiff=force(near,'moon').sub(force(ORIGIN,'moon')).length();
+    const sNear=SUNDIR.clone();const sDiff=force(sNear,'sun').sub(Fc).length();
+    kz=K_ZOOM*SUNFRAC*mDiff/sDiff;
+  }
+  const grow=lerp(kRaw,kz,A.zoom);
+  for(let i=0;i<PTS.length;i++){
+    const p=PTS[i],o=arrows[i];const F=force(p,A.mode);
+    _v.copy(F).multiplyScalar(kRaw);o.raw.userData.set(p,_v);o.raw.userData.alpha((1-0.72*A.t)*(1-A.zoom));
+    _tip.copy(p).add(_v);
+    _v.copy(Fc).multiplyScalar(-A.t*kRaw);o.ghost.userData.set(_tip,_v);o.ghost.userData.alpha(A.t>0.001?0.95*(1-A.zoom):0);
+    _v.copy(F).addScaledVector(Fc,-A.t).multiplyScalar(grow);o.res.userData.set(p,_v);o.res.userData.alpha(A.t>0.001?A.resAlpha:0);
+  }
+  _v.copy(Fc).multiplyScalar(kRaw*(1-A.t));centreArrow.userData.set(ORIGIN,_v);centreArrow.userData.alpha(1-A.zoom);
+}
+
+/* ---------- labels ---------- */
+const labelsEl=$('#labels');
+function mkLabel(text,cls){const e=document.createElement('span');e.className='lbl'+(cls?' '+cls:'');e.textContent=text;labelsEl.appendChild(e);return e;}
+const L={moon:{el:mkLabel('Moon'),pos:new THREE.Vector3(),on:true},
+  sun:{el:mkLabel('Sun · far away'),pos:new THREE.Vector3(0,0,11.5),on:true},
+  beach:{el:mkLabel('Your beach','beach'),pos:new THREE.Vector3(),on:true}};
+const _p=new THREE.Vector3();
+let vw=1,vh=1;
+function updateLabels(){
+  L.moon.pos.copy(moon.position).add(new THREE.Vector3(0,RMOON+0.35,0));
+  pin.children[1].getWorldPosition(L.beach.pos);L.beach.pos.y+=0.18;
+  const narrow=vw<760;const maxY=narrow?panel.offsetTop-18:vh-22;
+  for(const k in L){const o=L[k];
+    _p.copy(o.pos).project(camera);
+    const behind=_p.z>1;
+    let x=(_p.x+1)/2*vw,y=(1-_p.y)/2*vh;
+    const off=x<6||x>vw-6||y<20||y>maxY;
+    if(behind||(off&&k==='beach')||!o.on){o.el.classList.remove('on');continue;}
+    if(k!=='beach'){const base=k==='moon'?'Moon':'Sun · far away';
+      o.el.textContent=!off?base:y<20?'↑ '+base:y>maxY?base+' ↓':x>vw/2?base+' →':'← '+base;}
+    const hw=o.el.offsetWidth/2+8;x=clamp(x,hw,vw-hw);y=clamp(y,narrow?64:26,maxY);
+    o.el.style.transform=`translate(${x}px,${y}px) translate(-50%,-50%)`;
+    o.el.classList.add('on');
+  }
+}
+
+/* ---------- tweens ---------- */
+const tweens=new Map();
+function tween(key,dur,fn,done){
+  if(reduce&&key==='cam')dur=0;
+  if(dur<=0){tweens.delete(key);fn(1);done&&done();return;}
+  tweens.set(key,{t0:performance.now(),dur,fn,done});
+}
+function stepTweens(now){
+  for(const [k,tw] of [...tweens]){const u=clamp((now-tw.t0)/tw.dur,0,1);tw.fn(smooth(u));if(u>=1){tweens.delete(k);tw.done&&tw.done();}}
+}
+
+/* ---------- camera moves ---------- */
+function moveCamera(pos,tgt,dur){
+  const p0=camera.position.clone(),t0=controls.target.clone();
+  const tg=new THREE.Vector3(...tgt);let pp=new THREE.Vector3(...pos);
+  if(camera.aspect<1.15){pp=tg.clone().add(pp.clone().sub(tg).multiplyScalar(Math.pow(1.15/camera.aspect,0.85)));}
+  tween('cam',dur==null?1400:dur,u=>{camera.position.lerpVectors(p0,pp,u);controls.target.lerpVectors(t0,tg,u);});
+}
+
+/* ---------- resize: keep the model above the panel on phones ---------- */
+function resize(){
+  const r=stage.getBoundingClientRect();vw=Math.max(1,Math.round(r.width));vh=Math.max(1,Math.round(r.height));
+  renderer.setSize(vw,vh,false);
+  const ph=vw<760?panel.offsetHeight+8:0;
+  const fullH=Math.max(120,vh-ph);
+  camera.aspect=vw/fullH;
+  camera.setViewOffset(vw,fullH,0,0,vw,vh);
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage);
+new ResizeObserver(resize).observe(panel);
+
+/* ---------- UI bits ---------- */
+const ui={n:$('#n'),h2:$('#h2'),a:$('#a'),controls:$('#controls'),key:$('#key'),msg:$('#msg'),gauge:$('#gauge'),gl:$('#gl'),gb:$('#gb'),gt:$('#gt'),prev:$('#prev'),next:$('#next'),dots:$('#dots')};
+function btn(label,fn,primary){const b=document.createElement('button');b.type='button';b.className='pill'+(primary?' primary':'');b.textContent=label;b.addEventListener('click',()=>fn(b));return b;}
+function seg(items,sel,fn){const g=document.createElement('div');g.className='seg';g.setAttribute('role','group');
+  items.forEach(([label,v])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.dataset.v=v;b.setAttribute('aria-pressed',v===sel?'true':'false');
+    b.addEventListener('click',()=>{g.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));fn(v);});g.appendChild(b);});
+  return g;}
+function keyline(items){ui.key.innerHTML=items.map(([c,t])=>`<span><i style="background:${c}"></i>${t}</span>`).join('');}
+function fmtClock(h){const day=Math.floor(h/24)+1,hh=Math.floor(h%24),mm=Math.floor((h-Math.floor(h))*60);return `Day ${day} · ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;}
+
+let playBtn=null,slider=null;
+function moonTo(target){const from=state.moonBase;let d=target-from;while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;
+  if(Math.abs(d)<1e-4)return;tween('moon',reduce?0:1400,u=>{state.moonBase=from+d*u;});}
+function playDay(b){
+  if(state.playing){state.playing=false;b.textContent='Play a day';return;}
+  if(state.t>=LUNAR_DAY-0.01)state.t=0;
+  state.playing=true;b.textContent='Pause';
+}
+function stopPlay(){state.playing=false;if(playBtn)playBtn.textContent='Play a day';}
+
+function subtract(b){
+  const A=state.arrows;A.t=0;A.zoom=0;b.disabled=true;
+  ui.msg.innerHTML='Taking away the Earth’s own fall…';
+  tween('sub',reduce?0:1700,u=>{A.t=u;},()=>{
+    tween('zoom',reduce?0:1100,u=>{A.zoom=u;},()=>{b.disabled=false;b.textContent='Again';
+      ui.msg.innerHTML=A.mode==='sun'
+        ?'<strong>Almost nothing is left.</strong> Magnified the same way as the Moon’s, it is about half as much.'
+        :'<strong>A stretch is left.</strong> Out toward the Moon, out away from it, in at the sides.';});
+  });
+}
+
+/* ---------- chapters ---------- */
+const CH=[
+{h:'Twice a day',
+ a:'The sea is not round. It is stretched, and your beach spins through the stretch. Twice a day it sits in the thick part. What stretches it?',
+ cam:[[3.0,3.4,6.6],[0.9,0,0]],
+ enter(){state.ampM=AMP;state.ampS=0;state.arrows.mode='off';ui.gauge.classList.add('on');ui.gl.textContent='Sea at your beach';
+   playBtn=btn('Play a day',playDay,true);ui.controls.append(playBtn);
+   keyline([['#a6ecff','sea line'],['#7f8cad','sea line with no Moon']]);}},
+{h:'The Moon pulls everything',
+ a:'Every piece of the Earth is pulled toward the Moon. Closer pulls harder, so the near side is pulled more than the far side.',
+ cam:[[1.6,7.4,3.8],[1.4,0,0]],
+ enter(){const m0=state.ampM;tween('amp',900,u=>{state.ampM=m0*(1-u);});state.ampS=0;const A=state.arrows;A.mode='moon';A.t=0;A.zoom=0;A.resAlpha=1;
+   keyline([['#f2a04a','the Moon’s pull on that piece'],['#c9d0e0','the pull on the Earth’s centre']]);}},
+{h:'But the whole Earth is falling too',
+ a:'Earth and Moon fall toward each other all the time, together. Take that shared fall away from every arrow and see what is left.',
+ cam:[[1.6,7.4,3.8],[1.4,0,0]],
+ enter(){state.ampM=0;state.ampS=0;const A=state.arrows;A.mode='moon';A.t=0;A.zoom=0;A.resAlpha=1;
+   ui.controls.append(btn('Take away the Earth’s fall',subtract,true));
+   keyline([['#f2a04a','the Moon’s pull'],['#c9d0e0','the Earth’s fall, taken away'],['#5ee3ff','what is left']]);}},
+{h:'So the sea goes egg-shaped',
+ a:'Water flows where the leftover pull points. Two bulges: one facing the Moon, one facing away. Both sides, at once.',
+ cam:[[1.2,5.6,5.6],[0.7,0,0]],
+ enter(){const A=state.arrows;A.mode='moon';A.t=1;A.zoom=1;A.resAlpha=0.55;state.ampS=0;
+   const go=b=>{state.ampM=0;if(b)b.disabled=true;tween('amp',reduce?0:1800,u=>{state.ampM=AMP*u;},()=>{if(b)b.disabled=false;});};
+   go();ui.controls.append(btn('Stretch it again',go));
+   keyline([['#5ee3ff','what is left of the pull'],['#a6ecff','sea line'],['#7f8cad','sea line with no Moon']]);}},
+{h:'And the Earth turns under them',
+ a:'The bulges stay with the Moon. The Earth spins underneath, so your beach meets a bulge every 12 h 25 min. The extra 25 minutes: the Moon has moved on a little.',
+ cam:[[1.4,5.6,6.6],[0.6,0,0]],
+ enter(){state.ampM=AMP;state.ampS=0;state.arrows.mode='off';state.t=0;ui.gauge.classList.add('on');ui.gl.textContent='Sea at your beach';
+   playBtn=btn('Play a day',playDay,true);
+   slider=document.createElement('input');slider.type='range';slider.min=0;slider.max=Math.round(LUNAR_DAY*60);slider.value=0;slider.setAttribute('aria-label','Time');
+   slider.addEventListener('input',()=>{stopPlay();state.t=slider.value/60;});
+   ui.controls.append(playBtn,slider);
+   keyline([['#a6ecff','sea line'],['#7f8cad','sea line with no Moon']]);}},
+{h:'The Sun stretches it too',
+ a:'About half as much. When Sun and Moon line up, the two stretches add: big tides. When they sit crosswise, they fight: small tides.',
+ cam:[[0.01,17.5,4.2],[0,0,1.6]],
+ enter(){state.ampM=AMP;state.arrows.mode='off';rays.visible=true;tween('amps',900,u=>{state.ampS=AMP*SUNFRAC*u;});
+   ui.gauge.classList.add('on');ui.gl.textContent='Size of the tide';
+   ui.controls.append(seg([['New Moon',-Math.PI/2],['Quarter',0],['Full Moon',Math.PI/2]],0,v=>moonTo(+v)));
+   keyline([['#ffd27a','sunlight'],['#a6ecff','sea line'],['#7f8cad','sea line with no Moon']]);}},
+{h:'Why the Moon beats the Sun',
+ a:'The Sun pulls 180 times harder. But stretch is the difference between near and far, and the Sun is so far that its near and far are nearly the same. The Moon, 390 times closer, wins 2 to 1.',
+ cam:[[0.9,8.8,2.0],[0.9,0,0.3]],
+ enter(){const m0=state.ampM,s0=state.ampS;tween('amp',900,u=>{state.ampM=m0*(1-u);state.ampS=s0*(1-u);});
+   const A=state.arrows;A.mode='moon';A.t=0;A.zoom=0;A.resAlpha=1;
+   const sub=btn('Take away the Earth’s fall',subtract,true);
+   const sw=seg([['Moon','moon'],['Sun','sun']],'moon',v=>{tweens.delete('sub');tweens.delete('zoom');A.mode=v;A.t=0;A.zoom=0;sub.disabled=false;sub.textContent='Take away the Earth’s fall';
+     ui.msg.innerHTML=v==='sun'?'The Sun’s pull, near and far: <strong>the same to one part in a thousand.</strong> (Drawn 180 times too short, or it would not fit.)':'The Moon’s pull: <strong>near side strong, far side weak.</strong>';});
+   ui.controls.append(sw,sub);
+   ui.msg.innerHTML='The Moon’s pull: <strong>near side strong, far side weak.</strong>';
+   keyline([['#f2a04a','the pull'],['#c9d0e0','the Earth’s fall, taken away'],['#5ee3ff','what is left']]);}},
+];
+
+CH.forEach((c,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Step '+i);b.innerHTML='<i></i>';b.addEventListener('click',()=>go(i));ui.dots.appendChild(b);});
+
+function go(i,instant){
+  i=clamp(i,0,CH.length-1);
+  for(const k of ['sub','zoom','amp','amps','moon'])tweens.delete(k);
+  stopPlay();playBtn=null;slider=null;rays.visible=false;
+  state.chapter=i;const c=CH[i];
+  if(i!==5)moonTo(0);
+  ghostEarth(i===1||i===2||i===6);
+  ui.n.textContent=i;ui.h2.textContent=c.h;ui.a.textContent=c.a;ui.controls.innerHTML='';ui.msg.innerHTML='';ui.key.innerHTML='';
+  ui.gauge.classList.remove('on');
+  c.enter();
+  moveCamera(c.cam[0],c.cam[1],instant?0:1400);
+  ui.dots.querySelectorAll('button').forEach((b,k)=>{if(k===i)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');});
+  ui.prev.disabled=i===0;ui.next.textContent=i===CH.length-1?'Restart':'Next →';
+  try{history.replaceState(null,'','#c'+i);}catch(e){}
+  resize();
+}
+ui.prev.addEventListener('click',()=>go(state.chapter-1));
+ui.next.addEventListener('click',()=>go(state.chapter===CH.length-1?0:state.chapter+1));
+document.addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;if(e.key==='ArrowRight')go(state.chapter+1);if(e.key==='ArrowLeft')go(state.chapter-1);});
+canvas.addEventListener('pointerdown',()=>$('#hint').classList.add('off'),{once:true});
+
+/* ---------- gauge ---------- */
+let lastLevel=null,lastWord='';
+const _pw=new THREE.Vector3();
+function updateGauge(){
+  if(!ui.gauge.classList.contains('on'))return;
+  if(state.chapter===5){
+    const range=clamp((seaMax-seaMin)/(AMP*(1+SUNFRAC)),0,1);
+    ui.gb.style.width=(range*100).toFixed(1)+'%';
+    ui.gt.textContent=range>0.9?'Spring tide':range<0.5?'Neap tide':'In between';
+    return;
+  }
+  pin.children[1].getWorldPosition(_pw).normalize();
+  const level=clamp((radiusAt(_pw.x,_pw.y,_pw.z)-BASE)/AMP,0,1);
+  ui.gb.style.width=(level*100).toFixed(1)+'%';
+  let word=lastWord;
+  if(level>0.9)word='High tide';else if(level<0.1)word='Low tide';
+  else if(lastLevel!=null&&Math.abs(level-lastLevel)>1e-5)word=level>lastLevel?'Rising ▲':'Falling ▼';
+  lastLevel=level;lastWord=word;ui.gt.textContent=word;
+  if(state.chapter===4&&ui.msg)ui.msg.textContent=fmtClock(state.t);
+}
+
+/* ---------- loop ---------- */
+let last=performance.now(),prevShape='';
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(0.05,(now-last)/1000);last=now;
+  stepTweens(now);
+  if(state.playing){state.t=Math.min(LUNAR_DAY,state.t+dt*LUNAR_DAY/16);if(slider)slider.value=Math.round(state.t*60);if(state.t>=LUNAR_DAY)stopPlay();}
+  const a=moonAngle();
+  moon.position.set(D*Math.cos(a),0,-D*Math.sin(a));moon.lookAt(ORIGIN);
+  md.copy(moon.position).normalize();
+  earthGroup.rotation.y=theta0+TAU*state.t/24;
+  const sig=state.ampM.toFixed(4)+'|'+state.ampS.toFixed(4)+'|'+a.toFixed(4);
+  if(sig!==prevShape){updateShape();prevShape=sig;}
+  updateArrows();
+  controls.update();
+  renderer.render(scene,camera);
+  updateLabels();
+  updateGauge();
+}
+
+/* ---------- start ---------- */
+resize();
+const startAt=(()=>{const m=location.hash.match(/^#c(\d)$/);return m?clamp(+m[1],0,CH.length-1):0;})();
+go(startAt,true);
+$('#nojs').remove();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -2,34 +2,34 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Why the sea rises twice a day — Arun Rafi</title>
+<title>Why does the sea come up the beach? — Arun Rafi</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="The Moon stretches the Earth. A scroll story you can play with: drag the Moon, drop stones toward it, spin the Earth through the bulges, and see why tides come twice a day.">
+<meta name="description" content="A story for small people about the Moon and the sea. Drag the Moon, race to it, spin the Earth, and watch the water come up the beach.">
 <link rel="canonical" href="https://arunrafi.com/tides.html">
-<meta property="og:title" content="Why the sea rises twice a day — Arun Rafi">
-<meta property="og:description" content="The Moon stretches the Earth. A scroll story you can play with: drag the Moon, drop stones toward it, spin the Earth through the bulges.">
+<meta property="og:title" content="Why does the sea come up the beach? — Arun Rafi">
+<meta property="og:description" content="A story for small people about the Moon and the sea. Drag the Moon, race to it, spin the Earth, and watch the water come up the beach.">
 <meta property="og:url" content="https://arunrafi.com/tides.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Arun Rafi">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Why the sea rises twice a day — Arun Rafi">
-<meta name="twitter:description" content="The Moon stretches the Earth. A scroll story you can play with.">
+<meta name="twitter:title" content="Why does the sea come up the beach? — Arun Rafi">
+<meta name="twitter:description" content="A story for small people about the Moon and the sea.">
 <meta name="theme-color" content="#04060d">
 <style>
 :root{
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"URW Palladio L",P052,"Book Antiqua",Georgia,serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  --bg:#04060d; --bg2:#070b16; --ink:#eef2fb; --soft:#aab4cc; --muted:#6c768f; --rule:#161c2e;
-  --cyan:#6fe7ff; --gold:#f4d48a; --blue:#2f7dff; --rose:#ff7a9a;
+  --bg:#04060d; --ink:#f3f5fb; --soft:#b9c2d8; --muted:#6c768f; --rule:#161c2e;
+  --cyan:#6fe7ff; --gold:#ffd97a; --blue:#2f7dff; --rose:#ff7a9a;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;background:var(--bg)}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:20px/1.45 var(--serif);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 a{color:var(--cyan);text-decoration:none}
 a:hover{text-decoration:underline}
-:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 canvas{display:block;width:100%;height:100%}
 .topbar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;font:13px/1 var(--sans);color:var(--soft);pointer-events:none;background:linear-gradient(rgba(4,6,13,.85),rgba(4,6,13,0))}
 .topbar a{color:var(--soft);pointer-events:auto}
@@ -37,52 +37,56 @@ canvas{display:block;width:100%;height:100%}
 .topbar span{font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 
 /* ---------- hero ---------- */
-.hero{position:relative;height:100svh;min-height:560px;overflow:hidden}
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden}
 .hero canvas{position:absolute;inset:0}
-.hero .title{position:absolute;left:0;right:0;top:11svh;text-align:center;padding:0 20px;pointer-events:none}
-.kicker{font:600 11px/1.2 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 18px}
-h1{font-weight:500;font-size:clamp(2.6rem,7.2vw,5.4rem);line-height:.98;letter-spacing:-.02em;margin:0 auto;max-width:14ch;text-shadow:0 6px 40px rgba(0,0,0,.6)}
-.hero .hud{position:absolute;left:18px;bottom:22px;font:600 13px/1.3 var(--mono);letter-spacing:.08em;color:var(--ink);text-transform:uppercase}
-.hero .hud b{display:block;font-size:clamp(2rem,6vw,3.4rem);letter-spacing:0;line-height:1;font-weight:500;font-variant-numeric:tabular-nums}
-.hero .hud i{font-style:normal;color:var(--cyan)}
-.hero .cue{position:absolute;right:18px;bottom:26px;font:11px/1.4 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--soft);text-align:right}
-.hero .cue::after{content:"";display:block;width:1px;height:38px;background:linear-gradient(var(--soft),transparent);margin:10px 0 0 auto;animation:cue 1.8s ease-in-out infinite}
+.hero .title{position:absolute;left:0;right:0;top:9svh;text-align:center;padding:0 20px;pointer-events:none}
+.kicker{font:600 12px/1.2 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin:0 0 16px}
+h1{font-weight:500;font-size:clamp(2.4rem,6.6vw,5rem);line-height:1;letter-spacing:-.02em;margin:0 auto;max-width:15ch;text-shadow:0 6px 40px rgba(0,0,0,.6)}
+.hero .big{position:absolute;left:0;right:0;bottom:11svh;text-align:center;pointer-events:none;font:500 clamp(1.8rem,6vw,3.4rem)/1 var(--serif);letter-spacing:-.01em;text-shadow:0 4px 30px rgba(0,0,0,.7)}
+.hero .big i{font-style:normal;color:var(--cyan)}
+.hero .cue{position:absolute;right:18px;bottom:22px;font:11px/1.4 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--soft);text-align:right}
+.hero .cue::after{content:"";display:block;width:1px;height:34px;background:linear-gradient(var(--soft),transparent);margin:8px 0 0 auto;animation:cue 1.8s ease-in-out infinite}
 @keyframes cue{0%,100%{transform:translateY(0);opacity:.9}50%{transform:translateY(8px);opacity:.3}}
 
 /* ---------- scenes ---------- */
 .scene{position:relative;display:grid;grid-template-columns:minmax(300px,36%) 1fr;min-height:100svh;border-top:1px solid var(--rule)}
 .scene .vis{position:relative;min-height:100svh;overflow:hidden;background:radial-gradient(120% 90% at 60% 40%,#0a1020 0%,var(--bg) 70%)}
 .scene .vis canvas{position:absolute;inset:0;touch-action:pan-y}
-.scene .cap{display:flex;flex-direction:column;justify-content:center;padding:80px 40px 60px 48px}
-.n{font:600 11px/1 var(--mono);letter-spacing:.22em;color:var(--cyan);margin:0 0 20px}
-.scene h2{font-weight:500;font-size:clamp(2rem,3.6vw,3.3rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px;max-width:14ch}
-.scene p{font-size:1.1rem;line-height:1.5;color:var(--soft);margin:0;max-width:30ch}
+.scene .cap{display:flex;flex-direction:column;justify-content:center;padding:80px 36px 60px 48px}
+.n{font:600 12px/1 var(--mono);letter-spacing:.22em;color:var(--cyan);margin:0 0 18px}
+.scene h2{font-weight:500;font-size:clamp(2.2rem,4vw,3.6rem);line-height:1.02;letter-spacing:-.02em;margin:0 0 18px;max-width:12ch}
+.scene p{font-size:1.3rem;line-height:1.4;color:var(--soft);margin:0 0 .6em;max-width:24ch}
+.scene p:last-of-type{margin-bottom:0}
 .scene p strong{color:var(--ink);font-weight:500}
-.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:26px 0 0;font:14px/1 var(--sans)}
-.pill{appearance:none;-webkit-appearance:none;border:1px solid #2a3450;background:rgba(255,255,255,.03);color:var(--ink);border-radius:999px;padding:12px 20px;font:600 13px/1 var(--sans);cursor:pointer;min-height:44px;letter-spacing:.02em;transition:border-color .15s,background .15s}
+.scene p b,.scene h2 b{color:var(--gold);font-weight:500}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:26px 0 0;font:15px/1 var(--sans)}
+.pill{appearance:none;-webkit-appearance:none;border:2px solid #2a3450;background:rgba(255,255,255,.03);color:var(--ink);border-radius:999px;padding:14px 22px;font:600 16px/1 var(--sans);cursor:pointer;min-height:52px;letter-spacing:.01em;transition:border-color .15s,background .15s,transform .1s}
 .pill:hover{border-color:var(--cyan);background:rgba(111,231,255,.08)}
+.pill:active{transform:scale(.97)}
 .pill.primary{background:var(--cyan);color:#04131a;border-color:var(--cyan)}
 .pill.primary:hover{background:#9af0ff}
-.pill:disabled{opacity:.4;cursor:default}
+.pill.gold{background:var(--gold);color:#2a1d00;border-color:var(--gold)}
+.pill:disabled{opacity:.45;cursor:default}
+.pill[aria-pressed="true"]{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
 input[type=range]{width:100%;max-width:360px;height:44px;margin:0;accent-color:var(--cyan);cursor:pointer}
-.readout{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:26px 0 0;font:13px/1.4 var(--mono);color:var(--muted);letter-spacing:.04em;max-width:360px}
-.readout b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
-.readout i{font-style:normal;color:var(--cyan)}
-.readout .gold{color:var(--gold)}
-.hint{font:12px/1.5 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}
-.handle{position:absolute;visibility:hidden;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;touch-action:none;cursor:grab;z-index:3;background:transparent}
+.status{margin:24px 0 0;font:500 clamp(1.6rem,3vw,2.4rem)/1.1 var(--serif);letter-spacing:-.01em;min-height:1.1em}
+.status i{font-style:normal;color:var(--cyan)}
+.status b{font-weight:500;color:var(--gold)}
+.hint{font:12px/1.5 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:22px 0 0}
+.handle{position:absolute;visibility:hidden;width:76px;height:76px;margin:-38px 0 0 -38px;border-radius:50%;touch-action:none;cursor:grab;z-index:3;background:transparent}
 .handle:active{cursor:grabbing}
-.handle::after{content:"";position:absolute;inset:8px;border-radius:50%;border:1px dashed rgba(244,212,138,.55);animation:ring 2.4s linear infinite}
+.handle::after{content:"";position:absolute;inset:8px;border-radius:50%;border:2px dashed rgba(255,217,122,.7);animation:ring 3s linear infinite}
 .handle.quiet::after{opacity:0}
 @keyframes ring{to{transform:rotate(360deg)}}
-.tag{position:absolute;visibility:hidden;font:600 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--soft);padding:6px 8px;border-radius:999px;background:rgba(4,6,13,.6);pointer-events:none;white-space:nowrap;transform:translate(-50%,-50%)}
+.tag{position:absolute;visibility:hidden;font:600 11px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--soft);padding:7px 9px;border-radius:999px;background:rgba(4,6,13,.65);pointer-events:none;white-space:nowrap;transform:translate(-50%,-50%)}
 .tag.gold{color:var(--gold)}
 .tag.cyan{color:var(--cyan)}
 
-/* ---------- why / numbers ---------- */
-.why{border-top:1px solid var(--rule);padding:120px 20px;max-width:62rem;margin:0 auto}
-.why h2{font-weight:500;font-size:clamp(2.2rem,5vw,4rem);line-height:1;letter-spacing:-.02em;margin:0 0 56px;max-width:16ch}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:48px}
+/* ---------- grown-ups ---------- */
+.grown{border-top:1px solid var(--rule);padding:90px 20px;max-width:62rem;margin:0 auto}
+.grown h2{font-weight:500;font-size:clamp(2rem,4.4vw,3.4rem);line-height:1;letter-spacing:-.02em;margin:0 0 14px}
+.grown>p{font-size:1.15rem;color:var(--soft);max-width:40ch;margin:0 0 44px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:44px}
 .stat{border-top:1px solid var(--rule);padding-top:22px}
 .stat .lbl{font:600 11px/1.2 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin:0 0 20px}
 .bars{display:grid;gap:14px}
@@ -94,26 +98,22 @@ input[type=range]{width:100%;max-width:360px;height:44px;margin:0;accent-color:v
 .bar b{font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums;min-width:4ch;text-align:right}
 .stat p{font-size:1.05rem;line-height:1.5;color:var(--soft);margin:22px 0 0;max-width:34ch}
 .stat p strong{color:var(--ink);font-weight:500}
-.verdict{margin:72px 0 0;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1.15;letter-spacing:-.01em;max-width:24ch}
-.verdict i{font-style:normal;color:var(--cyan)}
-
-/* ---------- end ---------- */
-.end{border-top:1px solid var(--rule);padding:60px 20px 80px;max-width:38rem;margin:0 auto;font:14px/1.65 var(--sans);color:var(--muted)}
-.end summary{cursor:pointer;color:var(--soft)}
-.end p{margin:12px 0 0}
+.notes{font:14px/1.65 var(--sans);color:var(--muted);max-width:40rem;margin:44px 0 0}
+.notes p{margin:0 0 10px}
 footer{padding:0 20px 60px;text-align:center;font:13px/1.6 var(--sans);color:var(--muted)}
 footer a{color:var(--muted)}
 footer a:hover{color:var(--ink)}
 
 @media (max-width:820px){
+  body{font-size:19px}
   .scene{grid-template-columns:1fr;min-height:0}
-  .scene .vis{min-height:0;height:60svh;order:-1}
-  .scene .cap{padding:26px 20px 60px}
-  .scene h2{max-width:none}
-  .scene p{max-width:none}
+  .scene .vis{min-height:0;height:62svh;order:-1}
+  .scene .cap{padding:26px 20px 56px}
+  .scene h2{max-width:none;font-size:2.1rem}
+  .scene p{max-width:none;font-size:1.2rem}
   .stats{grid-template-columns:1fr;gap:36px}
-  .why{padding:80px 20px}
-  .hero .title{top:13svh}
+  .grown{padding:70px 20px}
+  .hero .title{top:12svh}
   h1{max-width:12ch}
 }
 </style>
@@ -126,19 +126,19 @@ footer a:hover{color:var(--ink)}
   <canvas id="c0"></canvas>
   <div class="title">
     <p class="kicker">Marina Beach, Chennai</p>
-    <h1>The sea comes for the beach twice a day.</h1>
+    <h1>Why does the sea come up the beach?</h1>
   </div>
-  <div class="hud" id="hud0"><b>06:12</b>High tide</div>
-  <div class="cue">Why? Scroll</div>
+  <div class="big" id="big0">The sea comes <i>up</i>…</div>
+  <div class="cue">Scroll</div>
 </section>
 
 <section class="scene" id="s1">
   <div class="cap">
     <p class="n">01</p>
-    <h2>The Moon pulls everything. Closer, harder.</h2>
-    <p>Every arrow is the Moon's pull on that piece of the Earth. The near side is pulled more than the far side.</p>
-    <div class="readout" id="r1"><span>near ÷ far</span><b class="gold" id="r1v">1.8×</b></div>
-    <p class="hint">Drag the Moon. Bring it close.</p>
+    <h2>Look up. The Moon!</h2>
+    <p>The Moon pulls the sea. <strong>Like a magnet.</strong></p>
+    <p>The sea bumps up toward it.</p>
+    <p class="hint">Drag the Moon. The sea follows!</p>
   </div>
   <div class="vis"><canvas id="c1"></canvas><div class="handle" id="h1" aria-label="Drag the Moon"></div><span class="tag gold" id="t1m">Moon</span></div>
 </section>
@@ -146,10 +146,11 @@ footer a:hover{color:var(--ink)}
 <section class="scene" id="s2">
   <div class="cap">
     <p class="n">02</p>
-    <h2>Drop three stones toward the Moon.</h2>
-    <p>They start side by side. The near one pulls ahead. The far one lags. <strong>The Earth is a bag of stones. It gets stretched.</strong></p>
-    <div class="controls"><button class="pill primary" id="b2" type="button">Drop them</button></div>
-    <div class="readout"><span>gap near–far</span><b id="r2v">0.00 R</b></div>
+    <h2>Why <b>two</b> bumps?</h2>
+    <p>Three friends race to the Moon. The Moon pulls the <strong>closest</strong> friend hardest. So they spread out!</p>
+    <p>The Earth is full of friends. It gets <strong>stretched</strong>. A bump in front, a bump behind.</p>
+    <div class="controls"><button class="pill primary" id="b2" type="button">Ready, set, go!</button></div>
+    <p class="status" id="st2"></p>
   </div>
   <div class="vis"><canvas id="c2"></canvas></div>
 </section>
@@ -157,41 +158,32 @@ footer a:hover{color:var(--ink)}
 <section class="scene" id="s3">
   <div class="cap">
     <p class="n">03</p>
-    <h2>So the sea makes two bulges.</h2>
-    <p>One toward the Moon. One away from it, left behind. The stretch fades fast with distance: <strong>half the distance, eight times the bulge.</strong></p>
-    <div class="readout"><span>Moon distance</span><b id="r3d">4.0 R</b><span>stretch</span><b class="cyan" id="r3s"><i>1.0×</i></b></div>
-    <p class="hint">Drag the Moon anywhere.</p>
+    <h2>The Earth spins round.</h2>
+    <p>Your beach goes round and round. <strong>Under a bump: water up!</strong> Between the bumps: water down.</p>
+    <p>Two bumps. So, <strong>twice a day.</strong></p>
+    <div class="controls"><button class="pill primary" id="b3" type="button">Spin!</button></div>
+    <div class="controls"><input type="range" id="sl3" min="0" max="1490" value="0" aria-label="Turn the Earth"></div>
+    <p class="status" id="st3"><i>Water up!</i></p>
   </div>
-  <div class="vis"><canvas id="c3"></canvas><div class="handle" id="h3" aria-label="Drag the Moon"></div><span class="tag gold" id="t3m">Moon</span><span class="tag cyan" id="t3b">Your beach</span></div>
+  <div class="vis"><canvas id="c3"></canvas><span class="tag gold" id="t3m">Moon</span><span class="tag cyan" id="t3b">Your beach</span></div>
 </section>
 
 <section class="scene" id="s4">
   <div class="cap">
     <p class="n">04</p>
-    <h2>And the Earth spins through them.</h2>
-    <p>The bulges stay with the Moon. Your beach turns underneath and meets one every <strong>12 h 25 min</strong>. The line it draws is the tide.</p>
-    <div class="controls"><button class="pill primary" id="b4" type="button">Play a day</button></div>
-    <div class="controls"><input type="range" id="sl4" min="0" max="1490" value="0" aria-label="Time of day"></div>
-    <div class="readout"><span>clock</span><b id="r4t">Day 1 · 00:00</b><span>sea at beach</span><b class="cyan" id="r4h">High tide</b></div>
+    <h2>The Sun helps a little.</h2>
+    <p>The Sun pulls the sea too, but it is far, far away.</p>
+    <p>Sun and Moon pulling <strong>together</strong>: a BIG bump. Pulling <strong>sideways</strong>: a small bump.</p>
+    <div class="controls"><button class="pill gold" id="b4a" type="button">Together</button><button class="pill" id="b4b" type="button">Sideways</button><button class="pill" id="b4p" type="button">Play a month</button></div>
+    <p class="status" id="st4"></p>
   </div>
-  <div class="vis"><canvas id="c4"></canvas><span class="tag gold" id="t4m">Moon</span><span class="tag cyan" id="t4b">Your beach</span></div>
+  <div class="vis"><canvas id="c4"></canvas><span class="tag gold" id="t4m">Moon</span><span class="tag gold" id="t4s">Sun · far away →</span></div>
 </section>
 
-<section class="scene" id="s5">
-  <div class="cap">
-    <p class="n">05</p>
-    <h2>The Sun stretches it too. Half as much.</h2>
-    <p>Lined up with the Moon, the stretches add: <strong>spring tides.</strong> Crosswise, they fight: <strong>neap tides.</strong> Twice a month each.</p>
-    <div class="controls"><button class="pill primary" id="b5" type="button">Play a month</button><button class="pill" id="b5t" type="button">Today</button></div>
-    <div class="controls"><input type="range" id="sl5" min="0" max="2953" value="0" aria-label="Day of the month"></div>
-    <div class="readout"><span>Moon</span><b id="r5p">New Moon · day 0</b><span>tide size</span><b class="cyan" id="r5r">Spring · 100%</b></div>
-  </div>
-  <div class="vis"><canvas id="c5"></canvas><span class="tag gold" id="t5m">Moon</span><span class="tag gold" id="t5s">Sun · far away →</span></div>
-</section>
-
-<section class="why" id="why">
-  <p class="n">06</p>
+<section class="grown" id="grown">
+  <p class="n">For grown-ups</p>
   <h2>Why the Moon beats the Sun.</h2>
+  <p>The Sun pulls the Earth 180 times harder than the Moon does. So why does the Moon run the tides?</p>
   <div class="stats">
     <div class="stat">
       <p class="lbl">Pull on the Earth</p>
@@ -199,7 +191,7 @@ footer a:hover{color:var(--ink)}
         <div class="bar"><span>Sun</span><div class="track"><div class="fill gold" data-w="100"></div></div><b>180×</b></div>
         <div class="bar"><span>Moon</span><div class="track"><div class="fill gold" data-w="0.6"></div></div><b>1×</b></div>
       </div>
-      <p>The Sun pulls far harder. That is why we go round it.</p>
+      <p>Pull is about mass. That is why we go round the Sun.</p>
     </div>
     <div class="stat">
       <p class="lbl">Stretch across the Earth</p>
@@ -207,18 +199,13 @@ footer a:hover{color:var(--ink)}
         <div class="bar"><span>Moon</span><div class="track"><div class="fill cyan" data-w="100"></div></div><b>2.2×</b></div>
         <div class="bar"><span>Sun</span><div class="track"><div class="fill cyan" data-w="46"></div></div><b>1×</b></div>
       </div>
-      <p>But stretch is the <strong>difference</strong> between near and far, and it fades with distance cubed. The Moon is 390 times closer.</p>
+      <p>Tides are about the <strong>difference</strong> between the pull on the near side and the far side. That difference fades with distance cubed, and the Moon is 390 times closer.</p>
     </div>
   </div>
-  <p class="verdict">Pull is about mass. <i>Tides are about distance.</i> The Moon wins, two to one.</p>
+  <div class="notes">
+    <p>The space pictures look down on the North Pole. The Moon is drawn ten to twenty times too close, and the bumps thousands of times too tall: on the open sea the real bump is under a metre, and coasts funnel it into the tides you see. Your beach is Marina Beach, Chennai. Scene 04 starts from today's real Moon.</p>
+  </div>
 </section>
-
-<div class="end">
-  <details>
-    <summary>About these pictures</summary>
-    <p>You are looking down on the North Pole. The Moon is drawn ten to twenty times too close, and the bulges thousands of times too tall: on the open sea the real bulge is under a metre, and coasts funnel it into the tides you see. The Moon's orbit is drawn over the equator. The beach is Marina Beach, Chennai. "Today" uses the real phase of the Moon.</p>
-  </details>
-</div>
 </main>
 <footer><a href="/tools.html">More tools</a> · <a href="/">Writing</a> · Arun Rafi</footer>
 
@@ -229,7 +216,8 @@ const TAU=Math.PI*2, clamp=(x,a,b)=>x<a?a:x>b?b:x, lerp=(a,b,t)=>a+(b-a)*t, smoo
 const $=s=>document.querySelector(s);
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const LUNAR_DAY=24.84, SYN=29.530588853, SUNFRAC=0.46;
-const C={cyan:'#6fe7ff',gold:'#f4d48a',blue:'#2f7dff',ink:'#eef2fb',soft:'#aab4cc',muted:'#6c768f',rose:'#ff7a9a'};
+const C={cyan:'#6fe7ff',gold:'#ffd97a',blue:'#2f7dff',ink:'#f3f5fb',soft:'#b9c2d8',muted:'#6c768f',rose:'#ff7a9a'};
+const MONO=getComputedStyle(document.documentElement).getPropertyValue('--mono');
 
 /* ---------- textures: Earth and Moon seen from above the pole ---------- */
 const earthImg=new Image(), moonImg=new Image();
@@ -255,13 +243,13 @@ earthImg.onload=()=>{earthDisc=polarDisc(earthImg,720,true);};
 moonImg.onload=()=>{moonDisc=polarDisc(moonImg,200,true);};
 earthImg.src='/assets/tides/earth_atmos_2048.jpg';moonImg.src='/assets/tides/moon_1024.jpg';
 
-/* Chennai, seen from above the pole: angle from the +x axis, anticlockwise */
 const BEACH_LAT=13.08*Math.PI/180, BEACH_LON=80.27*Math.PI/180, BEACH_R=Math.cos(BEACH_LAT);
 
 /* ---------- drawing helpers ---------- */
 function stars(ctx,w,h,seed,n){let s=seed;const rnd=()=>{s=(s*16807)%2147483647;return s/2147483647;};
-  for(let i=0;i<n;i++){const x=rnd()*w,y=rnd()*h,a=0.25+rnd()*0.6,r=rnd()<0.12?1.4:0.8;ctx.fillStyle=`rgba(200,214,240,${a})`;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();}}
-function glow(ctx,x,y,r,color,inner){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,inner||color);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();}
+  for(let i=0;i<n;i++){const x=rnd()*w,y=rnd()*h,a=0.25+rnd()*0.6,r=rnd()<0.12?1.5:0.9;ctx.fillStyle=`rgba(200,214,240,${a})`;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();}}
+function glow(ctx,x,y,r,color){const g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();}
+function rrect(ctx,x,y,w,h,r){ctx.beginPath();if(ctx.roundRect)ctx.roundRect(x,y,w,h,r);else ctx.rect(x,y,w,h);}
 function drawEarth(ctx,x,y,R,spin,alpha){
   ctx.save();ctx.translate(x,y);ctx.rotate(-spin);ctx.globalAlpha=alpha==null?1:alpha;
   if(earthDisc)ctx.drawImage(earthDisc,-R,-R,2*R,2*R);
@@ -269,19 +257,18 @@ function drawEarth(ctx,x,y,R,spin,alpha){
   ctx.restore();
   ctx.save();ctx.strokeStyle='rgba(160,200,255,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,R,0,TAU);ctx.stroke();ctx.restore();
 }
-function night(ctx,x,y,R,sunAng){ /* dark half away from the Sun */
+function night(ctx,x,y,R,sunAng){
   ctx.save();ctx.beginPath();ctx.arc(x,y,R,0,TAU);ctx.clip();ctx.translate(x,y);ctx.rotate(-sunAng);
   ctx.fillStyle='rgba(2,4,12,.62)';ctx.fillRect(-R-2,-R-2,R+2,2*R+4);ctx.restore();
 }
 function drawMoon(ctx,x,y,r,sunAng){
-  glow(ctx,x,y,r*3.2,'rgba(244,212,138,.22)');
+  glow(ctx,x,y,r*3.4,'rgba(255,217,122,.26)');
   ctx.save();ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.clip();
   if(moonDisc)ctx.drawImage(moonDisc,x-r,y-r,2*r,2*r);else{ctx.fillStyle='#cfc8bd';ctx.fillRect(x-r,y-r,2*r,2*r);}
   ctx.restore();
   if(sunAng!=null)night(ctx,x,y,r,sunAng);
-  ctx.strokeStyle='rgba(255,236,190,.5)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.stroke();
+  ctx.strokeStyle='rgba(255,236,190,.55)';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.stroke();
 }
-/* the sea: radius(θ) = base + Σ amp·cos²(θ−dir) ; θ anticlockwise from +x, screen y is down */
 function seaPath(ctx,x,y,R,base,lobes,n){
   n=n||180;ctx.beginPath();
   for(let k=0;k<=n;k++){const th=k/n*TAU;let r=R*base;for(const L of lobes){const c=Math.cos(th-L.dir);r+=R*L.amp*c*c;}
@@ -289,284 +276,239 @@ function seaPath(ctx,x,y,R,base,lobes,n){
   ctx.closePath();
 }
 function seaRadius(R,base,lobes,th){let r=R*base;for(const L of lobes){const c=Math.cos(th-L.dir);r+=R*L.amp*c*c;}return r;}
-function drawSea(ctx,x,y,R,lobes,strong){
-  const base=1.04;
-  ctx.save();
-  seaPath(ctx,x,y,R,base,lobes);
-  ctx.shadowColor='rgba(111,231,255,.55)';ctx.shadowBlur=strong?34:22;
-  ctx.fillStyle='rgba(47,125,255,.42)';ctx.fill();
-  ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(111,231,255,.10)';ctx.fill();
-  ctx.restore();
+function drawSea(ctx,x,y,R,lobes){
+  ctx.save();seaPath(ctx,x,y,R,1.04,lobes);
+  ctx.shadowColor='rgba(111,231,255,.6)';ctx.shadowBlur=36;ctx.fillStyle='rgba(47,125,255,.5)';ctx.fill();
+  ctx.shadowBlur=0;ctx.fillStyle='rgba(111,231,255,.12)';ctx.fill();ctx.restore();
 }
-function seaOutline(ctx,x,y,R,lobes){ctx.save();seaPath(ctx,x,y,R,1.04,lobes);ctx.strokeStyle='rgba(166,236,255,.95)';ctx.lineWidth=1.6;ctx.shadowColor='rgba(111,231,255,.9)';ctx.shadowBlur=10;ctx.stroke();ctx.restore();}
-function refCircle(ctx,x,y,r){ctx.save();ctx.setLineDash([3,5]);ctx.strokeStyle='rgba(170,180,204,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.stroke();ctx.restore();}
-function arrow(ctx,x1,y1,x2,y2,color,width){
-  const dx=x2-x1,dy=y2-y1,L=Math.hypot(dx,dy);if(L<2)return;const ux=dx/L,uy=dy/L,hl=Math.min(14,L*0.5),hw=hl*0.55;
-  ctx.save();ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=width||2.4;ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2-ux*hl,y2-uy*hl);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-ux*hl-uy*hw,y2-uy*hl+ux*hw);ctx.lineTo(x2-ux*hl+uy*hw,y2-uy*hl-ux*hw);ctx.closePath();ctx.fill();ctx.restore();
-}
+function seaOutline(ctx,x,y,R,lobes){ctx.save();seaPath(ctx,x,y,R,1.04,lobes);ctx.strokeStyle='rgba(180,240,255,.95)';ctx.lineWidth=2;ctx.shadowColor='rgba(111,231,255,.9)';ctx.shadowBlur=12;ctx.stroke();ctx.restore();}
+function refCircle(ctx,x,y,r){ctx.save();ctx.setLineDash([3,6]);ctx.strokeStyle='rgba(170,180,204,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.stroke();ctx.restore();}
 function beachPin(ctx,x,y,R,spin){
   const a=BEACH_LON+spin;const px=x+R*BEACH_R*Math.cos(a),py=y-R*BEACH_R*Math.sin(a);
-  glow(ctx,px,py,14,'rgba(111,231,255,.5)');
-  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px,py,3.2,0,TAU);ctx.fill();
-  ctx.strokeStyle=C.cyan;ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(px,py,6.5,0,TAU);ctx.stroke();
+  glow(ctx,px,py,18,'rgba(111,231,255,.55)');
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(px,py,4,0,TAU);ctx.fill();
+  ctx.strokeStyle=C.cyan;ctx.lineWidth=2;ctx.beginPath();ctx.arc(px,py,8,0,TAU);ctx.stroke();
   return [px,py,a];
 }
 function placeTag(el,x,y){el.style.left=x+'px';el.style.top=y+'px';el.style.visibility='visible';}
 function sunRays(ctx,w,h,x,y,R){
-  ctx.save();ctx.strokeStyle='rgba(244,212,138,.22)';ctx.lineWidth=1;
+  ctx.save();ctx.strokeStyle='rgba(255,217,122,.22)';ctx.lineWidth=1.2;
   const sx=w+40;
   for(let k=-5;k<=5;k++){const yy=y+k*R*0.55;if(Math.abs(k*R*0.55)<R*1.1){ctx.beginPath();ctx.moveTo(sx,yy);ctx.lineTo(x+R*1.12,yy);ctx.stroke();}
     else{ctx.beginPath();ctx.moveTo(sx,yy);ctx.lineTo(Math.max(16,x-R*3.4),yy);ctx.stroke();}}
-  const g=ctx.createRadialGradient(sx,y,0,sx,y,R*2.6);g.addColorStop(0,'rgba(255,240,200,.9)');g.addColorStop(.25,'rgba(255,215,130,.45)');g.addColorStop(1,'rgba(255,200,100,0)');
-  ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,y,R*2.6,0,TAU);ctx.fill();ctx.restore();
+  const g=ctx.createRadialGradient(sx,y,0,sx,y,R*2.8);g.addColorStop(0,'rgba(255,240,200,.95)');g.addColorStop(.25,'rgba(255,215,130,.5)');g.addColorStop(1,'rgba(255,200,100,0)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.arc(sx,y,R*2.8,0,TAU);ctx.fill();ctx.restore();
+}
+function face(ctx,x,y,r,color){
+  ctx.fillStyle=color;ctx.beginPath();ctx.arc(x,y,r,0,TAU);ctx.fill();
+  ctx.fillStyle='#1a1428';ctx.beginPath();ctx.arc(x-r*0.32,y-r*0.15,r*0.13,0,TAU);ctx.arc(x+r*0.32,y-r*0.15,r*0.13,0,TAU);ctx.fill();
+  ctx.strokeStyle='#1a1428';ctx.lineWidth=Math.max(1.2,r*0.12);ctx.lineCap='round';ctx.beginPath();ctx.arc(x,y+r*0.1,r*0.45,0.15*Math.PI,0.85*Math.PI);ctx.stroke();
+}
+
+/* the beach: sky, sand, sandcastle, crab, and a sea whose level runs from -1 (low) to +1 (high) */
+function beach(ctx,bx,by,bw,bh,level,now,opts){
+  opts=opts||{};
+  ctx.save();ctx.translate(bx,by);
+  if(opts.clip){rrect(ctx,0,0,bw,bh,18);ctx.clip();}
+  const w=bw,h=bh;
+  const sky=ctx.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#04060d');sky.addColorStop(.55,'#0a1226');sky.addColorStop(1,'#132040');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
+  if(!opts.noStars)stars(ctx,w,h*0.7,7,Math.round(w*h/6000));
+  let moonX=null;
+  if(opts.moonPhase!=null){const ph=opts.moonPhase;const mx=w*0.5+Math.sin(ph)*w*0.42,my=h*0.46-Math.cos(ph)*h*0.34;
+    if(my<h*0.62){glow(ctx,mx,my,h*0.09,'rgba(255,217,122,.4)');ctx.fillStyle='#fff1cf';ctx.beginPath();ctx.arc(mx,my,h*0.025,0,TAU);ctx.fill();moonX=mx;}}
+  const shore=h*0.70, amp=h*0.075, seaY=shore-level*amp;
+  const x0=w*0.22,y0=shore+amp*1.9,x1=w,y1=shore-amp*3.2;
+  const sandPath=()=>{ctx.beginPath();ctx.moveTo(0,h);ctx.lineTo(0,h*0.96);ctx.lineTo(x0,y0);ctx.lineTo(x1,y1);ctx.lineTo(w,h);ctx.closePath();};
+  const sand=ctx.createLinearGradient(0,y1,0,h);sand.addColorStop(0,'#5a4a2e');sand.addColorStop(.5,'#3a3020');sand.addColorStop(1,'#17120b');
+  ctx.fillStyle=sand;sandPath();ctx.fill();
+  const slopeY=x=>x<=x0?y0:y0+(y1-y0)*(x-x0)/(x1-x0);
+  ctx.save();sandPath();ctx.clip();ctx.fillStyle='rgba(90,120,170,.3)';ctx.fillRect(0,seaY-amp*0.4,w,amp*0.4);ctx.restore();
+  // sandcastle, where high tide just reaches it
+  const cxs=w*0.62, cy=slopeY(cxs), cs=h*0.075;
+  ctx.fillStyle='#8c7246';ctx.fillRect(cxs-cs*0.9,cy-cs*0.9,cs*1.8,cs*0.9);
+  ctx.fillStyle='#a3885a';ctx.fillRect(cxs-cs*0.5,cy-cs*1.6,cs,cs*0.75);
+  for(let k=0;k<3;k++){ctx.fillRect(cxs-cs*0.5+k*cs*0.4+cs*0.02,cy-cs*1.8,cs*0.18,cs*0.22);}
+  ctx.fillStyle='#6b5634';ctx.beginPath();ctx.arc(cxs,cy-cs*0.45,cs*0.16,0,TAU);ctx.fill();
+  ctx.strokeStyle='#d9c9a3';ctx.lineWidth=Math.max(1,cs*0.05);ctx.beginPath();ctx.moveTo(cxs,cy-cs*1.8);ctx.lineTo(cxs,cy-cs*2.5);ctx.stroke();
+  ctx.fillStyle=C.rose;ctx.beginPath();ctx.moveTo(cxs,cy-cs*2.5);ctx.lineTo(cxs+cs*0.5,cy-cs*2.32);ctx.lineTo(cxs,cy-cs*2.15);ctx.closePath();ctx.fill();
+  // crab, keeping its feet just dry
+  const wx=x0+(seaY-y0)*(x1-x0)/(y1-y0);const crx=clamp(wx+cs*1.3+Math.sin(now*2.2)*cs*0.25,x0,w-cs),cry=slopeY(crx)-cs*0.22;
+  ctx.fillStyle='#ff6b5a';ctx.beginPath();ctx.ellipse(crx,cry,cs*0.42,cs*0.26,0,0,TAU);ctx.fill();
+  ctx.strokeStyle='#ff6b5a';ctx.lineWidth=Math.max(1.5,cs*0.08);ctx.lineCap='round';
+  for(let k=-1;k<=1;k+=2){ctx.beginPath();ctx.moveTo(crx+k*cs*0.3,cry+cs*0.05);ctx.lineTo(crx+k*cs*0.62,cry+cs*0.3);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(crx+k*cs*0.38,cry-cs*0.1);ctx.lineTo(crx+k*cs*0.7,cry-cs*0.3);ctx.stroke();}
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(crx-cs*0.12,cry-cs*0.22,cs*0.07,0,TAU);ctx.arc(crx+cs*0.12,cry-cs*0.22,cs*0.07,0,TAU);ctx.fill();
+  // the sea, three layers of waves
+  const k=900/w;
+  for(let L=0;L<3;L++){
+    const y0w=seaY+L*amp*0.1, a=amp*0.06+L*amp*0.03, sp=0.6+L*0.25, f=0.012-L*0.002;
+    ctx.beginPath();ctx.moveTo(0,h);
+    for(let x=0;x<=w;x+=6){const y=y0w+Math.sin(x*f*k+now*sp)*a+Math.sin(x*f*2.3*k-now*sp*1.4)*a*0.5;ctx.lineTo(x,y);}
+    ctx.lineTo(w,h);ctx.closePath();
+    if(L===2){const dg=ctx.createLinearGradient(0,y0w,0,h);dg.addColorStop(0,'rgba(18,58,140,.9)');dg.addColorStop(1,'rgba(4,14,40,1)');ctx.fillStyle=dg;}
+    else ctx.fillStyle=L===0?'rgba(72,150,255,.55)':'rgba(36,96,200,.6)';
+    ctx.fill();
+  }
+  if(moonX!=null){ctx.save();ctx.globalAlpha=.3;ctx.fillStyle='#fff1cf';
+    for(let y=seaY+4;y<h;y+=9){const ww=18+Math.sin(y*0.3+now*3)*10;ctx.fillRect(moonX-ww/2,y,ww,3);}ctx.restore();}
+  ctx.restore();
 }
 
 /* ---------- scene plumbing ---------- */
 const scenes=[];
-function scene(id,opts){
+function scene(id){
   const el=document.getElementById(id), canvas=el.querySelector('canvas'), ctx=canvas.getContext('2d');
-  const S={el,canvas,ctx,w:0,h:0,dpr:1,visible:false,t:0,...opts};
+  const S={el,canvas,ctx,w:0,h:0,dpr:1,visible:false};
   const box=canvas.parentElement;
   function resize(){const r=box.getBoundingClientRect();S.dpr=Math.min(devicePixelRatio||1,2);S.w=Math.max(1,r.width);S.h=Math.max(1,r.height);
-    canvas.width=Math.round(S.w*S.dpr);canvas.height=Math.round(S.h*S.dpr);ctx.setTransform(S.dpr,0,0,S.dpr,0,0);S.dirty=true;}
+    canvas.width=Math.round(S.w*S.dpr);canvas.height=Math.round(S.h*S.dpr);ctx.setTransform(S.dpr,0,0,S.dpr,0,0);}
   new ResizeObserver(resize).observe(box);resize();
-  new IntersectionObserver(e=>{S.visible=e[e.length-1].isIntersecting;if(S.visible&&S.onShow)S.onShow();},{threshold:0.12}).observe(el);
+  new IntersectionObserver(e=>{S.visible=e[e.length-1].isIntersecting;},{threshold:0.1}).observe(el);
   scenes.push(S);return S;
 }
-/* geometry shared by the top-down scenes: Earth left of centre, Moon to the right */
 function layout(S){
   const narrow=S.w<560;
-  const R=narrow?Math.min(S.w*0.13,S.h*0.17):Math.min(S.w*0.11,S.h*0.16);
-  return {R,cx:narrow?S.w*0.36:S.w*0.4,cy:S.h*0.5,narrow};
+  const R=narrow?Math.min(S.w*0.15,S.h*0.2):Math.min(S.w*0.13,S.h*0.19);
+  return {R,cx:narrow?S.w*0.4:S.w*0.42,cy:S.h*0.5,narrow};
 }
-function dragMoon(S,handle,getState,setState){
+function dragMoon(S,handle,setState){
   let drag=null;
   handle.addEventListener('pointerdown',e=>{handle.setPointerCapture(e.pointerId);drag=true;handle.classList.add('quiet');e.preventDefault();});
-  handle.addEventListener('pointermove',e=>{if(!drag)return;const r=S.canvas.getBoundingClientRect();setState(e.clientX-r.left,e.clientY-r.top);S.dirty=true;});
+  handle.addEventListener('pointermove',e=>{if(!drag)return;const r=S.canvas.getBoundingClientRect();setState(e.clientX-r.left,e.clientY-r.top);});
   const up=()=>{drag=null;};handle.addEventListener('pointerup',up);handle.addEventListener('pointercancel',up);
 }
 
 /* ===================== HERO: the beach ===================== */
 (function(){
-  const S=scene('hero',{});const hud=$('#hud0');
-  S.t=6.2; // hours
-  S.update=dt=>{S.t=(S.t+dt*(LUNAR_DAY/22))%LUNAR_DAY;};
+  const S=scene('hero');const big=$('#big0');let t=4,lastWord='';
+  S.update=dt=>{t=(t+dt*(LUNAR_DAY/24))%LUNAR_DAY;};
   S.draw=()=>{
-    const {ctx,w,h}=S;const t=S.t;
-    const sky=ctx.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#04060d');sky.addColorStop(.55,'#0a1226');sky.addColorStop(1,'#132040');
-    ctx.fillStyle=sky;ctx.fillRect(0,0,w,h);
-    stars(ctx,w,h*0.7,7,Math.round(w*h/6000));
-    // the Moon crosses the sky once per lunar day
-    const ph=t/LUNAR_DAY*TAU;const mx=w*0.5+Math.sin(ph)*w*0.42, my=h*0.46-Math.cos(ph)*h*0.34;
-    const up=my<h*0.62;
-    if(up){glow(ctx,mx,my,70,'rgba(244,212,138,.35)');ctx.fillStyle='#f6ebc9';ctx.beginPath();ctx.arc(mx,my,16,0,TAU);ctx.fill();}
-    // tide: high when the Moon is overhead or underfoot
-    const level=Math.cos(2*ph);              // +1 high, -1 low
-    const shore=h*0.70, amp=h*0.075;
-    const seaY=shore-level*amp;
-    // a long sloping beach: sea on the left, dry sand on the right
-    const sand=ctx.createLinearGradient(0,shore-amp*3,0,h);sand.addColorStop(0,'#4a3d28');sand.addColorStop(.5,'#2e2619');sand.addColorStop(1,'#15110a');
-    ctx.fillStyle=sand;ctx.beginPath();ctx.moveTo(0,h);ctx.lineTo(0,h*0.96);ctx.lineTo(w*0.22,shore+amp*1.9);ctx.lineTo(w,shore-amp*3.2);ctx.lineTo(w,h);ctx.closePath();ctx.fill();
-    // wet sand just above the water line
-    const wetY=seaY+amp*0.18;ctx.save();ctx.beginPath();ctx.moveTo(0,h);ctx.lineTo(0,h*0.96);ctx.lineTo(w*0.22,shore+amp*1.9);ctx.lineTo(w,shore-amp*3.2);ctx.lineTo(w,h);ctx.closePath();ctx.clip();
-    ctx.fillStyle='rgba(90,120,160,.28)';ctx.fillRect(0,wetY-amp*0.35,w,amp*0.35);ctx.restore();
-    // sea: waves, three layers
-    const now=performance.now()/1000;
-    for(let L=0;L<3;L++){
-      const y0=seaY+L*7, a=4+L*2, sp=0.6+L*0.25, f=0.012-L*0.002;
-      ctx.beginPath();ctx.moveTo(0,h);
-      for(let x=0;x<=w;x+=6){const y=y0+Math.sin(x*f+now*sp)*a+Math.sin(x*f*2.3-now*sp*1.4)*a*0.5;ctx.lineTo(x,y);}
-      ctx.lineTo(w,h);ctx.closePath();
-      if(L===2){const dg=ctx.createLinearGradient(0,y0,0,h);dg.addColorStop(0,'rgba(18,58,140,.9)');dg.addColorStop(1,'rgba(4,14,40,1)');ctx.fillStyle=dg;}
-      else ctx.fillStyle=L===0?'rgba(72,150,255,.55)':'rgba(36,96,200,.6)';ctx.fill();
-    }
-    // moon reflection
-    if(up){ctx.save();ctx.globalAlpha=.35;const g=ctx.createLinearGradient(0,seaY,0,h);g.addColorStop(0,'rgba(255,236,190,.9)');g.addColorStop(1,'rgba(255,236,190,0)');ctx.fillStyle=g;
-      for(let y=seaY+4;y<h;y+=9){const ww=18+Math.sin(y*0.3+now*3)*10;ctx.fillRect(mx-ww/2,y,ww,3);}ctx.restore();}
-    // the post with tide marks
-    const px=w*0.66, top=shore-amp*2.9, bot=shore+amp*1.1;
-    ctx.fillStyle='#120e08';ctx.fillRect(px-5,top,10,bot-top+20);
-    for(let k=-2;k<=2;k++){const y=shore-k*amp*0.5;ctx.fillStyle=k===0?'rgba(255,255,255,.7)':'rgba(255,255,255,.35)';ctx.fillRect(px-9,y,18,1.5);}
-    glow(ctx,px,seaY,16,'rgba(111,231,255,.6)');ctx.fillStyle=C.cyan;ctx.fillRect(px-14,seaY-1,28,2);
-    // clock
-    const hh=Math.floor(t)%24, mm=Math.floor((t%1)*60);
-    const word=level>0.75?'High tide':level<-0.75?'Low tide':(Math.sin(2*ph)<0?'Rising ▲':'Falling ▼');
-    hud.innerHTML=`<b>${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}</b><i>${word}</i>`;
+    const {ctx,w,h}=S;const ph=t/LUNAR_DAY*TAU;const level=Math.cos(2*ph);
+    beach(ctx,0,0,w,h,level,performance.now()/1000,{moonPhase:ph});
+    const rising=Math.sin(2*ph)<0;
+    const word=level>0.8?'The sea is <i>up</i>. Splash!':level<-0.8?'The sea is <i>down</i>.':rising?'The sea comes <i>up</i>…':'The sea goes <i>down</i>…';
+    if(word!==lastWord){big.innerHTML=word;lastWord=word;}
   };
 })();
 
-/* ===================== 01: the pull ===================== */
+/* ===================== 01: the Moon pulls ===================== */
 (function(){
-  const S=scene('s1',{});const handle=$('#h1'),tag=$('#t1m'),rv=$('#r1v');
-  S.moon={ang:0.0,dist:4};
-  dragMoon(S,handle,null,(x,y)=>{const {R,cx,cy}=layout(S);const dx=(x-cx)/R,dy=-(y-cy)/R;S.moon.ang=Math.atan2(dy,dx);S.moon.dist=clamp(Math.hypot(dx,dy),2.4,7);});
+  const S=scene('s1');const handle=$('#h1'),tag=$('#t1m');
+  const moon={ang:0.1,dist:3.6};
+  dragMoon(S,handle,(x,y)=>{const {R,cx,cy}=layout(S);const dx=(x-cx)/R,dy=-(y-cy)/R;moon.ang=Math.atan2(dy,dx);moon.dist=clamp(Math.hypot(dx,dy),2.4,6);});
   S.draw=()=>{
     const {ctx,w,h}=S,{R,cx,cy}=layout(S);ctx.clearRect(0,0,w,h);stars(ctx,w,h,3,Math.round(w*h/9000));
-    const D=S.moon.dist,a=S.moon.ang,mx=cx+R*D*Math.cos(a),my=cy-R*D*Math.sin(a);
-    drawEarth(ctx,cx,cy,R,0,0.75);
-    // pull on 12 rim points and the centre: k/d²
-    const pts=[[0,0]];for(let k=0;k<12;k++){const th=k/12*TAU;pts.push([Math.cos(th),Math.sin(th)]);}
-    const kk=0.9*D*D; // centre arrow = 0.9R at the current distance
-    for(const [px,py] of pts){const x=cx+px*R,y=cy-py*R;const ddx=mx-x,ddy=my-y,d=Math.hypot(ddx,ddy)/R;const L=kk/(d*d)*R;const ux=ddx/(d*R),uy=ddy/(d*R);
-      const centre=px===0&&py===0;arrow(ctx,x,y,x+ux*L,y+uy*L,centre?'rgba(238,242,251,.95)':C.gold,centre?3:2.4);}
-    drawMoon(ctx,mx,my,R*0.27);
-    placeTag(tag,mx,my-R*0.27-18);handle.style.left=mx+'px';handle.style.top=my+'px';handle.style.visibility='visible';
-    const near=(D+1)*(D+1)/((D-1)*(D-1));rv.textContent=near.toFixed(1)+'×';
+    const D=moon.dist,a=moon.ang,mx=cx+R*D*Math.cos(a),my=cy-R*D*Math.sin(a);
+    const amp=Math.min(0.3*Math.pow(3.6/D,3),0.8);
+    const lobes=[{dir:a,amp}];
+    ctx.save();const g=ctx.createLinearGradient(mx,my,cx,cy);g.addColorStop(0,'rgba(255,217,122,.35)');g.addColorStop(1,'rgba(255,217,122,0)');
+    ctx.strokeStyle=g;ctx.lineWidth=R*0.5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(mx,my);ctx.lineTo(cx+R*1.2*Math.cos(a),cy-R*1.2*Math.sin(a));ctx.stroke();ctx.restore();
+    drawSea(ctx,cx,cy,R,lobes);drawEarth(ctx,cx,cy,R,0,0.92);refCircle(ctx,cx,cy,R*1.04);seaOutline(ctx,cx,cy,R,lobes);
+    drawMoon(ctx,mx,my,R*0.3);
+    placeTag(tag,mx,my-R*0.3-20);handle.style.left=mx+'px';handle.style.top=my+'px';handle.style.visibility='visible';
   };
 })();
 
-/* ===================== 02: three stones ===================== */
+/* ===================== 02: the race ===================== */
 (function(){
-  const S=scene('s2',{});const btn=$('#b2'),rv=$('#r2v');
+  const S=scene('s2');const btn=$('#b2'),st=$('#st2');
   const D0=4.2;let stones=null,running=false,trail=[];
-  function reset(){stones=[-1,0,1].map(o=>({x0:o,x:o,v:0}));trail=[];running=false;rv.textContent='0.00 R';btn.textContent='Drop them';btn.disabled=false;}
+  function reset(){stones=[-1,0,1].map(o=>({x:o,v:0}));trail=[];running=false;btn.textContent='Ready, set, go!';btn.disabled=false;st.innerHTML='';}
   reset();
-  btn.addEventListener('click',()=>{if(running)return;reset();running=true;btn.textContent='Falling…';btn.disabled=true;});
-  S.update=dt=>{if(!running)return;const step=Math.min(dt,0.05)*(reduce?2:1);
+  btn.addEventListener('click',()=>{if(running)return;reset();running=true;btn.textContent='Go go go!';btn.disabled=true;st.innerHTML='<i>Closest friend first!</i>';});
+  S.update=dt=>{if(!running)return;const step=Math.min(dt,0.05);
     for(let i=0;i<4;i++){for(const s of stones){const d=D0-s.x;const acc=6.5/(d*d);s.v+=acc*step/4;s.x+=s.v*step/4;}}
     trail.push(stones.map(s=>s.x));if(trail.length>400)trail.shift();
-    const near=stones[2],far=stones[0];rv.textContent=(near.x-far.x-2).toFixed(2)+' R';
-    if(D0-near.x<0.9){running=false;btn.textContent='Drop again';btn.disabled=false;}
+    if(D0-stones[2].x<0.95){running=false;btn.textContent='Race again';btn.disabled=false;st.innerHTML='<b>Stretched!</b> Two bumps.';}
   };
   S.draw=()=>{
     const {ctx,w,h}=S,{R,cx,cy}=layout(S);ctx.clearRect(0,0,w,h);stars(ctx,w,h,5,Math.round(w*h/9000));
-    const ex=cx-R*0.6, mx=ex+R*D0, my=cy;
-    // start line and track
-    ctx.save();ctx.setLineDash([3,6]);ctx.strokeStyle='rgba(170,180,204,.3)';ctx.beginPath();ctx.moveTo(ex-R*1.6,my);ctx.lineTo(mx-R*0.3,my);ctx.stroke();ctx.restore();
-    // the bag: an ellipse through far and near stone
+    const ex=cx-R*0.7, mx=ex+R*D0, my=cy;
+    ctx.save();ctx.setLineDash([3,7]);ctx.strokeStyle='rgba(170,180,204,.3)';ctx.beginPath();ctx.moveTo(ex-R*1.6,my);ctx.lineTo(mx-R*0.35,my);ctx.stroke();ctx.restore();
     const far=stones[0],mid=stones[1],near=stones[2];
     const fx=ex+far.x*R,nx=ex+near.x*R,ccx=(fx+nx)/2,ra=(nx-fx)/2,rb=R;
     ctx.save();ctx.beginPath();ctx.ellipse(ccx,my,Math.max(ra,1),rb,0,0,TAU);
-    ctx.fillStyle='rgba(47,125,255,.22)';ctx.shadowColor='rgba(111,231,255,.45)';ctx.shadowBlur=20;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(166,236,255,.8)';ctx.lineWidth=1.4;ctx.stroke();ctx.restore();
+    ctx.fillStyle='rgba(47,125,255,.3)';ctx.shadowColor='rgba(111,231,255,.5)';ctx.shadowBlur=26;ctx.fill();ctx.shadowBlur=0;ctx.strokeStyle='rgba(180,240,255,.9)';ctx.lineWidth=2;ctx.stroke();ctx.restore();
     refCircle(ctx,ex,my,R);
-    // trails
-    ctx.save();ctx.strokeStyle='rgba(244,212,138,.25)';ctx.lineWidth=1;
+    ctx.save();ctx.strokeStyle='rgba(255,217,122,.3)';ctx.lineWidth=1.5;
     for(let i=0;i<3;i++){ctx.beginPath();for(let k=0;k<trail.length;k++){const x=ex+trail[k][i]*R;if(k===0)ctx.moveTo(x,my);else ctx.lineTo(x,my);}ctx.stroke();}
     ctx.restore();
-    const cols=[C.rose,C.ink,C.cyan],glows=['rgba(255,122,154,.5)','rgba(238,242,251,.5)','rgba(111,231,255,.5)'],names=['far','centre','near'];
-    [far,mid,near].forEach((s,i)=>{const x=ex+s.x*R;glow(ctx,x,my,16,glows[i]);
-      ctx.fillStyle=cols[i];ctx.beginPath();ctx.arc(x,my,6,0,TAU);ctx.fill();
-      ctx.fillStyle=C.soft;ctx.font='600 10px '+getComputedStyle(document.body).getPropertyValue('--mono');ctx.textAlign='center';ctx.fillText(names[i].toUpperCase(),x,my+(i===1?-16:22));});
-    drawMoon(ctx,mx,my,R*0.3);
+    const cols=[C.rose,'#fff',C.cyan],glows=['rgba(255,122,154,.5)','rgba(238,242,251,.5)','rgba(111,231,255,.5)'],names=['farthest','middle','closest'];
+    const fr=Math.max(11,R*0.15);
+    [far,mid,near].forEach((s,i)=>{const x=ex+s.x*R;glow(ctx,x,my,fr*2.4,glows[i]);face(ctx,x,my,fr,cols[i]);
+      ctx.fillStyle=C.soft;ctx.font='600 10px '+MONO;ctx.textAlign='center';ctx.fillText(names[i].toUpperCase(),x,my+(i===1?-fr-10:fr+18));});
+    drawMoon(ctx,mx,my,R*0.32);
   };
 })();
 
-/* ===================== 03: two bulges ===================== */
+/* ===================== 03: the spin, with your beach beside it ===================== */
 (function(){
-  const S=scene('s3',{});const handle=$('#h3'),tag=$('#t3m'),tb=$('#t3b'),rd=$('#r3d'),rs=$('#r3s');
-  S.moon={ang:0.15,dist:4};
-  dragMoon(S,handle,null,(x,y)=>{const {R,cx,cy}=layout(S);const dx=(x-cx)/R,dy=-(y-cy)/R;S.moon.ang=Math.atan2(dy,dx);S.moon.dist=clamp(Math.hypot(dx,dy),2.6,7.2);});
-  S.draw=()=>{
-    const {ctx,w,h}=S,{R,cx,cy}=layout(S);ctx.clearRect(0,0,w,h);stars(ctx,w,h,11,Math.round(w*h/9000));
-    const D=S.moon.dist,a=S.moon.ang,mx=cx+R*D*Math.cos(a),my=cy-R*D*Math.sin(a);
-    const stretch=Math.pow(4/D,3);const amp=Math.min(0.26*stretch,0.75);
-    const lobes=[{dir:a,amp}];
-    drawSea(ctx,cx,cy,R,lobes,true);
-    drawEarth(ctx,cx,cy,R,0,0.9);
-    refCircle(ctx,cx,cy,R*1.04);
-    seaOutline(ctx,cx,cy,R,lobes);
-    // the leftover pull, four arrows
-    for(const th of [a,a+Math.PI,a+Math.PI/2,a-Math.PI/2]){const out=Math.abs(Math.cos(th-a))>0.5;const r0=seaRadius(R,1.04,lobes,th);
-      const x=cx+r0*Math.cos(th),y=cy-r0*Math.sin(th);const L=(out?1:-0.5)*R*0.42*Math.min(stretch,2.2);
-      arrow(ctx,x,y,x+L*Math.cos(th),y-L*Math.sin(th),'rgba(111,231,255,.9)',2);}
-    const [bx,by,bang]=beachPin(ctx,cx,cy,R,0);placeTag(tb,bx+Math.cos(bang)*30,by-Math.sin(bang)*30);
-    drawMoon(ctx,mx,my,R*0.27);
-    placeTag(tag,mx,my-R*0.27-18);handle.style.left=mx+'px';handle.style.top=my+'px';handle.style.visibility='visible';
-    rd.textContent=D.toFixed(1)+' R';rs.innerHTML='<i>'+stretch.toFixed(stretch<10?1:0)+'×</i>';
-  };
-})();
-
-/* ===================== 04: the spin ===================== */
-(function(){
-  const S=scene('s4',{});const btn=$('#b4'),sl=$('#sl4'),rt=$('#r4t'),rh=$('#r4h'),tm=$('#t4m'),tb=$('#t4b');
-  let t=0,playing=false;
-  const spin0=-BEACH_LON; // beach under the Moon at t=0
-  btn.addEventListener('click',()=>{if(playing){playing=false;btn.textContent='Play a day';return;}if(t>=LUNAR_DAY-0.01)t=0;playing=true;btn.textContent='Pause';});
-  sl.addEventListener('input',()=>{playing=false;btn.textContent='Play a day';t=sl.value/60;});
-  S.update=dt=>{if(!playing)return;t=Math.min(LUNAR_DAY,t+dt*LUNAR_DAY/18);sl.value=Math.round(t*60);if(t>=LUNAR_DAY){playing=false;btn.textContent='Play again';}};
-  function height(tt){const ma=tt/(24*SYN)*TAU, ba=spin0+tt/24*TAU+BEACH_LON;const c=Math.cos(ba-ma);return c*c;}
+  const S=scene('s3');const btn=$('#b3'),sl=$('#sl3'),st=$('#st3'),tm=$('#t3m'),tb=$('#t3b');
+  let t=0,playing=false,lastWord='';
+  const spin0=-BEACH_LON;
+  btn.addEventListener('click',()=>{if(playing){playing=false;btn.textContent='Spin!';return;}if(t>=LUNAR_DAY-0.01)t=0;playing=true;btn.textContent='Stop';});
+  sl.addEventListener('input',()=>{playing=false;btn.textContent='Spin!';t=sl.value/60;});
+  S.update=dt=>{if(!playing)return;t=Math.min(LUNAR_DAY,t+dt*LUNAR_DAY/20);sl.value=Math.round(t*60);if(t>=LUNAR_DAY){playing=false;btn.textContent='Spin again';}};
   S.draw=()=>{
     const {ctx,w,h}=S;ctx.clearRect(0,0,w,h);stars(ctx,w,h,17,Math.round(w*h/9000));
-    const narrow=S.w<560;const R=narrow?Math.min(S.w*0.14,S.h*0.14):Math.min(S.w*0.1,S.h*0.15);
-    const cx=narrow?w*0.34:w*0.36, cy=narrow?h*0.36:h*0.42;
-    const D=4.2, ma=t/(24*SYN)*TAU, spin=spin0+t/24*TAU;
+    const narrow=S.w<560;
+    const R=narrow?Math.min(S.w*0.14,S.h*0.15):Math.min(S.w*0.11,S.h*0.17);
+    const cx=narrow?w*0.38:w*0.3, cy=narrow?h*0.3:h*0.4;
+    const D=3.4, ma=t/(24*SYN)*TAU, spin=spin0+t/24*TAU;
     const mx=cx+R*D*Math.cos(ma),my=cy-R*D*Math.sin(ma);
-    const lobes=[{dir:ma,amp:0.26}];
-    drawSea(ctx,cx,cy,R,lobes,true);drawEarth(ctx,cx,cy,R,spin,0.95);refCircle(ctx,cx,cy,R*1.04);seaOutline(ctx,cx,cy,R,lobes);
-    // orbit arc
-    ctx.save();ctx.setLineDash([3,6]);ctx.strokeStyle='rgba(170,180,204,.25)';ctx.beginPath();ctx.arc(cx,cy,R*D,0,TAU);ctx.stroke();ctx.restore();
-    const [bx,by,ba]=beachPin(ctx,cx,cy,R,spin);placeTag(tb,bx+Math.cos(ba)*26,by-Math.sin(ba)*26);
-    // water column at the beach: a tick out to the sea surface
-    const rs=seaRadius(R,1.04,lobes,ba);ctx.strokeStyle=C.cyan;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cx+rs*Math.cos(ba),cy-rs*Math.sin(ba));ctx.stroke();
-    drawMoon(ctx,mx,my,R*0.25);placeTag(tm,mx,my-R*0.25-18);
-    // the tide graph
-    const gx=narrow?20:cx-R*1.6, gw=narrow?w-40:w-gx-28, gy=narrow?h*0.72:cy+R*1.75, gh=narrow?h*0.2:R*1.7;
-    ctx.save();ctx.strokeStyle='rgba(170,180,204,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx,gy+gh);ctx.lineTo(gx+gw,gy+gh);ctx.stroke();
-    ctx.fillStyle=C.muted;ctx.font='600 10px '+getComputedStyle(document.body).getPropertyValue('--mono');ctx.textAlign='left';
-    for(const hr of [0,6,12,18,24]){const x=gx+hr/LUNAR_DAY*gw;ctx.fillText(hr+'h',x-4,gy+gh+16);ctx.fillRect(x,gy+gh-3,1,6);}
-    ctx.textAlign='right';ctx.fillStyle=C.soft;ctx.fillText('HIGH',gx+gw,gy+10);ctx.fillText('LOW',gx+gw,gy+gh-4);
-    // full curve, faint
-    ctx.beginPath();for(let k=0;k<=200;k++){const tt=k/200*LUNAR_DAY;const x=gx+k/200*gw,y=gy+gh-height(tt)*gh;if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
-    ctx.strokeStyle='rgba(111,231,255,.18)';ctx.lineWidth=1.5;ctx.stroke();
-    // drawn so far
-    const n=Math.max(1,Math.round(t/LUNAR_DAY*200));ctx.beginPath();for(let k=0;k<=n;k++){const tt=k/200*LUNAR_DAY;const x=gx+k/200*gw,y=gy+gh-height(tt)*gh;if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
-    ctx.strokeStyle=C.cyan;ctx.lineWidth=2.4;ctx.shadowColor='rgba(111,231,255,.8)';ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
-    const hx=gx+t/LUNAR_DAY*gw,hy=gy+gh-height(t)*gh;glow(ctx,hx,hy,14,'rgba(111,231,255,.6)');ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(hx,hy,3.5,0,TAU);ctx.fill();
-    ctx.restore();
-    const hv=height(t);rh.textContent=hv>0.9?'High tide':hv<0.1?'Low tide':(Math.sin(2*(spin0+t/24*TAU+BEACH_LON-ma))<0?'Rising ▲':'Falling ▼');
-    const hh=Math.floor(t%24),mm=Math.floor((t%1)*60);rt.textContent=`Day ${Math.floor(t/24)+1} · ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+    const lobes=[{dir:ma,amp:0.3}];
+    ctx.save();ctx.setLineDash([3,7]);ctx.strokeStyle='rgba(170,180,204,.25)';ctx.beginPath();ctx.arc(cx,cy,R*D,0,TAU);ctx.stroke();ctx.restore();
+    drawSea(ctx,cx,cy,R,lobes);drawEarth(ctx,cx,cy,R,spin,0.95);refCircle(ctx,cx,cy,R*1.04);seaOutline(ctx,cx,cy,R,lobes);
+    const [bx,by,ba]=beachPin(ctx,cx,cy,R,spin);placeTag(tb,bx+Math.cos(ba)*34,by-Math.sin(ba)*34);
+    const rs=seaRadius(R,1.04,lobes,ba);ctx.strokeStyle=C.cyan;ctx.lineWidth=3;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(cx+rs*Math.cos(ba),cy-rs*Math.sin(ba));ctx.stroke();
+    drawMoon(ctx,mx,my,R*0.28);placeTag(tm,mx,my-R*0.28-20);
+    // your beach, live
+    const c=Math.cos(ba-ma);const level=c*c*2-1;
+    const pw=narrow?w-32:w*0.44, ph=narrow?h*0.36:Math.min(pw*0.6,h-cy-R*1.3-40);
+    const px=narrow?16:w-pw-20, py=narrow?h-ph-16:h-ph-20;
+    ctx.save();ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=30;ctx.fillStyle='#000';rrect(ctx,px,py,pw,ph,18);ctx.fill();ctx.restore();
+    beach(ctx,px,py,pw,ph,level,performance.now()/1000,{clip:true,noStars:true});
+    ctx.save();ctx.strokeStyle='rgba(111,231,255,.6)';ctx.lineWidth=2;rrect(ctx,px,py,pw,ph,18);ctx.stroke();
+    ctx.fillStyle=C.cyan;ctx.font='600 11px '+MONO;ctx.textAlign='left';ctx.fillText('YOUR BEACH',px+14,py+22);ctx.restore();
+    ctx.save();ctx.setLineDash([2,5]);ctx.strokeStyle='rgba(111,231,255,.45)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(narrow?px+pw/2:px,narrow?py:py+ph/2);ctx.stroke();ctx.restore();
+    const word=level>0.6?'<i>Water up!</i>':level<-0.6?'Water down.':(Math.sin(2*(ba-ma))<0?'Coming up…':'Going down…');
+    if(word!==lastWord){st.innerHTML=word;lastWord=word;}
   };
 })();
 
-/* ===================== 05: the Sun, a month ===================== */
+/* ===================== 04: the Sun ===================== */
 (function(){
-  const S=scene('s5',{});const btn=$('#b5'),bt=$('#b5t'),sl=$('#sl5'),rp=$('#r5p'),rr=$('#r5r'),tm=$('#t5m'),ts=$('#t5s');
-  let age=0,playing=false;
+  const S=scene('s4');const ba=$('#b4a'),bb=$('#b4b'),bp=$('#b4p'),st=$('#st4'),tm=$('#t4m'),ts=$('#t4s');
   function moonAge(d){const e=Date.UTC(2000,0,6,18,14);const x=(d-e)/86400000;return ((x%SYN)+SYN)%SYN;}
-  btn.addEventListener('click',()=>{if(playing){playing=false;btn.textContent='Play a month';return;}if(age>=SYN-0.01)age=0;playing=true;btn.textContent='Pause';});
-  bt.addEventListener('click',()=>{playing=false;btn.textContent='Play a month';const target=moonAge(Date.now());const from=age;tween(1200,u=>{age=from+(target-from)*u;sl.value=Math.round(age*100);});});
-  sl.addEventListener('input',()=>{playing=false;btn.textContent='Play a month';age=sl.value/100;});
-  let tw=null;function tween(dur,fn){tw={t0:performance.now(),dur,fn};}
-  S.update=dt=>{if(tw){const u=clamp((performance.now()-tw.t0)/tw.dur,0,1);tw.fn(smooth(u));if(u>=1)tw=null;}
-    if(!playing)return;age=Math.min(SYN,age+dt*SYN/16);sl.value=Math.round(age*100);if(age>=SYN){playing=false;btn.textContent='Play again';}};
-  function phaseName(a){const f=a/SYN;return f<0.03||f>0.97?'New Moon':f<0.22?'Waxing crescent':f<0.28?'First quarter':f<0.47?'Waxing gibbous':f<0.53?'Full Moon':f<0.72?'Waning gibbous':f<0.78?'Last quarter':'Waning crescent';}
+  let age=moonAge(Date.now()),playing=false,tw=null,lastWord='';
+  function press(b){[ba,bb].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));}
+  function goTo(target){playing=false;bp.textContent='Play a month';const from=age,d=target-from;tw={t0:performance.now(),dur:reduce?0:1300,fn:u=>{age=from+d*u;}};}
+  ba.addEventListener('click',()=>{press(ba);goTo(age<SYN/2?0:SYN/2);});
+  bb.addEventListener('click',()=>{press(bb);goTo(age<SYN/2?SYN/4:SYN*3/4);});
+  bp.addEventListener('click',()=>{if(playing){playing=false;bp.textContent='Play a month';return;}press(null);if(age>=SYN-0.01)age=0;playing=true;bp.textContent='Stop';});
+  press(null);
+  S.update=dt=>{if(tw){const u=tw.dur?clamp((performance.now()-tw.t0)/tw.dur,0,1):1;tw.fn(smooth(u));if(u>=1)tw=null;}
+    if(!playing)return;age=Math.min(SYN,age+dt*SYN/18);if(age>=SYN){playing=false;bp.textContent='Play again';}};
   S.draw=()=>{
     const {ctx,w,h}=S;ctx.clearRect(0,0,w,h);stars(ctx,w,h,23,Math.round(w*h/9000));
-    const narrow=S.w<560;const R=narrow?Math.min(S.w*0.11,S.h*0.12):Math.min(S.w*0.085,S.h*0.14);
-    const cx=narrow?w*0.42:w*0.38, cy=narrow?h*0.4:h*0.46;
-    const D=3.9, el=age/SYN*TAU; // elongation: angle of the Moon from the Sun direction (+x), anticlockwise
+    const narrow=S.w<560;const R=narrow?Math.min(S.w*0.13,S.h*0.14):Math.min(S.w*0.1,S.h*0.17);
+    const cx=narrow?w*0.42:w*0.4, cy=h*0.5;
+    const D=3.6, el=age/SYN*TAU;
     const mx=cx+R*D*Math.cos(el),my=cy-R*D*Math.sin(el);
     sunRays(ctx,w,h,cx,cy,R);
-    const lobes=[{dir:el,amp:0.24},{dir:0,amp:0.24*SUNFRAC}];
-    ctx.save();ctx.setLineDash([3,6]);ctx.strokeStyle='rgba(170,180,204,.25)';ctx.beginPath();ctx.arc(cx,cy,R*D,0,TAU);ctx.stroke();ctx.restore();
-    drawSea(ctx,cx,cy,R,lobes,true);drawEarth(ctx,cx,cy,R,0,0.95);night(ctx,cx,cy,R,0);refCircle(ctx,cx,cy,R*1.04);seaOutline(ctx,cx,cy,R,lobes);
-    drawMoon(ctx,mx,my,R*0.24,0);placeTag(tm,mx,my-R*0.24-18);placeTag(ts,w-78,cy-R*2.9);
-    // month graph of tide size
-    const gx=narrow?20:cx-R*1.6, gw=narrow?w-40:w-gx-28, gy=narrow?h*0.74:cy+R*1.9, gh=narrow?h*0.18:R*1.5;
-    const range=a=>{const d=a/SYN*TAU;return Math.sqrt(1+SUNFRAC*SUNFRAC+2*SUNFRAC*Math.cos(2*d));};
-    const rmax=1+SUNFRAC;
-    ctx.save();ctx.strokeStyle='rgba(170,180,204,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(gx,gy+gh);ctx.lineTo(gx+gw,gy+gh);ctx.stroke();
-    ctx.fillStyle=C.muted;ctx.font='600 10px '+getComputedStyle(document.body).getPropertyValue('--mono');ctx.textAlign='center';
-    [['NEW',0],['¼',SYN/4],['FULL',SYN/2],['¾',SYN*3/4],['NEW',SYN]].forEach(([l,a])=>{const x=gx+a/SYN*gw;ctx.fillText(l,x,gy+gh+16);ctx.fillRect(x,gy+gh-3,1,6);});
-    ctx.textAlign='right';ctx.fillStyle=C.soft;ctx.fillText('SPRING',gx+gw,gy+10);ctx.fillText('NEAP',gx+gw,gy+gh-4);
-    ctx.beginPath();for(let k=0;k<=200;k++){const a=k/200*SYN;const x=gx+k/200*gw,y=gy+gh-(range(a)/rmax)*gh*0.92;if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
-    ctx.strokeStyle='rgba(111,231,255,.28)';ctx.lineWidth=1.5;ctx.stroke();
-    const n=Math.max(1,Math.round(age/SYN*200));ctx.beginPath();for(let k=0;k<=n;k++){const a=k/200*SYN;const x=gx+k/200*gw,y=gy+gh-(range(a)/rmax)*gh*0.92;if(k===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}
-    ctx.strokeStyle=C.cyan;ctx.lineWidth=2.4;ctx.shadowColor='rgba(111,231,255,.8)';ctx.shadowBlur=10;ctx.stroke();ctx.shadowBlur=0;
-    const hx=gx+age/SYN*gw,hy=gy+gh-(range(age)/rmax)*gh*0.92;glow(ctx,hx,hy,14,'rgba(111,231,255,.6)');ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(hx,hy,3.5,0,TAU);ctx.fill();
-    // today marker
-    const ta=moonAge(Date.now());const tx=gx+ta/SYN*gw;ctx.strokeStyle='rgba(244,212,138,.6)';ctx.setLineDash([2,4]);ctx.beginPath();ctx.moveTo(tx,gy);ctx.lineTo(tx,gy+gh);ctx.stroke();ctx.setLineDash([]);
-    ctx.fillStyle=C.gold;ctx.textAlign='center';ctx.fillText('TODAY',tx,gy-6);
-    ctx.restore();
-    const rg=range(age)/rmax;rp.textContent=phaseName(age)+' · day '+Math.floor(age);rr.textContent=(rg>0.9?'Spring':rg<0.5?'Neap':'Between')+' · '+Math.round(rg*100)+'%';
+    const lobes=[{dir:el,amp:0.3},{dir:0,amp:0.3*SUNFRAC}];
+    ctx.save();ctx.setLineDash([3,7]);ctx.strokeStyle='rgba(170,180,204,.25)';ctx.beginPath();ctx.arc(cx,cy,R*D,0,TAU);ctx.stroke();ctx.restore();
+    drawSea(ctx,cx,cy,R,lobes);drawEarth(ctx,cx,cy,R,0,0.95);night(ctx,cx,cy,R,0);refCircle(ctx,cx,cy,R*1.04);seaOutline(ctx,cx,cy,R,lobes);
+    drawMoon(ctx,mx,my,R*0.27,0);placeTag(tm,mx,my-R*0.27-20);placeTag(ts,w-84,narrow?h-28:cy-R*2.9);
+    const rg=Math.sqrt(1+SUNFRAC*SUNFRAC+2*SUNFRAC*Math.cos(2*el))/(1+SUNFRAC);
+    const word=rg>0.85?'<b>BIG tide!</b>':rg<0.55?'small tide':'medium tide';
+    if(word!==lastWord){st.innerHTML=word;lastWord=word;}
   };
 })();
 
-/* ===================== 06: bars ===================== */
-new IntersectionObserver(e=>{if(e[0].isIntersecting)document.querySelectorAll('.bar .fill').forEach(f=>{f.style.width=f.dataset.w+'%';});},{threshold:0.4}).observe($('#why'));
+/* ===================== grown-ups: bars ===================== */
+new IntersectionObserver(e=>{if(e[e.length-1].isIntersecting)document.querySelectorAll('.bar .fill').forEach(f=>{f.style.width=f.dataset.w+'%';});},{threshold:0.3}).observe($('#grown'));
 
 /* ---------- loop ---------- */
 let last=performance.now();

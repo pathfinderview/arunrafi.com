@@ -45,7 +45,8 @@ export function createLearn({ camera, controls, pickables, reef, isTouch, getNig
     // orbit start: keep the current bearing, pull back so the whole creature fits, a little above it
     _d.subVectors(camera.position, pk.p); const len = _d.length() || 1; if (len < 1e-3) _d.set(0, 0.3, 1);
     orb.theta = Math.atan2(_d.x, _d.z); orb.phi = THREE.MathUtils.clamp(Math.asin(_d.y / len), 0.15, 0.9);
-    orb.dist = Math.max(1.3, pk.r * 4.2); orb.min = Math.max(0.45, pk.r * 1.5); orb.max = Math.max(7, pk.r * 11);
+    const wide = camera.aspect < 1 ? 1.7 : 1; st.lift = pk.base ? pk.r * 0.6 : 0; // portrait needs more distance; corals are anchored at their base
+    orb.dist = Math.max(1.3, pk.r * 4.2) * wide; orb.min = Math.max(0.45, pk.r * 1.5); orb.max = Math.max(7, pk.r * 11) * wide;
     controls.st.suspend = true; controls.st.inspect = true; if (onPause) onPause(true);
     if (!st.hinted) { st.hinted = true; hintEl.textContent = isTouch ? 'Drag to look around it · pinch to zoom · tap the water to let it go' : 'Drag to look around it · scroll to zoom · click the water to let it go'; hintEl.classList.add('top'); hintEl.style.opacity = 0.6; setTimeout(() => { hintEl.style.opacity = 0; }, 7000); }
     const night = getNight() && f.night; const variant = night ? 'night' : null;
@@ -93,9 +94,10 @@ export function createLearn({ camera, controls, pickables, reef, isTouch, getNig
     st.time += dt;
     if (st.focus) {
       const pk = st.focus; const cp = Math.cos(orb.phi);
-      _o.set(Math.sin(orb.theta) * cp, Math.sin(orb.phi), Math.cos(orb.theta) * cp).multiplyScalar(orb.dist).add(pk.p);
+      _w.copy(pk.p); _w.y += st.lift || 0;
+      _o.set(Math.sin(orb.theta) * cp, Math.sin(orb.phi), Math.cos(orb.theta) * cp).multiplyScalar(orb.dist).add(_w);
       camera.position.lerp(_o, 1 - Math.exp(-dt * 5)); if (clamp) clamp(camera.position);
-      _d.subVectors(pk.p, camera.position); const yaw = Math.atan2(-_d.x, -_d.z), pitch = Math.atan2(_d.y, Math.hypot(_d.x, _d.z));
+      _d.subVectors(_w, camera.position); const yaw = Math.atan2(-_d.x, -_d.z), pitch = Math.atan2(_d.y, Math.hypot(_d.x, _d.z));
       const k = 1 - Math.exp(-dt * 7); let dy = yaw - controls.st.yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
       controls.setLook(controls.st.yaw + dy * k, controls.st.pitch + (pitch - controls.st.pitch) * k);
     }

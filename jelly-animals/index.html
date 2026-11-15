@@ -483,17 +483,12 @@ table.rotation.x=-Math.PI/2; table.position.y=-PED_H; table.receiveShadow=true; 
   const cv=document.createElement('canvas'); cv.width=cv.height=256; const g=cv.getContext('2d'); const gr=g.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0.72,'rgba(0,0,0,0.32)'); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(0,0,256,256);
   const m=new THREE.Mesh(new THREE.PlaneGeometry(2*PED_R+1.0,2*PED_R+1.0),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthWrite:false})); m.rotation.x=-Math.PI/2; m.position.y=-PED_H+0.003; scene.add(m); }
 
-// the pen: a brass ring at knee height on eight posts, and two brass bars across the top to drape over
+// the pen: a floating brass ring at knee height and two brass bars across the top to drape over
 const brass=new THREE.MeshStandardMaterial({color:'#d8b66c',metalness:1,roughness:0.24,envMapIntensity:1.1});
 const RAIL_R=PED_R-0.28, RAIL_Y=0.3, ROD=0.026, BAR_Y=1.0, BAR_Z=0.55, BAR_X=Math.sqrt(RAIL_R*RAIL_R-BAR_Z*BAR_Z);
 const pen=new THREE.Group(); scene.add(pen);
 const addBrass=(geo,x,y,z,rx=0,rz=0)=>{const m=new THREE.Mesh(geo,brass); m.position.set(x,y,z); m.rotation.set(rx,0,rz); m.castShadow=true; m.receiveShadow=true; pen.add(m); return m;};
 addBrass(new THREE.TorusGeometry(RAIL_R,ROD,18,260),PED_C[0],RAIL_Y,PED_C[1],Math.PI/2);
-const posts=[]; // collision list: {x,z,h}
-for(let i=0;i<4;i++){const a=Math.PI/4+i*Math.PI/2; posts.push({x:PED_C[0]+RAIL_R*Math.cos(a),z:PED_C[1]+RAIL_R*Math.sin(a),h:RAIL_Y});}
-for(const sx of [-1,1]) for(const sz of [-1,1]) posts.push({x:PED_C[0]+sx*BAR_X,z:PED_C[1]+sz*BAR_Z,h:BAR_Y});
-const finial=new THREE.SphereGeometry(0.048,24,16), knob=new THREE.SphereGeometry(0.036,20,14);
-for(const p of posts){ addBrass(new THREE.CylinderGeometry(ROD*0.85,ROD*0.85,p.h+ROD,20,1),p.x,(p.h+ROD)/2,p.z); addBrass(p.h>RAIL_Y?finial:knob,p.x,p.h+ROD+0.02,p.z); }
 for(const sz of [-1,1]) addBrass(new THREE.CylinderGeometry(ROD,ROD,2*BAR_X+ROD,20,1),PED_C[0],BAR_Y,PED_C[1]+sz*BAR_Z,0,Math.PI/2);
 
 // splash: when the jelly slaps the stone or the brass, a few drops fly off and dissolve
@@ -503,6 +498,7 @@ const drops=new THREE.InstancedMesh(new THREE.SphereGeometry(1,12,9),dropMat,ND)
 const _dm=new THREE.Matrix4(), _dq=new THREE.Quaternion(), _dp=new THREE.Vector3(), _ds=new THREE.Vector3();
 for(let i=0;i<ND;i++){ _dm.compose(_dp.set(0,-5,0),_dq,_ds.set(0,0,0)); drops.setMatrixAt(i,_dm); }
 function hit(x,y,z,speed,nx,ny,nz){
+  return; // splash drops switched off: nothing leaves the jelly
   if(dBudget<=0||speed<SPLASH_V) return;
   const k=Math.min(3,1+((speed-SPLASH_V)*0.9|0)); dBudget-=k;
   for(let j=0;j<k;j++){ const i=dHead; dHead=(dHead+1)%ND; const sp=Math.min(3.2,speed*(0.25+0.35*rnd()));
@@ -723,7 +719,7 @@ function substep(dt){
   collide(dt);
   const idt=1/dt; for(let n=0;n<3*N;n++) pv[n]=(px[n]-pp[n])*idt;
 }
-// the stone top (and the table past its edge), a lazy slope back to the middle, the brass ring, posts and bars.
+// the stone top (and the table past its edge), a lazy slope back to the middle, the brass ring and bars.
 const SKIN=0.05, RC=ROD+SKIN, RFRIC=0.6, idt0=1;
 function fric(n,nx,ny,nz,k){ let fx=pp[n]-px[n], fy=pp[n+1]-px[n+1], fz=pp[n+2]-px[n+2]; const dn=fx*nx+fy*ny+fz*nz; fx-=dn*nx; fy-=dn*ny; fz-=dn*nz; px[n]+=fx*k; px[n+1]+=fy*k; px[n+2]+=fz*k; }
 function collide(dt){
@@ -737,7 +733,6 @@ function collide(dt){
       const dr=r-RAIL_R, dy=px[n+1]-RAIL_Y; const d=Math.sqrt(dr*dr+dy*dy);
       if(d<RC&&d>1e-6){ const k=(RC-d)/d, ux=dx/r, uz=dz/r; const nx=ux*dr/d, ny=dy/d, nz=uz*dr/d; const vn=((px[n]-pp[n])*nx+(px[n+1]-pp[n+1])*ny+(px[n+2]-pp[n+2])*nz)*idt;
         px[n]+=ux*dr*k; px[n+1]+=dy*k; px[n+2]+=uz*dr*k; fric(n,nx,ny,nz,RFRIC); if(vn<-SPLASH_V) hit(px[n],px[n+1],px[n+2],-vn,nx,ny,nz); }
-      for(let i=0;i<posts.length;i++){ const p=posts[i]; if(px[n+1]>p.h+0.08) continue; const ex=px[n]-p.x, ez=px[n+2]-p.z; const e2=ex*ex+ez*ez; if(e2<RC*RC&&e2>1e-9){ const e=Math.sqrt(e2), k=(RC-e)/e; px[n]+=ex*k; px[n+2]+=ez*k; fric(n,ex/e,0,ez/e,RFRIC); } }
     }
     if(px[n+1]>BAR_Y-0.5&&Math.abs(px[n]-PED_C[0])<BAR_X+0.03){
       for(let b=-1;b<=1;b+=2){ const ey=px[n+1]-BAR_Y, ez=px[n+2]-(PED_C[1]+b*BAR_Z); const e2=ey*ey+ez*ez; if(e2<RC*RC&&e2>1e-9){ const e=Math.sqrt(e2), k=(RC-e)/e, ny=ey/e, nz=ez/e; const vn=((px[n+1]-pp[n+1])*ny+(px[n+2]-pp[n+2])*nz)*idt;

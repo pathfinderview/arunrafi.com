@@ -51,7 +51,7 @@
 <body>
 <canvas id="c" aria-label="Interactive jelly crocodile"></canvas>
 <div class="ui title"><h1>Crocodile Jelly</h1><p>No. 069</p></div>
-<p class="ui hint" id="hint">Drag the jelly. Fling it at the brass. Feed it and it snaps.</p>
+<p class="ui hint" id="hint">Drag the jelly. Fling it. Feed it and it snaps.</p>
 <div class="ui bar">
   <div class="sw" id="swatches"></div>
   <div class="acts">
@@ -483,13 +483,6 @@ table.rotation.x=-Math.PI/2; table.position.y=-PED_H; table.receiveShadow=true; 
   const cv=document.createElement('canvas'); cv.width=cv.height=256; const g=cv.getContext('2d'); const gr=g.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0.72,'rgba(0,0,0,0.32)'); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(0,0,256,256);
   const m=new THREE.Mesh(new THREE.PlaneGeometry(2*PED_R+1.0,2*PED_R+1.0),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(cv),transparent:true,depthWrite:false})); m.rotation.x=-Math.PI/2; m.position.y=-PED_H+0.003; scene.add(m); }
 
-// the pen: a floating brass ring at knee height and two brass bars across the top to drape over
-const brass=new THREE.MeshStandardMaterial({color:'#d8b66c',metalness:1,roughness:0.24,envMapIntensity:1.1});
-const RAIL_R=PED_R-0.28, RAIL_Y=0.3, ROD=0.026, BAR_Y=1.0, BAR_Z=0.55, BAR_X=Math.sqrt(RAIL_R*RAIL_R-BAR_Z*BAR_Z);
-const pen=new THREE.Group(); scene.add(pen);
-const addBrass=(geo,x,y,z,rx=0,rz=0)=>{const m=new THREE.Mesh(geo,brass); m.position.set(x,y,z); m.rotation.set(rx,0,rz); m.castShadow=true; m.receiveShadow=true; pen.add(m); return m;};
-addBrass(new THREE.TorusGeometry(RAIL_R,ROD,18,260),PED_C[0],RAIL_Y,PED_C[1],Math.PI/2);
-for(const sz of [-1,1]) addBrass(new THREE.CylinderGeometry(ROD,ROD,2*BAR_X+ROD,20,1),PED_C[0],BAR_Y,PED_C[1]+sz*BAR_Z,0,Math.PI/2);
 
 // splash: when the jelly slaps the stone or the brass, a few drops fly off and dissolve
 const ND=260, SPLASH_V=1.5; const dP=new Float32Array(ND*3), dV=new Float32Array(ND*3), dL=new Float32Array(ND), dS=new Float32Array(ND); let dHead=0, dBudget=0;
@@ -719,8 +712,7 @@ function substep(dt){
   collide(dt);
   const idt=1/dt; for(let n=0;n<3*N;n++) pv[n]=(px[n]-pp[n])*idt;
 }
-// the stone top (and the table past its edge), a lazy slope back to the middle, the brass ring and bars.
-const SKIN=0.05, RC=ROD+SKIN, RFRIC=0.6, idt0=1;
+// the stone top (and the table past its edge), a lazy slope back to the middle, and an unseen wall at the lip.
 function fric(n,nx,ny,nz,k){ let fx=pp[n]-px[n], fy=pp[n+1]-px[n+1], fz=pp[n+2]-px[n+2]; const dn=fx*nx+fy*ny+fz*nz; fx-=dn*nx; fy-=dn*ny; fz-=dn*nz; px[n]+=fx*k; px[n+1]+=fy*k; px[n+2]+=fz*k; }
 function collide(dt){
   const R0=PED_R-0.8, idt=1/dt;
@@ -728,16 +720,8 @@ function collide(dt){
     const dx=px[n]-PED_C[0], dz=px[n+2]-PED_C[1]; const r=Math.sqrt(dx*dx+dz*dz)+1e-9;
     if(r<PED_R+0.02){ if(px[n+1]<0){ const vy=(px[n+1]-pp[n+1])*idt; px[n+1]=0; fric(n,0,1,0,FRIC); if(vy<-SPLASH_V) hit(px[n],0,px[n+2],-vy,0,1,0); } }
     else if(px[n+1]<-PED_H){ px[n+1]=-PED_H; fric(n,0,1,0,FRIC); }
-    if(r>R0){ const f=Math.min(0.5,(r-R0)*2.5*dt)/r; px[n]-=dx*f; px[n+2]-=dz*f; }
-    if(r>RAIL_R-0.6){
-      const dr=r-RAIL_R, dy=px[n+1]-RAIL_Y; const d=Math.sqrt(dr*dr+dy*dy);
-      if(d<RC&&d>1e-6){ const k=(RC-d)/d, ux=dx/r, uz=dz/r; const nx=ux*dr/d, ny=dy/d, nz=uz*dr/d; const vn=((px[n]-pp[n])*nx+(px[n+1]-pp[n+1])*ny+(px[n+2]-pp[n+2])*nz)*idt;
-        px[n]+=ux*dr*k; px[n+1]+=dy*k; px[n+2]+=uz*dr*k; fric(n,nx,ny,nz,RFRIC); if(vn<-SPLASH_V) hit(px[n],px[n+1],px[n+2],-vn,nx,ny,nz); }
-    }
-    if(px[n+1]>BAR_Y-0.5&&Math.abs(px[n]-PED_C[0])<BAR_X+0.03){
-      for(let b=-1;b<=1;b+=2){ const ey=px[n+1]-BAR_Y, ez=px[n+2]-(PED_C[1]+b*BAR_Z); const e2=ey*ey+ez*ez; if(e2<RC*RC&&e2>1e-9){ const e=Math.sqrt(e2), k=(RC-e)/e, ny=ey/e, nz=ez/e; const vn=((px[n+1]-pp[n+1])*ny+(px[n+2]-pp[n+2])*nz)*idt;
-        px[n+1]+=ey*k; px[n+2]+=ez*k; fric(n,0,ny,nz,RFRIC); if(vn<-SPLASH_V) hit(px[n],px[n+1],px[n+2],-vn,0,ny,nz); } }
-    }
+    if(r>R0){ const f=Math.min(0.5,(r-R0)*4*dt)/r; px[n]-=dx*f; px[n+2]-=dz*f; }
+    { const RW=PED_R-0.12; if(r>RW){ px[n]=PED_C[0]+dx*RW/r; px[n+2]=PED_C[1]+dz*RW/r; } }
   }
 }
 function dampInternal(){

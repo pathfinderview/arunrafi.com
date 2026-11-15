@@ -33,7 +33,7 @@ DESCRIPTIONS = {
     'the-middle-fades.html': 'An interactive illustration of how information in the middle of a long context can get overlooked.',
 }
 
-FOLDER_TOOLS = ['90s-diwali', 'jelly-animals', 'flag-garden']
+FOLDER_TOOLS = ['90s-diwali', 'jelly-animals', 'flag-garden', 'sound-safari']
 
 
 def plain(value):

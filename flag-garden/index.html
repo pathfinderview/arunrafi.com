@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f4ec">
+  <title>Flag Garden — One little flag at a time</title>
+  <meta name="description" content="A gentle flag adventure for little explorers. Reveal a country, hear its name and discover the shapes and colours that make its flag special.">
+  <link rel="canonical" href="https://arunrafi.com/flag-garden/">
+  <meta property="og:title" content="Flag Garden — One little flag at a time">
+  <meta property="og:description" content="195 countries. One flag at a time. Look, listen, remember, and grow a little world of your own.">
+  <meta property="og:url" content="https://arunrafi.com/flag-garden/">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect rx='24' width='100' height='100' fill='%23295b45'/%3E%3Cpath d='M31 80V22h43l-9 17 9 17H31' fill='%23f7d478' stroke='%23f7d478' stroke-width='5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#flag-stage">Skip to the flag</a>
+  <header class="site-header">
+    <a href="/tools.html" class="back-link">← <span>Arun’s tools</span></a>
+    <a class="brand" href="./" aria-label="Flag Garden home"><svg viewBox="0 0 32 36" aria-hidden="true"><path d="M7 32V4m0 1h20l-5 8 5 8H7"/></svg><span>flag garden<span class="brand-dot">.</span></span></a>
+    <div class="header-actions"><button id="sound" class="icon-button" aria-label="Turn sound off" aria-pressed="true">♪</button><button id="parents" class="parent-button">For grown-ups <span>↗</span></button></div>
+  </header>
+
+  <main id="app">
+    <section class="intro">
+      <p class="eyebrow"><span class="little-sun">✳</span> LITTLE EXPLORERS, BIG WORLD</p>
+      <h1>A world to grow into.</h1>
+      <p>One flag. A little wonder. Something new to remember.</p>
+    </section>
+
+    <nav class="play-nav" aria-label="Choose an adventure">
+      <div class="mode-switch"><button id="daily-mode" class="active" aria-pressed="true">✳ Today’s adventure</button><button id="explore-mode" aria-pressed="false">◎ Explore the world</button></div>
+      <button id="collection" class="collection-link">My little world <span id="collection-count">0 / 195</span> ↗</button>
+    </nav>
+
+    <section class="play-layout" aria-label="Flag activity">
+      <div class="flag-card">
+        <div class="card-top"><span id="session-label">Today’s adventure</span><span id="position">Getting our flags ready…</span></div>
+        <div id="session-dots" class="session-dots" aria-label="Adventure progress"></div>
+        <div id="flag-stage" class="flag-stage" tabindex="-1">
+          <div class="decoration orbit-one" aria-hidden="true"></div><div class="decoration orbit-two" aria-hidden="true"></div>
+          <span class="spark spark-one" aria-hidden="true">✧</span><span class="spark spark-two" aria-hidden="true">✳</span>
+          <div id="flag-wrap" class="flag-wrap"><img id="flag" alt="Mystery country flag" draggable="false"><div id="highlight" class="highlight" hidden><span id="highlight-number">1</span></div></div>
+          <p id="image-error" class="image-error" hidden>The flag couldn’t load. <button id="retry-image">Try again</button></p>
+        </div>
+        <div class="country-area" aria-live="polite" aria-atomic="true"><p id="country-overline" class="eyebrow">LOOK CLOSELY. TAKE A GUESS.</p><h2 id="country-name">Where could this be?</h2><p id="country-subtitle">Say it out loud, then find out together.</p></div>
+        <div class="navigation"><button id="previous" class="round-button" aria-label="Previous flag">←</button><button id="reveal" class="reveal-button" disabled><span>Reveal the country</span><span aria-hidden="true">✦</span></button><button id="next" class="round-button" aria-label="Next flag">→</button></div>
+        <div class="navigation-labels" aria-hidden="true"><span>Previous</span><span id="main-hint">A little surprise awaits</span><span>Next</span></div>
+      </div>
+
+      <aside class="discovery-card" aria-label="Flag clues">
+        <div class="discovery-top"><span class="eyebrow">LOOK. LISTEN. REMEMBER.</span><span class="leaf-mark" aria-hidden="true">❧</span></div>
+        <div id="before-reveal" class="before-reveal"><div class="magnifier" aria-hidden="true"><span>✦</span></div><h2>Every flag<br>has a little story.</h2><p>Spot a shape.<br>Find a colour.<br>What makes this one special?</p><span class="hand-note">Let’s find out together <span>↙</span></span></div>
+        <div id="after-reveal" hidden><h2 id="clue-heading">Little things to remember</h2><p class="clue-intro">Tap a clue. Watch it light up.</p><div id="clues" class="clues"></div><button id="tour" class="text-button">↻ Show me again</button><div class="recall"><p>Before the reveal, did you know it?</p><div class="recall-buttons"><button id="learning">🌱 Still learning</button><button id="known">✳ I knew it!</button></div><p id="recall-note" class="recall-note" aria-live="polite">Every little look helps it grow.</p></div></div>
+        <div class="side-footer"><span class="small-sprout" aria-hidden="true">↟</span><p>A little every day<br>goes a long way.</p></div>
+      </aside>
+    </section>
+    <div class="bottom-note"><span>Made for curious little minds.</span><span id="key-hint">← → to wander · space to reveal</span></div>
+    <p id="status" class="status" role="status"></p>
+    <noscript><p>This little garden needs JavaScript to show the flags and play their names. Please enable it in your browser.</p></noscript>
+  </main>
+
+  <dialog id="parent-dialog" aria-labelledby="parent-title"><div class="dialog-head"><span class="eyebrow">A LITTLE NOTE FOR GROWN-UPS</span><button class="close-dialog" aria-label="Close parent controls">×</button></div><h2 id="parent-title">A small habit.<br>A whole world.</h2><p>Five minutes together is a lovely place to start. Let your child guess aloud, reveal the name, and notice the details together.</p><div class="plan-grid"><div><strong>2</strong><span>new flags a day</span></div><div><strong>195</strong><span>countries to discover</span></div><div><strong>6</strong><span>months to practise</span></div></div><h3>The six-month path</h3><ol class="plan-list"><li><strong>Months 1–3 · Discover</strong><span>Two new flags a day, plus up to six familiar flags due for another look.</span></li><li><strong>Month 4 · Complete the collection</strong><span>At this pace, all 195 arrive in about 14 weeks. Take longer whenever you need.</span></li><li><strong>Months 5–6 · Make them stick</strong><span>Revisit up to eight familiar flags a day. Describe a detail, then try recalling the country before revealing it.</span></li></ol><p class="parent-detail">“I knew it” means your child named the country <strong>before</strong> the reveal. We revisit after 1, 3, 7, 14 and 30 days. Six successful recalls on due days earns “Remembered”. “Still learning” brings it back tomorrow. No penalties, no lost streaks.</p><div id="parent-stats" class="parent-stats"></div><p class="parent-detail">Progress stays in this browser, on this device. Save a backup to move it to another device. The six-month path is a practice plan, not a promise—follow your child’s pace.</p><div class="backup-actions"><button id="export-progress">Save progress backup</button><label class="file-button">Restore backup<input id="import-progress" type="file" accept="application/json,.json"></label></div><p id="backup-status" role="status"></p><details><summary>About the flags and audio</summary><p>193 UN members, plus Palestine and Vatican City. Flag artwork from <a href="https://flagpedia.net/download/api" target="_blank" rel="noopener">Flagpedia / FlagCDN</a>; country names and codes adapted from <a href="https://github.com/mledoze/countries" target="_blank" rel="noopener">mledoze/countries</a> under the <a href="https://opendatacommons.org/licenses/odbl/1-0/" target="_blank" rel="noopener">ODbL</a>. Afghanistan shows the tricolour variant; other variants are in use. Paraguay shows the front face. Artwork checked November 2026.</p><p>Recorded names and descriptions play when you reveal or tap. Keep device sound on. The sound button mutes narration. No microphone or recording is used.</p></details></dialog>
+
+  <dialog id="world-dialog" aria-labelledby="world-title"><div class="dialog-head"><span class="eyebrow">YOUR GROWING COLLECTION</span><button class="close-dialog" aria-label="Close country collection">×</button></div><h2 id="world-title">My little world.</h2><p id="world-summary">There’s a whole world waiting.</p><div class="world-filters"><label class="sr-only" for="search">Find a country</label><input id="search" placeholder="Find a country…" type="search"><label class="sr-only" for="continent">Filter by continent</label><select id="continent"><option value="">All continents</option><option>Africa</option><option>Asia</option><option>Europe</option><option>North America</option><option>South America</option><option>Oceania</option></select></div><p class="legend">○ Waiting to meet · 🌱 Growing · ✳ Remembered</p><div id="country-grid" class="country-grid"></div></dialog>
+
+  <dialog id="finish-dialog" aria-labelledby="finish-title"><div class="dialog-head"><span class="eyebrow">A LOVELY LITTLE ADVENTURE</span><button class="close-dialog" aria-label="Close adventure summary">×</button></div><div class="finish-flower" aria-hidden="true">✳</div><h2 id="finish-title">Look at you grow.</h2><p id="finish-text">A few new friends for your little world.</p><p>That’s plenty for today. Come back tomorrow for another little adventure.</p><button id="finish-explore" class="reveal-button">Keep exploring <span>→</span></button><button id="finish-close" class="text-button">Stay here</button></dialog>
+  <div id="petals" class="petals" aria-hidden="true"></div>
+</body>
+</html>

@@ -26,14 +26,14 @@ DESCRIPTIONS = {
     'index.html': 'Short essays by Arun Rafi on learning, work, technology, and how we live.',
     'about.html': 'About Arun Rafi and the questions behind these essays on learning, work, technology, and life.',
     'now.html': 'What Arun Rafi is writing and thinking about now.',
-    'tools.html': 'Interactive experiments by Arun Rafi: why the Moon changes shape, a mechanical watch, baby names, ELIZA, tokens, and long-context attention.',
+    'tools.html': 'Interactive experiments by Arun Rafi: Flag Garden, Jelly Animals, the Moon and sea, a mechanical watch, and more things to learn through play.',
     'baby-names.html': 'Explore how the popularity of baby names changes over time.',
     'eliza.html': 'Try a recreation of ELIZA, an early chatbot, and explore the history behind it.',
     'token-calculator.html': 'Explore how text is split into tokens and how conversation length affects token use.',
     'the-middle-fades.html': 'An interactive illustration of how information in the middle of a long context can get overlooked.',
 }
 
-FOLDER_TOOLS = ['90s-diwali', 'jelly-animals']
+FOLDER_TOOLS = ['90s-diwali', 'jelly-animals', 'flag-garden']
 
 
 def plain(value):

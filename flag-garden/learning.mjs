@@ -14,6 +14,7 @@ export function rateRecord(record = {}, known, today) {
     return result;
   }
   const eligible = !result.due || result.due <= today;
+  if(known && !eligible) return {...result,lastRated:today,lastKnown:true};
   const stage = known ? (eligible ? Math.min((result.stage||0)+1,6) : (result.stage||0)) : 0;
   return {...result,stage,mastered:stage>=6,lastRated:today,lastKnown:known,
     due:addDays(today,known ? (INTERVALS[Math.max(0,stage-1)]||60) : 1)};

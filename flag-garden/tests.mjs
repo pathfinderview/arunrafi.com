@@ -15,6 +15,7 @@ for(let i=0;i<10;i++)r=rateRecord(r,true,today);
 assert.equal(r.stage,1,'Same-day taps must not advance recall');
 r=rateRecord(r,true,'2026-11-16');assert.equal(r.stage,2);assert.equal(r.due,'2026-11-19');
 r=rateRecord(r,true,'2026-11-17');assert.equal(r.stage,2,'Early practice must not advance recall');
+assert.equal(r.due,'2026-11-19','Early practice must not postpone a due review');
 for(const d of ['2026-11-20','2026-11-27','2026-12-11','2027-01-10'])r=rateRecord(r,true,d);
 assert.equal(r.stage,6);assert.equal(r.mastered,true);
 r=rateRecord(r,false,'2027-01-11');assert.equal(r.stage,0);assert.equal(r.mastered,false);assert.equal(r.due,'2027-01-12');

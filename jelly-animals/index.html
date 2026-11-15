@@ -51,7 +51,7 @@
 <body>
 <canvas id="c" aria-label="Interactive jelly crocodile"></canvas>
 <div class="ui title"><h1>Crocodile Jelly</h1><p>No. 069</p></div>
-<p class="ui hint" id="hint">Drag the jelly. Fling it. Feed it and it snaps.</p>
+<p class="ui hint" id="hint">Drag the jelly. Fling it over the glass. Feed it and it snaps.</p>
 <div class="ui bar">
   <div class="sw" id="swatches"></div>
   <div class="acts">
@@ -445,7 +445,7 @@ const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerP
 renderer.setPixelRatio(Math.min(devicePixelRatio,isMobile?2:2));
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.VSMShadowMap;
 renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=0.9;
-const scene=new THREE.Scene(); scene.background=new THREE.Color('#e4e1dc'); scene.fog=new THREE.Fog('#e4e1dc',8,22);
+const scene=new THREE.Scene(); scene.background=new THREE.Color('#e4e1dc'); scene.fog=new THREE.Fog('#e4e1dc',30,120);
 // a studio, not a room: a grey dome and four softboxes. Their reflections are what make the jelly read as wet.
 function studioEnv(){
   const s=new THREE.Scene();
@@ -460,8 +460,8 @@ function studioEnv(){
   return s;
 }
 const pmrem=new THREE.PMREMGenerator(renderer); scene.environment=pmrem.fromScene(studioEnv(),0.02).texture; scene.environmentIntensity=1.0;
-const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,0.1,60); camera.position.set(2.1,1.75,3.7);
-const controls=new OrbitControls(camera,canvas); controls.target.set(0.1,0.08,0); controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=false; controls.minDistance=1.2; controls.maxDistance=12; controls.maxPolarAngle=Math.PI*0.49; controls.update();
+const camera=new THREE.PerspectiveCamera(34,innerWidth/innerHeight,0.1,200); camera.position.set(2.1,1.75,3.7);
+const controls=new OrbitControls(camera,canvas); controls.target.set(0.1,0.08,0); controls.enableDamping=true; controls.dampingFactor=0.08; controls.enablePan=false; controls.minDistance=1.2; controls.maxDistance=80; controls.maxPolarAngle=Math.PI*0.49; controls.update();
 
 const key=new THREE.DirectionalLight('#fff7ec',2.6); key.position.set(1.8,3.6,2.4); key.castShadow=true;
 key.shadow.mapSize.set(isMobile?1024:2048,isMobile?1024:2048); key.shadow.camera.left=-3.2; key.shadow.camera.right=3.2; key.shadow.camera.top=2.6; key.shadow.camera.bottom=-2.6; key.shadow.camera.near=0.5; key.shadow.camera.far=12; key.shadow.bias=-0.0002; key.shadow.normalBias=0.03; key.shadow.intensity=0.65; key.shadow.radius=7; key.shadow.blurSamples=12;
@@ -477,7 +477,7 @@ const pedGeo=(()=>{const F=0.08, pts=[new THREE.Vector2(0,-PED_H),new THREE.Vect
   for(let i=1;i<=10;i++){const a=i/10*Math.PI/2; pts.push(new THREE.Vector2(PED_R-F+F*Math.cos(a),-F+F*Math.sin(a)));}
   pts.push(new THREE.Vector2(0,0)); return new THREE.LatheGeometry(pts,200);})();
 const ped=new THREE.Mesh(pedGeo,pedMat); ped.receiveShadow=true; ped.castShadow=true; scene.add(ped);
-const table=new THREE.Mesh(new THREE.PlaneGeometry(60,60),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98}));
+const table=new THREE.Mesh(new THREE.PlaneGeometry(400,400),new THREE.MeshStandardMaterial({color:'#dcd8d1',roughness:0.98}));
 table.rotation.x=-Math.PI/2; table.position.y=-PED_H; table.receiveShadow=true; scene.add(table);
 { // grounding shadow under the plinth
   const cv=document.createElement('canvas'); cv.width=cv.height=256; const g=cv.getContext('2d'); const gr=g.createRadialGradient(128,128,0,128,128,128); gr.addColorStop(0.72,'rgba(0,0,0,0.32)'); gr.addColorStop(1,'rgba(0,0,0,0)'); g.fillStyle=gr; g.fillRect(0,0,256,256);
@@ -712,16 +712,23 @@ function substep(dt){
   collide(dt);
   const idt=1/dt; for(let n=0;n<3*N;n++) pv[n]=(px[n]-pp[n])*idt;
 }
-// the stone top (and the table past its edge), a lazy slope back to the middle, and an unseen wall at the lip.
+// the stone top (and the table past its edge), a lazy slope back to the middle, and an unseen glass wall at the lip
+// that only reaches WALL_H: fling the jelly higher than that and it clears the wall and lands wherever it lands.
+const WALL_H=1.1;
 function fric(n,nx,ny,nz,k){ let fx=pp[n]-px[n], fy=pp[n+1]-px[n+1], fz=pp[n+2]-px[n+2]; const dn=fx*nx+fy*ny+fz*nz; fx-=dn*nx; fy-=dn*ny; fz-=dn*nz; px[n]+=fx*k; px[n+1]+=fy*k; px[n+2]+=fz*k; }
 function collide(dt){
   const R0=PED_R-0.8, idt=1/dt;
   for(let n=0;n<3*N;n+=3){
     const dx=px[n]-PED_C[0], dz=px[n+2]-PED_C[1]; const r=Math.sqrt(dx*dx+dz*dz)+1e-9;
+    const RW=PED_R-0.12; const pr=Math.hypot(pp[n]-PED_C[0],pp[n+2]-PED_C[1]);
     if(r<PED_R+0.02){ if(px[n+1]<0){ const vy=(px[n+1]-pp[n+1])*idt; px[n+1]=0; fric(n,0,1,0,FRIC); if(vy<-SPLASH_V) hit(px[n],0,px[n+2],-vy,0,1,0); } }
-    else if(px[n+1]<-PED_H){ px[n+1]=-PED_H; fric(n,0,1,0,FRIC); }
-    if(r>R0){ const f=Math.min(0.5,(r-R0)*4*dt)/r; px[n]-=dx*f; px[n+2]-=dz*f; }
-    { const RW=PED_R-0.12; if(r>RW){ px[n]=PED_C[0]+dx*RW/r; px[n+2]=PED_C[1]+dz*RW/r; } }
+    else { if(px[n+1]<-PED_H){ px[n+1]=-PED_H; fric(n,0,1,0,FRIC); }
+      // the plinth's own side, met from outside
+      if(px[n+1]<0&&r<PED_R+0.05&&pr>=PED_R){ const k=(PED_R+0.05)/r; px[n]=PED_C[0]+dx*k; px[n+2]=PED_C[1]+dz*k; } }
+    if(pr<=RW+1e-6){ // still inside the glass
+      if(r>R0&&px[n+1]<WALL_H){ const f=Math.min(0.5,(r-R0)*4*dt)/r; px[n]-=dx*f; px[n+2]-=dz*f; }
+      if(r>RW&&px[n+1]<WALL_H){ px[n]=PED_C[0]+dx*RW/r; px[n+2]=PED_C[1]+dz*RW/r; }
+    }
   }
 }
 function dampInternal(){
@@ -833,7 +840,7 @@ canvas.addEventListener('pointerdown',(e)=>{
 },{capture:true});
 canvas.addEventListener('pointermove',(e)=>{
   if(grab.active&&e.pointerId===grab.second){ grab.twist+=(e.clientX-grab.secondX)*0.012; grab.secondX=e.clientX; return; }
-  if(grab.active&&e.pointerId===grab.id){ toNDC(e); ray.setFromCamera(ndc,camera); if(ray.ray.intersectPlane(grab.plane,_v1)){ const dx=_v1.x-PED_C[0], dz=_v1.z-PED_C[1]; const r=Math.hypot(dx,dz), rm=PED_R-0.2; if(r>rm){ _v1.x=PED_C[0]+dx*rm/r; _v1.z=PED_C[1]+dz*rm/r; } _v1.y=clamp(_v1.y,0.02,1.6); grab.target.copy(_v1); } return; }
+  if(grab.active&&e.pointerId===grab.id){ toNDC(e); ray.setFromCamera(ndc,camera); if(ray.ray.intersectPlane(grab.plane,_v1)){ _v1.y=clamp(_v1.y,-PED_H+0.02,3.0); grab.target.copy(_v1); } return; }
   if(e.pointerType==='mouse'||!grab.active) pointHeadAt(e);
 });
 const release=(e)=>{ if(e.pointerId===grab.second){grab.second=-1;return;} if(grab.active&&e.pointerId===grab.id){ grab.active=false; controls.enabled=true; try{canvas.releasePointerCapture(e.pointerId);}catch(_){} } };
@@ -853,7 +860,7 @@ setWay(0);
 document.getElementById('bFeed').addEventListener('click',feed);
 document.getElementById('bSnap').addEventListener('click',triggerSnap);
 document.getElementById('bThrash').addEventListener('click',triggerThrash);
-function resetAll(){ px.set(rr); pv.fill(0); for(let c=0;c<C;c++){cquat[4*c]=0;cquat[4*c+1]=0;cquat[4*c+2]=0;cquat[4*c+3]=1;} for(const f of fishes) scene.remove(f.mesh); fishes.length=0; stomach.forEach(s=>s.used=false); swallowed=0; sim.snap=null; sim.thrashT=-10; sim.lungeT=-10; }
+function resetAll(){ px.set(rr); pv.fill(0); for(let c=0;c<C;c++){cquat[4*c]=0;cquat[4*c+1]=0;cquat[4*c+2]=0;cquat[4*c+3]=1;} for(const f of fishes) scene.remove(f.mesh); fishes.length=0; stomach.forEach(s=>s.used=false); swallowed=0; sim.snap=null; sim.thrashT=-10; sim.lungeT=-10; controls.target.set(0.1,0.08,0); poseMode=''; resize(); }
 document.getElementById('bReset').addEventListener('click',resetAll);
 const hint=document.getElementById('hint'); const hideHint=()=>hint.classList.add('off');
 setTimeout(hideHint,7000); canvas.addEventListener('pointerdown',hideHint,{once:true,capture:true});
@@ -895,12 +902,12 @@ function tick(dt){
     if(acc>=H) acc=0;
   }
   updateGeometry();
-  frame++;
   _v1.copy(key.position).normalize().transformDirection(camera.matrixWorldInverse); eyeMat.uniforms.uLight.value.copy(_v1);
   { const sh=jellyMat.userData.shader; if(sh){ sh.uniforms.uLightV.value.copy(_v1); if(jellyMat.userData.sssPending){ sh.uniforms.uSss.value.copy(jellyMat.userData.sssPending); jellyMat.userData.sssPending=null; } } }
   if((frame++%4)===0){ let sx=0,sy=0,sz=0; for(let n=0;n<3*N;n+=3){ sx+=px[n]; sy+=px[n+1]; sz+=px[n+2]; } sx/=N; sy/=N; sz/=N;
     pool.position.set(sx,0.14,sz); pool.intensity=0.9*clamp(1-(sy-0.22)/0.5,0,1);
-    _v2.set(lerp(PED_C[0],sx,0.6),0.45,lerp(PED_C[1],sz,0.6)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
+    const out=clamp((Math.hypot(sx-PED_C[0],sz-PED_C[1])-(PED_R-0.6))/0.6,0,1); const fw=lerp(0.6,1,out);
+    _v2.set(lerp(PED_C[0],sx,fw),lerp(0.45,sy,out),lerp(PED_C[1],sz,fw)); _v3.copy(_v2).sub(controls.target).multiplyScalar(0.06); if(_v3.lengthSq()>1e-8){ controls.target.add(_v3); camera.position.add(_v3); } }
   controls.update(); renderer.render(scene,camera);
 }
 overlay.classList.add('off'); setTimeout(()=>{overlay.hidden=true;},1000);

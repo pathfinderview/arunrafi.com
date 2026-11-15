@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#06283d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Reef — an Indian coral reef to swim through</title>
+<meta name="description" content="Swim through an Indian coral reef. Forty-one real animals and plants, from clownfish to dugong. Tap anything alive, look around it, and hear what it is.">
+<link rel="canonical" href="https://arunrafi.com/reef/">
+<meta property="og:title" content="Reef — an Indian coral reef to swim through">
+<meta property="og:description" content="Forty-one real animals and plants, from clownfish to dugong. Tap anything alive and hear what it is.">
+<meta property="og:url" content="https://arunrafi.com/reef/">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect rx='24' width='100' height='100' fill='%231a7fa8'/%3E%3Cpath d='M22 50c14-18 34-18 46 0-12 18-32 18-46 0zm46 0l14-12v24z' fill='%23ffd98a'/%3E%3Ccircle cx='36' cy='46' r='4' fill='%2306283d'/%3E%3C/svg%3E">
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin:0; height:100%; background:#06283d; overflow:hidden; font-family: Georgia, 'Times New Roman', serif; color:#e8f3f6; -webkit-text-size-adjust:100%; -webkit-user-select:none; user-select:none; }
+  canvas { display:block; width:100%; height:100%; touch-action:none; }
+  #ui { position:fixed; inset:0; pointer-events:none; }
+  #title { position:absolute; left:max(16px, env(safe-area-inset-left)); top:max(14px, env(safe-area-inset-top)); font-style:italic; font-size:15px; letter-spacing:.02em; opacity:.75; }
+  #sun { position:absolute; right:max(10px, env(safe-area-inset-right)); top:max(8px, env(safe-area-inset-top)); width:44px; height:44px; pointer-events:auto; opacity:.7; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  #sun svg { width:22px; height:22px; fill:none; stroke:#e8f3f6; stroke-width:1.4; stroke-linecap:round; }
+  #name { position:absolute; left:0; right:0; bottom:calc(92px + env(safe-area-inset-bottom)); text-align:center; font-style:italic; font-size:clamp(26px, 5vw, 44px); opacity:0; transition:opacity .5s; text-shadow:0 2px 24px rgba(0,20,40,.6); padding:0 16px; }
+  #caption { position:absolute; left:50%; transform:translateX(-50%); bottom:calc(40px + env(safe-area-inset-bottom)); width:min(640px, 86vw); text-align:center; font-size:15px; line-height:1.45; opacity:0; transition:opacity .5s; text-shadow:0 1px 12px rgba(0,20,40,.8); }
+  #caption small { display:block; opacity:.6; font-size:12px; margin-top:5px; font-style:italic; }
+  #hint { position:absolute; left:0; right:0; bottom:calc(40px + env(safe-area-inset-bottom)); text-align:center; font-size:13px; opacity:.55; transition:opacity 1s; padding:0 16px; }
+  #hint.top { top:calc(16px + env(safe-area-inset-top)); bottom:auto; }
+  #dots { position:absolute; left:0; right:0; bottom:calc(16px + env(safe-area-inset-bottom)); display:flex; gap:4px; justify-content:center; flex-wrap:wrap; padding:0 48px; opacity:0; transition:opacity 1s; }
+  #dots i { width:5px; height:5px; border-radius:50%; background:rgba(232,243,246,.22); }
+  @media (max-width: 480px) { #dots { gap:3px; padding:0 20px; } #dots i { width:4px; height:4px; } }
+  #dots i.on { background:#ffd98a; box-shadow:0 0 6px #ffd98a; }
+  #aim { position:absolute; left:50%; top:50%; width:6px; height:6px; margin:-3px; border-radius:50%; background:#fff; opacity:0; transition:opacity .25s; box-shadow:0 0 8px #fff; }
+  #look { position:absolute; left:0; right:0; top:calc(50% + 18px); text-align:center; font-style:italic; font-size:15px; opacity:0; transition:opacity .25s; text-shadow:0 1px 10px rgba(0,20,40,.9); }
+  #start { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; background:radial-gradient(ellipse at 50% 30%, rgba(14,80,110,.45), rgba(3,24,40,.82)); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition:opacity .9s; pointer-events:auto; z-index:5; }
+  #start.gone { opacity:0; pointer-events:none; }
+  #start h1 { font-weight:normal; font-style:italic; font-size:clamp(40px, 8vw, 72px); margin:0; letter-spacing:.01em; }
+  #start p { margin:0; opacity:.72; font-size:15px; text-align:center; max-width:26em; line-height:1.55; padding:0 24px; }
+  #start button { margin-top:14px; font:inherit; font-style:italic; font-size:22px; color:#e8f3f6; background:transparent; border:1px solid rgba(232,243,246,.5); border-radius:999px; padding:12px 36px; cursor:pointer; min-height:48px; }
+  #start button:active { background:rgba(232,243,246,.12); }
+  #start .err { color:#ffb8a8; }
+  #start a.back { margin-top:18px; font-size:13px; font-style:italic; color:#e8f3f6; opacity:.55; text-decoration:none; padding:10px 14px; }
+  #guide { position:fixed; inset:0; display:none; overflow:auto; background:rgba(3,24,40,.86); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); pointer-events:auto; padding:calc(56px + env(safe-area-inset-top)) 20px 40px; box-sizing:border-box; z-index:4; }
+  #guide.open { display:block; }
+  #guide h2 { font-weight:normal; font-style:italic; text-align:center; margin:0 0 6px; opacity:.9; font-size:26px; }
+  #guide p { text-align:center; margin:0 0 20px; opacity:.55; font-size:13px; font-style:italic; }
+  #grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(92px, 1fr)); gap:16px 6px; max-width:920px; margin:0 auto; }
+  .sp { text-align:center; font-size:12px; opacity:.32; cursor:pointer; line-height:1.25; }
+  .sp.on { opacity:1; }
+  .sp canvas { width:72px; height:72px; display:block; margin:0 auto 5px; filter:grayscale(1) brightness(.55); }
+  .sp.on canvas { filter:none; }
+  #close { position:absolute; right:max(10px, env(safe-area-inset-right)); top:max(8px, env(safe-area-inset-top)); width:44px; height:44px; background:none; border:0; color:#e8f3f6; font-size:26px; cursor:pointer; opacity:.7; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="title">Reef</div>
+  <div id="sun" title="Time of day"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg></div>
+  <div id="aim"></div>
+  <div id="look"></div>
+  <div id="name"></div>
+  <div id="caption"></div>
+  <div id="hint"></div>
+  <div id="dots"></div>
+</div>
+<div id="guide"><button id="close" aria-label="Close">×</button><h2>Field guide</h2><p id="guideCount"></p><div id="grid"></div></div>
+<div id="start">
+  <h1>Reef</h1>
+  <p id="startText">Lakshadweep, five metres down.<br>Tap anything alive to hear about it.</p>
+  <button id="dive">Dive in</button>
+  <a class="back" href="/tools.html">← Arun’s tools</a>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>

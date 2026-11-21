@@ -25,7 +25,7 @@ function plate(rows, S, part, fin, swFn) {
 const tailW = (S) => (p) => { const xn = p.x / S.len; return 0.05 + 0.95 * Math.pow(smoothstep(0.25, -0.5, xn), 1.6); };
 
 export function fishGeometry(S) {
-  const L = S.len, H = S.h * L, W = S.w * L, NX = S.nx || 48, NR = 14;
+  const L = S.len, H = S.h * L, W = S.w * L, NX = S.nx || 48, NR = S.nr || 14;
   const hp = S.hProfile || ((t) => Math.max(S.ped ?? 0.1, Math.pow(Math.sin(Math.PI * Math.pow(t, S.taper ?? 0.85)), S.round ?? 0.7)));
   const wp = S.wProfile || ((t) => Math.max(0.08, Math.pow(Math.sin(Math.PI * Math.pow(t, 0.9)), 0.9)));
   const yOff = S.yOff || (() => 0);
@@ -159,6 +159,7 @@ export class School {
     const h = this.home, b = this.S.behaviour;
     if (b === 'anemone') { const a = rnd() * TAU, d = rr(0.25, 0.55); f.target.set(h.x + Math.cos(a) * d, h.y + rr(0.2, 0.55), h.z + Math.sin(a) * d); f.timer = rr(0.4, 1.4); return; }
     if (b === 'station') { f.target.set(h.x + rr(-0.25, 0.25), h.y + rr(-0.2, 0.3), h.z + rr(-0.25, 0.25)); f.timer = rr(0.5, 1.2); return; }
+    if (b === 'cloud') { f.target.set(h.x + rr(-1, 1) * h.r, h.y + rr(0, 1) * h.ry, h.z + rr(-1, 1) * h.r); f.timer = rr(0.8, 2.5); return; }
     if (b === 'hover') { f.target.set(h.x + rr(-0.4, 0.4) * h.r, h.y + rr(-0.3, 0.3) * h.ry, h.z + rr(-0.4, 0.4) * h.r); f.timer = rr(2, 5); return; }
     const a = rnd() * TAU, d = Math.sqrt(rnd()) * h.r;
     f.target.set(h.x + Math.cos(a) * d, h.y + rr(-1, 1) * h.ry, h.z + Math.sin(a) * d);
@@ -171,6 +172,7 @@ export class School {
     this.night += ((S.night === 'hide' || S.night === 'cocoon') && night ? 1 : 0 - this.night) * (1 - Math.exp(-dt * 0.5));
     if (this.mat.userData.u) this.mat.userData.u.uDull.value = (S.night === 'hide' || S.night === 'cocoon') ? this.night * 0.8 : 0;
     const act = S.night === 'active' ? (night ? 1.6 : 0.6) : 1;
+    const dive = S.dive && Math.hypot(cam.position.x - this.home.x, cam.position.y - this.home.y, cam.position.z - this.home.z) < S.dive;
     for (let i = 0; i < fish.length; i++) {
       const f = fish[i]; let sp = spd * f.s * act;
       // hiding at night: go to a hide spot and stay still
@@ -179,9 +181,10 @@ export class School {
         _d.subVectors(f.hide, f.p); const dd = _d.length(); if (dd < 0.15) { f.v.multiplyScalar(Math.exp(-dt * 3)); f.sleep = Math.min(1, f.sleep + dt * 0.5); this.place(i, f, dt); continue; }
         f.sleep = 0; _d.multiplyScalar(sp * 1.4 / dd); f.v.lerp(_d, 1 - Math.exp(-dt * 2)); this.integrate(f, dt, cam); this.place(i, f, dt); continue;
       } else if (f.hide) { f.hide = null; f.sleep = 0; }
+      if (dive) { if (!f.dove) { f.dove = 1; f.target.set(this.home.x + rr(-0.25, 0.25), this.home.y - 0.55, this.home.z + rr(-0.25, 0.25)); } f.timer = 0.4; sp *= 4; } else f.dove = 0;
       f.timer -= dt; if (f.timer <= 0) this.newTarget(f);
       if (f.pause > 0) { f.pause -= dt; f.v.multiplyScalar(Math.exp(-dt * 4)); this.integrate(f, dt, cam); this.place(i, f, dt); continue; }
-      _d.subVectors(f.target, f.p); const dist = _d.length(); if (dist < 0.3) f.timer = 0; _d.multiplyScalar(1 / Math.max(dist, 0.01));
+      _d.subVectors(f.target, f.p); const dist = _d.length(); if (dist < 0.3 && !dive) f.timer = 0; if (dive && dist < 0.12) sp = 0; _d.multiplyScalar(1 / Math.max(dist, 0.01));
       _t.copy(_d).multiplyScalar(sp);
       if (b === 'school' || b === 'pair') { // cohesion + alignment + separation
         _u.set(0, 0, 0); _r.set(0, 0, 0); let c = 0;
@@ -190,15 +193,15 @@ export class School {
         if (b === 'school') { const tl = _t.length(); if (tl > 0) _t.multiplyScalar(sp / tl); }
       }
       // flee the swimmer
-      if (S.flee > 0) { _f.subVectors(f.p, cam.position); const d = _f.length(); if (d < S.flee) { _f.multiplyScalar((S.flee - d) * 4 / d); _t.add(_f); } }
-      const k = 1 - Math.exp(-dt * (b === 'anemone' || b === 'station' ? 6 : 2.2));
+      if (S.flee > 0 && !dive) { _f.subVectors(f.p, cam.position); const d = _f.length(); if (d < S.flee) { _f.multiplyScalar((S.flee - d) * 4 / d); _t.add(_f); } }
+      const k = 1 - Math.exp(-dt * (b === 'anemone' || b === 'station' || dive ? 6 : b === 'cloud' ? 3.5 : 2.2));
       f.v.lerp(_t, k);
       this.integrate(f, dt, cam); this.place(i, f, dt);
     }
     this.mesh.instanceMatrix.needsUpdate = true;
   }
   integrate(f, dt, cam) {
-    const S = this.S; const vl = f.v.length(), max = S.speed * 2.6; if (vl > max) f.v.multiplyScalar(max / vl);
+    const S = this.S; const vl = f.v.length(), max = S.speed * (f.dove ? 6 : 2.6); if (vl > max) f.v.multiplyScalar(max / vl);
     f.p.addScaledVector(f.v, dt);
     const fl = terrainY(f.p.x, f.p.z) + (S.behaviour === 'anemone' ? 0.1 : 0.45); if (f.p.y < fl) { f.p.y = fl; if (f.v.y < 0) f.v.y *= -0.3; }
     if (f.p.y > -0.6) { f.p.y = -0.6; if (f.v.y > 0) f.v.y = 0; }
@@ -209,7 +212,8 @@ export class School {
     _f.copy(f.f); if (Math.abs(_f.y) > 0.95) _f.y = 0.95 * Math.sign(_f.y);
     _r.crossVectors(_f, UP).normalize(); _u.crossVectors(_r, _f).normalize();
     if (f.bank) { _u.applyAxisAngle(_f, f.bank); _r.applyAxisAngle(_f, f.bank); }
-    _m.makeBasis(_f, _u, _r); _m.setPosition(f.p); _m.scale(_t.setScalar(f.s)); this.mesh.setMatrixAt(i, _m);
+    let sc = f.s; if (f.puffT) { const k = clamp((f.puffT - performance.now()) / 1000, 0, 1) * clamp((performance.now() - f.puff0) / 350, 0, 1); sc *= 1 + 0.9 * k; if (performance.now() > f.puffT) f.puffT = 0; }
+    _m.makeBasis(_f, _u, _r); _m.setPosition(f.p); _m.scale(_t.setScalar(sc)); this.mesh.setMatrixAt(i, _m);
   }
 }
 

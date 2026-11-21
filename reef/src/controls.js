@@ -3,12 +3,12 @@
 import * as THREE from 'three';
 
 export function createControls(camera, canvas, o = {}) {
-  const st = { yaw: o.yaw || 0, pitch: o.pitch || 0, locked: false, speed: 0, onTap: null, onLook: null, onInput: null, onOrbit: null, onZoom: null, enabled: false, suspend: false, inspect: false };
+  const st = { yaw: o.yaw || 0, pitch: o.pitch || 0, ty: o.yaw || 0, tp: o.pitch || 0, locked: false, speed: 0, onTap: null, onLook: null, onInput: null, onOrbit: null, onZoom: null, enabled: false, suspend: false, inspect: false };
   const vel = new THREE.Vector3(), fwd = new THREE.Vector3(), right = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0), want = new THREE.Vector3();
   const k = { w: 0, s: 0, a: 0, d: 0, q: 0, e: 0, sh: 0 };
   let drag = null, touchHold = 0, touchFast = 0, moved = 0, lookSens = 0.0022;
   const PITCH = 1.45;
-  const look = (dx, dy) => { if (st.inspect) { if ((dx || dy) && st.onOrbit) st.onOrbit(dx, dy); return; } if ((dx || dy) && st.onInput) st.onInput(); st.yaw -= dx * lookSens; st.pitch = Math.max(-PITCH, Math.min(PITCH, st.pitch - dy * lookSens)); if (st.onLook) st.onLook(); };
+  const look = (dx, dy) => { if (st.inspect) { if ((dx || dy) && st.onOrbit) st.onOrbit(dx, dy); return; } if ((dx || dy) && st.onInput) st.onInput(); st.ty -= dx * lookSens; st.tp = Math.max(-PITCH, Math.min(PITCH, st.tp - dy * lookSens)); if (st.onLook) st.onLook(); };
 
   // mouse
   canvas.addEventListener('mousedown', (e) => { if (!st.enabled) return; drag = { x: e.clientX, y: e.clientY, t: performance.now() }; moved = 0; });
@@ -66,6 +66,7 @@ export function createControls(camera, canvas, o = {}) {
 
   const euler = new THREE.Euler(0, 0, 0, 'YXZ');
   function update(dt) {
+    if (st.suspend) { st.ty = st.yaw; st.tp = st.pitch; } else { const k = 1 - Math.exp(-dt * 14); st.yaw += (st.ty - st.yaw) * k; st.pitch += (st.tp - st.pitch) * k; }
     euler.set(st.pitch, st.yaw, 0); camera.quaternion.setFromEuler(euler);
     fwd.set(0, 0, -1).applyQuaternion(camera.quaternion); right.set(1, 0, 0).applyQuaternion(camera.quaternion);
     want.set(0, 0, 0);
@@ -75,11 +76,11 @@ export function createControls(camera, canvas, o = {}) {
     want.addScaledVector(fwd, k.w - k.s + hold).addScaledVector(right, k.d - k.a).addScaledVector(up, k.e - k.q);
     const fast = k.sh || touchFast;
     const maxV = (o.speed || 5.5) * (fast ? 2.4 : 1);
-    if (want.lengthSq() > 0) { want.normalize().multiplyScalar(maxV); vel.lerp(want, 1 - Math.exp(-dt * 3.2)); }
-    else vel.multiplyScalar(Math.exp(-dt * 1.6));
+    if (want.lengthSq() > 0) { want.normalize().multiplyScalar(maxV); vel.lerp(want, 1 - Math.exp(-dt * 2.2)); }
+    else vel.multiplyScalar(Math.exp(-dt * 1.1));
     camera.position.addScaledVector(vel, dt);
     if (o.clamp) o.clamp(camera.position);
     st.speed = vel.length();
   }
-  return { st, update, k, setLook: (yaw, pitch) => { st.yaw = yaw; st.pitch = pitch; } };
+  return { st, update, k, setLook: (yaw, pitch) => { st.yaw = st.ty = yaw; st.pitch = st.tp = pitch; } };
 }

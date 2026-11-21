@@ -46,16 +46,16 @@ export function createLearn({ camera, controls, pickables, reef, isTouch, getNig
     _d.subVectors(camera.position, pk.p); const len = _d.length() || 1; if (len < 1e-3) _d.set(0, 0.3, 1);
     orb.theta = Math.atan2(_d.x, _d.z); orb.phi = THREE.MathUtils.clamp(Math.asin(_d.y / len), 0.15, 0.9);
     const wide = camera.aspect < 1 ? 1.7 : 1; st.lift = pk.base ? pk.r * 0.6 : 0; // portrait needs more distance; corals are anchored at their base
-    orb.dist = Math.max(1.3, pk.r * 4.2) * wide; orb.min = Math.max(0.45, pk.r * 1.5); orb.max = Math.max(7, pk.r * 11) * wide;
+    orb.dist = Math.max(0.55, pk.r * (pk.r > 1.5 ? 2.6 : 4.2)) * wide; orb.min = Math.max(0.3, pk.r * 1.5); orb.max = Math.max(7, pk.r * 11) * wide;
     controls.st.suspend = true; controls.st.inspect = true; if (onPause) onPause(true);
     if (!st.hinted) { st.hinted = true; hintEl.textContent = isTouch ? 'Drag to look around it · pinch to zoom · tap the water to let it go' : 'Drag to look around it · scroll to zoom · click the water to let it go'; hintEl.classList.add('top'); hintEl.style.opacity = 0.6; setTimeout(() => { hintEl.style.opacity = 0; }, 7000); }
     const night = getNight() && f.night; const variant = night ? 'night' : null;
     nameEl.textContent = f.name; capEl.innerHTML = `${f.hook}<small>${f.sci} · ${f.size}</small>`; nameEl.style.opacity = 1; capEl.style.opacity = 1;
-    if (!found.has(pk.key)) { found.add(pk.key); save(); refreshDots(); }
-    audio.ping();
+    if (!found.has(pk.key)) { found.add(pk.key); save(); refreshDots(); setTimeout(audio.chime, 250); capEl.innerHTML = `${f.hook}<small>${f.sci} · ${f.size}</small><small style="color:#ffd98a;opacity:.9">New. ${found.size} of ${keys.length} found</small>`; }
+    audio.ping(); st.lastFocus = st.time;
     if (pk.key === 'snappingShrimp') setTimeout(audio.snap, 300); if (pk.key === 'spinnerDolphin') setTimeout(audio.whistle, 300); if (pk.key === 'parrotfish') setTimeout(audio.crunch, 300);
     audio.say(pk.key, `${f.name}. ${variant ? f.night : f.fact}`, variant).then((dur) => { if (st.focus === pk) { st.until = st.time + Math.max(4, dur) + 1.0; st.captionUntil = st.until + 1.5; } });
-    reef.onTap(pk.key, pk.p);
+    reef.onTap(pk.key, pk.p, pk);
   }
   function release(stopVoice) {
     if (st.focus) { st.focus = null; controls.st.suspend = false; controls.st.inspect = false; if (onPause) onPause(false); }
@@ -108,5 +108,5 @@ export function createLearn({ camera, controls, pickables, reef, isTouch, getNig
     } else if (st.hover) { st.hover = ''; lookEl.style.opacity = 0; aimEl.style.opacity = 0; }
   }
   addEventListener('keydown', (e) => { if (e.code === 'KeyG') openGuide(!guide.classList.contains('open')); if (e.code === 'Escape') { openGuide(false); release(true); } });
-  return { tap, update, openGuide, found, focus, release };
+  return { tap, update, openGuide, found, focus, release, st };
 }

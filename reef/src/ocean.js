@@ -87,7 +87,7 @@ export function makeSurface() {
   const geo = new THREE.PlaneGeometry(700, 700, 1, 1); geo.rotateX(-Math.PI / 2);
   const mat = new THREE.ShaderMaterial({
     uniforms: { ...U, uSky: { value: new THREE.Color('#dff7ff') }, uSunCol: { value: new THREE.Color('#fff6dc') } },
-    side: THREE.DoubleSide, depthWrite: false,
+    side: THREE.DoubleSide, depthWrite: false, transparent: true,
     vertexShader: /* glsl */`varying vec3 vW; void main(){ vW = (modelMatrix * vec4(position, 1.0)).xyz; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
     fragmentShader: /* glsl */`
       varying vec3 vW; uniform vec3 uSky; uniform vec3 uSunCol;
@@ -103,6 +103,15 @@ export function makeSurface() {
         float c4 = cos(p.x * 0.9 - p.y * 0.6 + t * 1.3); nx += 0.12 * 0.9 * c4; nz -= 0.12 * 0.6 * c4;
         float c5 = cos(p.x * 1.7 + p.y * 1.1 - t * 1.9); nx += 0.05 * 1.7 * c5; nz += 0.05 * 1.1 * c5;
         vec3 N = normalize(vec3(-nx * 2.4, 1.0, -nz * 2.4));
+        if (cameraPosition.y > 0.0) { // seen from the boat: clear lagoon water, sky reflection, sun glitter
+          vec3 V = -vd; float fres = pow(1.0 - max(dot(V, N), 0.0), 4.0);
+          vec3 water = mix(vec3(0.03, 0.55, 0.62), vec3(0.01, 0.2, 0.42), smoothstep(30.0, 260.0, dist));
+          vec3 skyc = mix(vec3(0.74, 0.9, 0.98), vec3(0.25, 0.55, 0.9), clamp(reflect(vd, N).y, 0.0, 1.0));
+          vec3 c2 = mix(water, skyc, clamp(fres * 0.85 + 0.05, 0.0, 1.0));
+          vec3 h2 = normalize(uSunDir + V); c2 += uSunCol * pow(max(dot(N, h2), 0.0), 260.0) * 4.0;
+          c2 *= 1.0 - 0.85 * uNight;
+          float a2 = clamp(0.5 + fres * 0.6 + smoothstep(14.0, 60.0, dist) * 0.5, 0.0, 1.0);
+          gl_FragColor = vec4(c2, a2); return; }
         float cosA = dot(vd, N);
         float window = smoothstep(0.42, 0.8, cosA);
         vec3 refl = uFogDeep * 1.15;
@@ -119,7 +128,7 @@ export function makeSurface() {
         gl_FragColor = vec4(col, 1.0);
       }`,
   });
-  const m = new THREE.Mesh(geo, mat); m.position.y = 0; m.frustumCulled = false; m.renderOrder = -1;
+  const m = new THREE.Mesh(geo, mat); m.position.y = 0; m.frustumCulled = false; m.renderOrder = 10;
   return m;
 }
 
@@ -147,7 +156,7 @@ export function makeSnow(n = 1400) {
       varying float vA; varying float vS; uniform float uNight;
       void main() { vec2 q = gl_PointCoord - 0.5; float r = dot(q, q) * 4.0; float a = (1.0 - smoothstep(0.1, 1.0, r)) * vA * (0.32 * (1.0 - 0.7 * uNight) + vS * 1.5); gl_FragColor = vec4(mix(vec3(0.75, 0.9, 1.0), vec3(0.4, 1.0, 0.85), vS), a); }`,
   });
-  const pts = new THREE.Points(g, mat); pts.frustumCulled = false; return pts;
+  const pts = new THREE.Points(g, mat); pts.frustumCulled = false; pts.renderOrder = 12; return pts;
 }
 
 // ---------------------------------------------------------------- post: god rays, vignette, tone map
@@ -191,7 +200,7 @@ export function makePost(renderer, scene, camera, isMobile) {
     const behind = sunNdc.z > 1 || sunNdc.z < -1;
     const sx = sunNdc.x * 0.5 + 0.5, sy = sunNdc.y * 0.5 + 0.5;
     const off = Math.max(Math.abs(sunNdc.x), Math.abs(sunNdc.y));
-    const strength = behind ? 0 : state.rays * (1 - THREE.MathUtils.smoothstep(off, 1.0, 2.4));
+    const strength = behind ? 0 : state.rays * (state.mul ?? 1) * (1 - THREE.MathUtils.smoothstep(off, 1.0, 2.4));
     comp.material.uniforms.uRays.value = strength;
     if (strength > 0.01) {
       blur.material.uniforms.uSun.value.set(sx, sy);
